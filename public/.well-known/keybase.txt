@@ -1,0 +1,68 @@
+==================================================================
+https://keybase.io/nicholasgriffin
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://nicholasgriffin.dev
+  * I am nicholasgriffin (https://keybase.io/nicholasgriffin) on keybase.
+  * I have a public key with fingerprint 4F39 FB26 2B56 8FA8 CC52  74EA 5DD2 B99A 846B 2056
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "0101d0f0a811ecef6cf7e72580b6d65ab2f2b2fe9f7af3d09ef3147a76b2612e712c0a",
+      "fingerprint": "4f39fb262b568fa8cc5274ea5dd2b99a846b2056",
+      "host": "keybase.io",
+      "key_id": "5dd2b99a846b2056",
+      "kid": "0101d0f0a811ecef6cf7e72580b6d65ab2f2b2fe9f7af3d09ef3147a76b2612e712c0a",
+      "uid": "7f09df8f11e7b93db7e54b910e49f019",
+      "username": "nicholasgriffin"
+    },
+    "service": {
+      "hostname": "nicholasgriffin.dev",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 1
+  },
+  "ctime": 1633737797,
+  "expire_in": 157680000,
+  "prev": "6ecc2404950ec2ce6cd3712375999a3e2f57336d965a3fca7dea117ce2d27beb",
+  "seqno": 4,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.1.13
+Comment: https://keybase.io/crypto
+
+yMInAnicrVJbSBRRGB6zi5faLCrp8pATkuGluZ+dpXqISuyqWCQRbDNz/qPT2sw2
+s2oiG9RDF0KkIjAsCkpra8MuIiYKaUu1SZL1UGoQ1ZNBRGFEUdkZqbceO3A4nHO+
+7/u/7+dPzEplMlKyTi8+zHR+DaUM9LXWMNqeV+sbWN3G9WyggQ3B5AHVGNxIMGRi
+NsByPMdjjnCan+fBAKIYBAESZD+nK1iRNV0gAt2gEqQREXMqEJGXkIYUXVB4ARAv
+GJzGFrDEtCrBCTumFaGyEhFVQhGCLit+ovkNQxaQBJqMsaCrquaXKJ+TFUqssl2P
+Qc3pmgtFpk3f6CU4ae8f+P/su2ZSDhFOxcRPqBjSVRHrCGRJV3kOJJVwvOoBXXAs
+bR9QtGUaVXa15lY6JqG52WgBSz9rTQO8/nqB/g0swlBLlcKOHbENu5oCqiKRsBvw
+BCL1YY9RB3rwj1ZQNy1Mu0oZteC4pm2xAZ4ijYjpifOKKCIRIRUVsHAgbDoQND2E
+jBQ/R5dXh5YLsAoYhiBxkipzYAgGKAYWaXwRySrtrAgCkZEoKlilbROJoSEMGs8j
+AwQsIB101ku337LZgERtapVU0jUrLS1S4wAb7b+3eyqTksFMnzbFmzYmIz3r7wwm
+96Yxg+eaon3bYEZ0fCg/n+kd7/78oT1nePq1VxfTvmxdMfKwI9mVnRCfrh5rWVlx
+oqk592fpiG+0ruxjDnrx7sLR0p0P5m58OdT4LB6+XCw8t9Y0nuxdENqy7pOb03xq
+aLDtjLXK9zY5r3VKS8/m2OyKzJJyvTeO+6/fV+JLvh28Omcpu/dM39jA+c721vLA
+8dtM8wQ0L0qUPRpw402L13blgfQsrcJZdrk4mbnDl77hbvHp7J7Y9sLYlfaOI1nr
+Ry79GMPSpmNPdi28kTJYeDxRmHwznl763o6d/NX4OmjPDL0c8aFb8/POu8dSw9lL
+25aPHroTzZ14fHM47XuqWJJ1tjv0G/TnR70=
+=gvfs
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/nicholasgriffin
+
+==================================================================
