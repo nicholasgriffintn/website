@@ -2,10 +2,10 @@ lockfileVersion: 5.4
 
 specifiers:
   '@tanstack/react-query': 4.29.7
-  '@trpc/client': 10.26.0
-  '@trpc/next': 10.26.0
-  '@trpc/react-query': 10.26.0
-  '@trpc/server': 10.26.0
+  '@trpc/client': 10.34.0
+  '@trpc/next': 10.34.0
+  '@trpc/react-query': 10.34.0
+  '@trpc/server': 10.34.0
   '@types/eslint': 8.37.0
   '@types/node': 20.2.1
   '@types/prettier': 2.7.2
@@ -30,10 +30,10 @@ specifiers:
 
 dependencies:
   '@tanstack/react-query': 4.29.7_biqbaboplfbrettd7655fr4n2y
-  '@trpc/client': 10.26.0_@trpc+server@10.26.0
-  '@trpc/next': 10.26.0_5wlj4zqd5hbm7ghnogzr2cn6qq
-  '@trpc/react-query': 10.26.0_umfrugaz453xuwiifkhz4usemu
-  '@trpc/server': 10.26.0
+  '@trpc/client': 10.34.0_@trpc+server@10.34.0
+  '@trpc/next': 10.34.0_x6x6crlwh3ng6dqpmov7zp3uoa
+  '@trpc/react-query': 10.34.0_bl6t4asm33gqy5gll3kbes7p7m
+  '@trpc/server': 10.34.0
   next: 13.4.2_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.22.1_cmp7sjki5xcmfyvhcokzzink7a
   react: 18.2.0
@@ -317,53 +317,53 @@ packages:
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
-  /@trpc/client/10.26.0_@trpc+server@10.26.0:
-    resolution: {integrity: sha512-ojHxQFIE97rBEGPK8p1ijbzo0T1IdEBoJ9fFSgWWL9FMuEEA/DNQ9s0uuiOrDKhCCdTFT1unfRharoJhB2/O2w==}
+  /@trpc/client/10.34.0_@trpc+server@10.34.0:
+    resolution: {integrity: sha512-nqtDTIqSY/9syo2EjSy4WWWXPU9GsamEh9Tsg698gLAh1nhgFc5+/YYeb+Ne1pbvWGZ5/3t9Dcz3h4wMyyJ9gQ==}
     peerDependencies:
-      '@trpc/server': 10.26.0
+      '@trpc/server': 10.34.0
     dependencies:
-      '@trpc/server': 10.26.0
+      '@trpc/server': 10.34.0
     dev: false
 
-  /@trpc/next/10.26.0_5wlj4zqd5hbm7ghnogzr2cn6qq:
-    resolution: {integrity: sha512-p328crXBH6C228LKxjqbpDEXdLmy4+LdgsZuYK3oFMqaJEmCT22b+zcQ9IvQrcPfDxhKOpJym0QpuDNaWpG2qg==}
+  /@trpc/next/10.34.0_x6x6crlwh3ng6dqpmov7zp3uoa:
+    resolution: {integrity: sha512-8jQPedVkCYCAG6PXDEumG5ILeD1aYVC6/aApk5Y96eeqnmAtX7TO9grVRfGGNaISuTtJ/oIDmRfSRqo1eOU4OA==}
     peerDependencies:
       '@tanstack/react-query': ^4.18.0
-      '@trpc/client': 10.26.0
-      '@trpc/react-query': 10.26.0
-      '@trpc/server': 10.26.0
+      '@trpc/client': 10.34.0
+      '@trpc/react-query': 10.34.0
+      '@trpc/server': 10.34.0
       next: '*'
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@tanstack/react-query': 4.29.7_biqbaboplfbrettd7655fr4n2y
-      '@trpc/client': 10.26.0_@trpc+server@10.26.0
-      '@trpc/react-query': 10.26.0_umfrugaz453xuwiifkhz4usemu
-      '@trpc/server': 10.26.0
+      '@trpc/client': 10.34.0_@trpc+server@10.34.0
+      '@trpc/react-query': 10.34.0_bl6t4asm33gqy5gll3kbes7p7m
+      '@trpc/server': 10.34.0
       next: 13.4.2_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-ssr-prepass: 1.5.0_react@18.2.0
     dev: false
 
-  /@trpc/react-query/10.26.0_umfrugaz453xuwiifkhz4usemu:
-    resolution: {integrity: sha512-n+enpalaCZhd3A/mbZmXeydRZHsAJo7mzc2ncgHn5S+C3SrfOM897uQdbHdj02Li25ULxzP1O92w+vZzmFbgkA==}
+  /@trpc/react-query/10.34.0_bl6t4asm33gqy5gll3kbes7p7m:
+    resolution: {integrity: sha512-dnp7CmCBXwBgd8nAjMoHWMJwQrvAzjP+f8EXKfJVF66y9FydTBTf4CuXRh+A4EgA5CZeu4Ecva4D61Eu2I13GA==}
     peerDependencies:
       '@tanstack/react-query': ^4.18.0
-      '@trpc/client': 10.26.0
-      '@trpc/server': 10.26.0
+      '@trpc/client': 10.34.0
+      '@trpc/server': 10.34.0
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@tanstack/react-query': 4.29.7_biqbaboplfbrettd7655fr4n2y
-      '@trpc/client': 10.26.0_@trpc+server@10.26.0
-      '@trpc/server': 10.26.0
+      '@trpc/client': 10.34.0_@trpc+server@10.34.0
+      '@trpc/server': 10.34.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@trpc/server/10.26.0:
-    resolution: {integrity: sha512-+Wt0NFAeflVSNiUnHIDNN3C8jP7XIRmYrcgJ6IsAnm0lK4p/FkpCpeu1aig5qxrgZx30PHNDLZ/3FttVSEW2aQ==}
+  /@trpc/server/10.34.0:
+    resolution: {integrity: sha512-2VMW44Fpaoyqb50dBtzdSWMhqt8lmoJiocEyBBeDb03R0W+XrzbVD5kU/wqKPlcp1DWeNCkOEIMtetMZCfo1hA==}
     dev: false
 
   /@types/eslint/8.37.0:
