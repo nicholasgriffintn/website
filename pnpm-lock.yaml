@@ -2,10 +2,10 @@ lockfileVersion: 5.4
 
 specifiers:
   '@tanstack/react-query': 4.29.7
-  '@trpc/client': 10.26.0
-  '@trpc/next': 10.26.0
-  '@trpc/react-query': 10.26.0
-  '@trpc/server': 10.26.0
+  '@trpc/client': 10.45.2
+  '@trpc/next': 10.45.2
+  '@trpc/react-query': 10.45.2
+  '@trpc/server': 10.45.2
   '@types/eslint': 8.37.0
   '@types/node': 20.2.1
   '@types/prettier': 2.7.2
@@ -30,10 +30,10 @@ specifiers:
 
 dependencies:
   '@tanstack/react-query': 4.29.7_biqbaboplfbrettd7655fr4n2y
-  '@trpc/client': 10.26.0_@trpc+server@10.26.0
-  '@trpc/next': 10.26.0_5wlj4zqd5hbm7ghnogzr2cn6qq
-  '@trpc/react-query': 10.26.0_umfrugaz453xuwiifkhz4usemu
-  '@trpc/server': 10.26.0
+  '@trpc/client': 10.45.2_@trpc+server@10.45.2
+  '@trpc/next': 10.45.2_n4n4zvvozhggl6b7a35i6ratwm
+  '@trpc/react-query': 10.45.2_vhr4jhmym4cldedfrv7r3q6dmm
+  '@trpc/server': 10.45.2
   next: 13.4.2_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.22.1_cmp7sjki5xcmfyvhcokzzink7a
   react: 18.2.0
@@ -317,53 +317,52 @@ packages:
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
-  /@trpc/client/10.26.0_@trpc+server@10.26.0:
-    resolution: {integrity: sha512-ojHxQFIE97rBEGPK8p1ijbzo0T1IdEBoJ9fFSgWWL9FMuEEA/DNQ9s0uuiOrDKhCCdTFT1unfRharoJhB2/O2w==}
+  /@trpc/client/10.45.2_@trpc+server@10.45.2:
+    resolution: {integrity: sha512-ykALM5kYWTLn1zYuUOZ2cPWlVfrXhc18HzBDyRhoPYN0jey4iQHEFSEowfnhg1RvYnrAVjNBgHNeSAXjrDbGwg==}
     peerDependencies:
-      '@trpc/server': 10.26.0
+      '@trpc/server': 10.45.2
     dependencies:
-      '@trpc/server': 10.26.0
+      '@trpc/server': 10.45.2
     dev: false
 
-  /@trpc/next/10.26.0_5wlj4zqd5hbm7ghnogzr2cn6qq:
-    resolution: {integrity: sha512-p328crXBH6C228LKxjqbpDEXdLmy4+LdgsZuYK3oFMqaJEmCT22b+zcQ9IvQrcPfDxhKOpJym0QpuDNaWpG2qg==}
+  /@trpc/next/10.45.2_n4n4zvvozhggl6b7a35i6ratwm:
+    resolution: {integrity: sha512-RSORmfC+/nXdmRY1pQ0AalsVgSzwNAFbZLYHiTvPM5QQ8wmMEHilseCYMXpu0se/TbPt9zVR6Ka2d7O6zxKkXg==}
     peerDependencies:
       '@tanstack/react-query': ^4.18.0
-      '@trpc/client': 10.26.0
-      '@trpc/react-query': 10.26.0
-      '@trpc/server': 10.26.0
+      '@trpc/client': 10.45.2
+      '@trpc/react-query': 10.45.2
+      '@trpc/server': 10.45.2
       next: '*'
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@tanstack/react-query': 4.29.7_biqbaboplfbrettd7655fr4n2y
-      '@trpc/client': 10.26.0_@trpc+server@10.26.0
-      '@trpc/react-query': 10.26.0_umfrugaz453xuwiifkhz4usemu
-      '@trpc/server': 10.26.0
+      '@trpc/client': 10.45.2_@trpc+server@10.45.2
+      '@trpc/react-query': 10.45.2_vhr4jhmym4cldedfrv7r3q6dmm
+      '@trpc/server': 10.45.2
       next: 13.4.2_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-ssr-prepass: 1.5.0_react@18.2.0
     dev: false
 
-  /@trpc/react-query/10.26.0_umfrugaz453xuwiifkhz4usemu:
-    resolution: {integrity: sha512-n+enpalaCZhd3A/mbZmXeydRZHsAJo7mzc2ncgHn5S+C3SrfOM897uQdbHdj02Li25ULxzP1O92w+vZzmFbgkA==}
+  /@trpc/react-query/10.45.2_vhr4jhmym4cldedfrv7r3q6dmm:
+    resolution: {integrity: sha512-BAqb9bGZIscroradlNx+Cc9522R+idY3BOSf5z0jHUtkxdMbjeGKxSSMxxu7JzoLqSIEC+LVzL3VvF8sdDWaZQ==}
     peerDependencies:
       '@tanstack/react-query': ^4.18.0
-      '@trpc/client': 10.26.0
-      '@trpc/server': 10.26.0
+      '@trpc/client': 10.45.2
+      '@trpc/server': 10.45.2
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@tanstack/react-query': 4.29.7_biqbaboplfbrettd7655fr4n2y
-      '@trpc/client': 10.26.0_@trpc+server@10.26.0
-      '@trpc/server': 10.26.0
+      '@trpc/client': 10.45.2_@trpc+server@10.45.2
+      '@trpc/server': 10.45.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@trpc/server/10.26.0:
-    resolution: {integrity: sha512-+Wt0NFAeflVSNiUnHIDNN3C8jP7XIRmYrcgJ6IsAnm0lK4p/FkpCpeu1aig5qxrgZx30PHNDLZ/3FttVSEW2aQ==}
+  /@trpc/server/10.45.2:
+    resolution: {integrity: sha512-wOrSThNNE4HUnuhJG6PfDRp4L2009KDVxsd+2VYH8ro6o/7/jwYZ8Uu5j+VaW+mOmc8EHerHzGcdbGNQSAUPgg==}
     dev: false
 
   /@types/eslint/8.37.0:
@@ -2571,14 +2570,6 @@ packages:
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
-
-  /react-ssr-prepass/1.5.0_react@18.2.0:
-    resolution: {integrity: sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 18.2.0
-    dev: false
 
   /react/18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
