@@ -4,7 +4,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { InnerPage } from "@/components/InnerPage";
 import { AnyoneCanDraw } from "@/components/AnyoneCanDraw";
 import { validateToken } from "@/lib/auth";
-import { handleLogin } from "@/actions/auth";
+import { handleTokenLogin } from '@/actions/auth';
 import { LoginForm } from "@/components/LoginForm";
 import { Link } from "@/components/Link";
 
@@ -28,25 +28,25 @@ export default async function AnyoneCanDrawHome({ searchParams }) {
 
 	if (!token) {
 		return (
-			<PageLayout>
-				<InnerPage>
-					<h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
-						Unauthorized
-					</h1>
-					<div className="grid grid-cols-5 gap-4">
-						<div className="col-span-5 md:col-span-3 lg:col-span-3 pt-5">
-							<p className="text-red-600">
-								Access denied. Please enter a valid token.
-							</p>
-							<LoginForm
-								onSubmit={handleLogin}
-								redirectUrl="/anyone-can-draw"
-							/>
-						</div>
-					</div>
-				</InnerPage>
-			</PageLayout>
-		);
+      <PageLayout>
+        <InnerPage>
+          <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
+            Unauthorized
+          </h1>
+          <div className="grid grid-cols-5 gap-4">
+            <div className="col-span-5 md:col-span-3 lg:col-span-3 pt-5">
+              <p className="text-red-600">
+                Access denied. Please enter a valid token.
+              </p>
+              <LoginForm
+                onSubmit={handleTokenLogin}
+                redirectUrl="/anyone-can-draw"
+              />
+            </div>
+          </div>
+        </InnerPage>
+      </PageLayout>
+    );
 	}
 
 	return (

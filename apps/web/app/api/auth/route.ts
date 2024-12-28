@@ -2,6 +2,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { NextRequest } from "next/server";
 
+/**
+ * @deprecated Use the new login methods instead
+ */
 export async function GET(request: NextRequest) {
 	const searchParams = request.nextUrl.searchParams;
 	const token = searchParams.get("token") as string | "";
