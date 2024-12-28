@@ -37,8 +37,6 @@ export function formatContentForSpeech(markdownContent: string): string {
     return '';
   }
 
-  console.log('Initial content:', markdownContent);
-
   const PAUSE_LENGTHS = {
     SHORT: '300ms',
     MEDIUM: '800ms',
@@ -47,7 +45,7 @@ export function formatContentForSpeech(markdownContent: string): string {
 
   let content = markdownContent;
 
-  const transformations: Transformation[] = [
+  const transformations = [
     // Remove markdown links while preserving text
     {
       pattern: /\[([^\]]+)\]\([^)]+\)/g,
@@ -64,7 +62,7 @@ export function formatContentForSpeech(markdownContent: string): string {
       pattern: /```[\s\S]*?```/g,
       replacement: 'Please view the code block in the browser.',
     },
-    // Replacce inline code
+    // Replace inline code
     {
       pattern: /`([^`]*)`/g,
       replacement: '$1',
@@ -110,51 +108,39 @@ export function formatContentForSpeech(markdownContent: string): string {
       replacement: (_match: string, _marker: string, text: string) =>
         `<emphasis level="moderate">${text.trim()}</emphasis>`,
     },
-    {
-      pattern: /some-pattern/g,
-      replacement: (_match: string, _marker: string, text: string) =>
-        `<emphasis level="moderate">${text.trim()}</emphasis>`,
-    },
   ];
 
   transformations.forEach(({ pattern, replacement }) => {
     content = content.replace(
       pattern,
-      replacement as string & ((substring: string, ...args: any[]) => string)
+      typeof replacement === 'function' ? replacement : replacement
     );
-
-    console.log('After transformation:', content);
   });
 
   content = content
     // Replace new lines
     .replace(/\\n/g, `<break time="${PAUSE_LENGTHS.MEDIUM}"/>`)
-    // Remove URLs
-    .replace(/https?:\/\/[^\s<]+/g, '')
+    // Remove URLs but preserve link text
+    .replace(/\bhttps?:\/\/[^\s<]+/g, '')
     // Replace HTML entities
     .replace(/&quot;/g, '"')
     .replace(/&amp;/g, 'and')
     .replace(/&lt;/g, 'less than')
     .replace(/&gt;/g, 'greater than')
-    // Remove markdown tables
-    .replace(/\|.*\|/g, '')
+    // Remove markdown tables while preserving content
+    .replace(/\|([^|\n]+)\|/g, '$1')
     .replace(/[-|]+/g, '')
-    // Remove any non-SSML tags
-    .replace(/<(?!\/?(break|emphasis|speak)\b)[^>]+>/g, '')
+    // Clean up any double breaks
+    .replace(/(<break[^>]+>\s*){2,}/g, '<break time="1000ms"/>')
     // Normalize whitespace
     .replace(/\s+/g, ' ')
-    // Remove any remaining markdown symbols
+    // Remove any remaining markdown symbols while preserving content
     .replace(/[#*_~`]/g, '')
-    // Clean up any double breaks
-    .replace(/(<break[^>]+>\s*){2,}/g, '<break time="1000ms"/>');
-
-  console.log('Final content:', content);
-
-  content = content
     // Remove any non-SSML brackets that might remain
-    .replace(/<(?!\/?(break|emphasis|speak)\b)[^>]+>/g, '')
+    .replace(/<(?!break|emphasis|speak\b)[^>]+>/g, '')
     // Clean up any empty emphasis tags
-    .replace(/<emphasis level="[^"]*">\s*<\/emphasis>/g, '');
+    .replace(/<emphasis[^>]*>\s*<\/emphasis>/g, '')
+    .trim();
 
   // Verify all emphasis tags are properly closed
   const emphasisOpenCount = (content.match(/<emphasis/g) || []).length;
@@ -164,8 +150,6 @@ export function formatContentForSpeech(markdownContent: string): string {
       .replace(/<emphasis[^>]*>/g, '')
       .replace(/<\/emphasis>/g, '');
   }
-
-  console.log(content);
 
   return `<speak>${content}</speak>`;
 }
