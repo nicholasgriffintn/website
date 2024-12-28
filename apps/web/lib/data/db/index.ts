@@ -26,7 +26,6 @@ type D1Response = {
 };
 
 export const db = drizzle(
-  // @ts-ignore
   async (sql: string, params: any[], method: string) => {
     const {
       CLOUDFLARE_ACCOUNT_ID,
@@ -81,7 +80,7 @@ export const db = drizzle(
       );
     }
 
-    const rows = qResult.results.map((r: any) => Object.values(r));
+    const rows = qResult.results.map((r: any) => Object.values(r)) as any[];
 
     return { rows: method == 'all' ? rows : rows[0] };
   },
