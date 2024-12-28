@@ -36,15 +36,32 @@ export class BlogProcessor {
     }
 
     async saveBlogPost(data: ProcessedBlogData): Promise<void> {
-        const stmt = this.db.prepare(`
-            REPLACE INTO document (
+        const stmt = this.db
+          .prepare(
+            `INSERT INTO document (
                 id, title, description, tags, image_url, image_alt,
                 slug, storage_key, draft, archived, created_at,
                 updated_at, content, type, metadata
             ) VALUES (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
-        `).bind(
+            ON CONFLICT(id) DO UPDATE SET
+                title = excluded.title,
+                description = excluded.description,
+                tags = excluded.tags,
+                image_url = excluded.image_url,
+                image_alt = excluded.image_alt,
+                slug = excluded.slug,
+                storage_key = excluded.storage_key,
+                draft = excluded.draft,
+                archived = excluded.archived,
+                created_at = excluded.created_at,
+                updated_at = excluded.updated_at,
+                content = excluded.content,
+                type = excluded.type,
+                metadata = excluded.metadata`
+          )
+          .bind(
             data.id,
             data.title,
             data.description,
@@ -60,7 +77,7 @@ export class BlogProcessor {
             data.content,
             data.type,
             data.metadata
-        );
+          );
 
         try {
             await stmt.run();
