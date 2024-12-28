@@ -17,12 +17,12 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   return (
     <div className="rounded-lg border bg-background/50 text-foreground">
       <div className="flex items-center px-4 pt-4">
-        <h3 className="text-sm font-semibold">Table of Contents</h3>
+        <h3 className="text-sm font-normal">Table of Contents</h3>
       </div>
       <Separator className="mt-2 mb-2" />
       <ScrollArea className="pb-4">
         <nav>
-          <ul className="space-y-3 text-sm">
+          <ul className="space-y-1 text-sm">
             {headings.map((heading) => (
               <li
                 key={heading.slug}
@@ -31,7 +31,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                 <Link
                   href={`#${heading.slug}`}
                   className={cn(
-                    "group flex items-center gap-2 py-1 pl-4 pr-4 text-muted-foreground no-underline transition-colors hover:text-foreground",
+                    'group flex items-center gap-2 py-1 pl-4 pr-4 text-muted-foreground no-underline transition-colors hover:text-foreground'
                   )}
                   underline={false}
                 >
@@ -43,6 +43,6 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
         </nav>
       </ScrollArea>
     </div>
-  )
+  );
 }
 
