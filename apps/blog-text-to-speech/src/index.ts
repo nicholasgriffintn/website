@@ -33,6 +33,11 @@ const handler: ExportedHandler<{
                 const paths = message.body.object.key.split("/");
                 const slug = paths[paths.length - 1]?.replace(".md", "") || "";
 
+                if (!slug) {
+                  console.log(`Invalid slug for ${message.body.object.key}`);
+                  return;
+                }
+
                 const findStmt = env.DB.prepare(
                     "SELECT * FROM document WHERE id = ?"
                 );
