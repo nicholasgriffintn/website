@@ -7,7 +7,13 @@ import { Link } from '@/components/Link';
 import { Image } from '@/components/Image';
 
 function Table({ children, ...props }) {
-  return <table {...props}>{children}</table>;
+  return (
+    <div className="relative flex flex-col w-full h-full overflow-scroll rounded-xl">
+      <table className="w-full text-left table-auto min-w-max" {...props}>
+        {children}
+      </table>
+    </div>
+  );
 }
 
 function CustomLink(props) {
