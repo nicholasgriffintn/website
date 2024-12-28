@@ -144,7 +144,5 @@ export function extractHeadings(content: string) {
 			});
 	}
 
-	console.log(headings);
-
 	return headings;
 }
