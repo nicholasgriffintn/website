@@ -1,5 +1,6 @@
 import { drizzle } from 'drizzle-orm/sqlite-proxy';
-import * as schema from 'website-database/schema';
+
+import * as schema from './schema';
 
 type D1ResponseInfo = {
   code: number;

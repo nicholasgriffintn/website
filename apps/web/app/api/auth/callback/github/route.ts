@@ -11,7 +11,7 @@ import {
 } from '@/lib/auth';
 import type { GitHubUser } from '@/types/auth';
 import { db } from '@/lib/data/db';
-import { oauthAccount, user } from 'website-database/schema';
+import { oauthAccount, user } from '@/lib/data/db/schema';
 
 const PROVIDER_ID = 'github';
 

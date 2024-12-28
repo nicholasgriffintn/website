@@ -3,10 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { user as userTable } from 'website-database/schema';
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/lib/data/db';
+import { user as userTable } from '@/lib/data/db/schema';
 import {
   getAuthSession,
   getFullAuthSession,

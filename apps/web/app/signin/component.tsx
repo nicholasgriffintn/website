@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { User } from 'website-database/schema';
 
 import { Spinner } from '@/components/Spinner';
 import { handleGetSession } from '@/actions/auth';
 import { Button } from '@/components/ui/button';
+import type { User } from '@/lib/data/db/schema';
 
 export function SignInComponent() {
   const [user, setUser] = useState<User | null>(null);

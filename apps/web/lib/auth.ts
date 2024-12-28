@@ -12,7 +12,7 @@ import {
   session as sessionTable,
   user as userTable,
   type Session,
-} from 'website-database/schema';
+} from '@/lib/data/db/schema';
 
 export const SESSION_COOKIE_NAME = 'session';
 

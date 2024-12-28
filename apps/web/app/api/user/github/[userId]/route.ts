@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server';
-import { user as userTable } from 'website-database/schema';
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/lib/data/db';
+import { user as userTable } from '@/lib/data/db/schema';
 
 export async function GET(_request: NextRequest, { params }) {
   const paramValues = await params;
