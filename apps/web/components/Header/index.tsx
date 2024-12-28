@@ -1,5 +1,3 @@
-import { FolderGit2 } from 'lucide-react';
-
 import { MainNav } from '@/components/Header/MainNav';
 
 export function Header() {

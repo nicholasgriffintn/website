@@ -17,6 +17,14 @@
 	"author": "",
 	"license": "Apache-2.0",
 	"private": true,
+	"exports": {
+		".": {
+			"import": "./src/index.ts"
+		},
+		"./schema": {
+			"import": "./src/schema.ts"
+		}
+	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20241218.0",
 		"better-sqlite3": "^11.7.0",
@@ -24,7 +32,7 @@
 		"typescript": "^5.7.2",
 		"wrangler": "^3.96.0"
 	},
-	"dependencies": {
+	"peerDependencies": {
 		"drizzle-orm": "0.38.2"
 	}
 }

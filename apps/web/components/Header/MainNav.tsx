@@ -3,7 +3,6 @@
 import { useState } from 'react';
 
 import { Link } from '@/components/Link';
-import { cn } from '@/lib/utils';
 import { MobileNav } from '@/components/Header/MobileNav';
 import { Logo } from '@/components/Logo';
 
