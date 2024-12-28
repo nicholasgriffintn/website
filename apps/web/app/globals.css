@@ -119,6 +119,28 @@ h4,
 h5,
 h6 {
 	margin: 0 0 0.5em;
+  position: relative;
+}
+
+h1 .anchor,
+h2 .anchor,
+h3 .anchor,
+h4 .anchor,
+h5 .anchor,
+h6 .anchor {
+  position: absolute;
+  left: -20px;
+	opacity: 0;
+}
+
+h1:hover .anchor,
+h2:hover .anchor,
+h3:hover .anchor,
+h4:hover .anchor,
+h5:hover .anchor,
+h6:hover .anchor {
+	opacity: 1;
+	text-decoration: none;
 }
 
 .image {

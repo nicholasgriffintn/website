@@ -88,18 +88,35 @@ function slugify(str) {
 function createHeading(level) {
   const Heading = ({ children }) => {
     const slug = slugify(children);
-    return createElement(
-      `h${level}`,
-      { id: slug },
-      [
-        createElement('a', {
+    return createElement(`h${level}`, { id: slug }, [
+      createElement(
+        'a',
+        {
           href: `#${slug}`,
           key: `link-${slug}`,
           className: 'anchor',
-        }),
-      ],
-      children
-    );
+        },
+        [
+          createElement(
+            'span',
+            {
+              className: 'sr-only',
+              key: `hidden-text-${slug}`,
+            },
+            `Link to ${children}`
+          ),
+          createElement(
+            'span',
+            {
+              key: `visible-text-${slug}`,
+              role: 'presentation',
+            },
+            '#'
+          ),
+        ]
+      ),
+      children,
+    ]);
   };
 
   Heading.displayName = `Heading${level}`;
