@@ -17,6 +17,25 @@ const nextConfig = {
 			},
 		],
 	},
+	async redirects() {
+		return [
+			{
+				source: '/ai-benchmarks',
+				destination: '/ai/benchmarks',
+				permanent: true,
+			},
+			{
+				source: "/ai-metrics",
+				destination: "/ai/metrics",
+				permanent: true,
+			},
+			{
+				source: "/chat",
+				destination: "/ai/chat",
+				permanent: true,
+			},
+		];
+	},
 };
 
 const withMDX = createMDX({
