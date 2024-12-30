@@ -187,7 +187,7 @@ export function GameStatus({
 				<div className="flex flex-col gap-2">
 					<div className="flex items-center justify-between">
 						<span className="text-lg font-medium">
-							{gameState.hasWon ? "You Won!" : "Draw:"}
+							{gameState.hasWon ? "You Won!" : isDrawer ? "Draw:" : "Guess the drawing:"}
 						</span>
 						<Timer className="h-5 w-5" />
 					</div>
