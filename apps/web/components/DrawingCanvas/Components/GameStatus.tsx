@@ -49,9 +49,12 @@ export function GameStatus({
 						minutes to get the AI to guess it correctly.
 					</p>
 					<ul className="text-sm text-muted-foreground list-disc pl-4 space-y-1">
-						<li>You'll get a random word to draw</li>
-						<li>AI will try to guess every few seconds</li>
-						<li>Game ends when AI guesses correctly or time runs out</li>
+						<li>🎯 Take turns drawing random words</li>
+						<li>🎨 Other players and AI will try to guess your drawing</li>
+						<li>⭐ Score points by guessing correctly</li>
+						<li>⏱️ Each round lasts 2 minutes</li>
+						<li>👑 Player with the most points wins!</li>
+						<li>🤖 See if you can outsmart the AI!</li>
 					</ul>
 
 					{isConnected ? (
