@@ -3,7 +3,7 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
-		"dev": "turbo dev",
+		"dev": "turbo dev --filter=web",
 		"lint": "turbo lint",
 		"format": "pnpm biome format --write"
 	},

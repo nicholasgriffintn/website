@@ -10,3 +10,9 @@ export interface GitHubUser {
   bio: string | null;
   twitter_username: string | null;
 }
+
+export type User = {
+  email: string;
+  name: string;
+  avatar_url: string;
+}

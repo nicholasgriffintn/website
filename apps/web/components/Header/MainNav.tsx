@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { X, Menu } from 'lucide-react';
 
 import { Link } from '@/components/Link';
 import { MobileNav } from '@/components/Header/MobileNav';
@@ -43,8 +44,12 @@ export function MainNav({
       <button
         className="flex items-center space-x-6 lg:hidden"
         onClick={() => setShowMobileMenu(!showMobileMenu)}
+        aria-label={showMobileMenu ? "Close menu" : "Open menu"}
       >
-        <span className="font-bold">Menu</span>
+        <span className="font-bold flex items-center gap-1">
+          {showMobileMenu ? <X /> : <Menu />}
+          Menu
+        </span>
       </button>
       {showMobileMenu && items && (
         <MobileNav items={items} onCloseMenu={() => setShowMobileMenu(false)} />

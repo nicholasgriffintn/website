@@ -16,18 +16,6 @@ import {
 
 export const SESSION_COOKIE_NAME = 'session';
 
-/**
- * @deprecated This function will be deprecated in future versions. Use the new authentication method instead.
- */
-export async function validateToken() {
-  const systemAuthToken = process.env.AUTH_TOKEN || '';
-  if (!systemAuthToken) return null;
-
-  const cookieStore = await cookies();
-  const userAuthToken = cookieStore.get('authToken');
-  return userAuthToken?.value === systemAuthToken ? userAuthToken.value : null;
-}
-
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20);
   crypto.getRandomValues(bytes);
@@ -137,18 +125,22 @@ export async function getAuthSession(
   if (!tokenValue) {
     return { session: null, user: null };
   }
+
   const { session, user } = await validateSessionToken(tokenValue);
-  if (session === null) {
-    cookieStore.delete(SESSION_COOKIE_NAME);
-    return { session: null, user: null };
-  }
+
   if (refreshCookie) {
+    if (session === null) {
+      cookieStore.delete(SESSION_COOKIE_NAME);
+      return { session: null, user: null };
+    }
+
     setSessionTokenCookie(
       cookieStore,
       tokenValue,
       new Date(session.expires_at)
     );
   }
+
   return { session, user };
 }
 

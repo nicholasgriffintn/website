@@ -2,13 +2,20 @@ import type { ChatList, ChatMessage, ChatMode, ChatRole } from "@/types/chat";
 import { defaultModel } from "@/lib/ai/models";
 
 export async function getChatKeys({
-	token,
+	email,
 }: {
-	token: string;
+	email: string;
 }): Promise<ChatList | undefined> {
 	try {
+		if (!email) {
+			console.error("No email provided");
+			return;
+		}
+
+		const token = process.env.AUTH_TOKEN;
+
 		if (!token) {
-			console.error("No token provided");
+			console.error("No token set");
 			return;
 		}
 
@@ -23,7 +30,7 @@ export async function getChatKeys({
 				"Content-Type": "application/json",
 				"User-Agent": "NGWeb",
 				Authorization: `Bearer ${token}`,
-				"x-user-email": "anonymous@undefined.computer",
+				"x-user-email": email,
 			},
 		});
 

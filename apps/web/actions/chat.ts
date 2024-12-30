@@ -1,6 +1,5 @@
 "use server";
 
-import { validateToken } from "@/lib/auth";
 import {
 	uploadPodcast,
 	transcribePodcast,
@@ -17,9 +16,9 @@ import type { ChatMode, ChatRole } from "@/types/chat";
 
 export async function onGenerateDrawing(drawingData: string) {
 	try {
-		const token = await validateToken();
+		const token = process.env.AUTH_TOKEN;
 		if (!token) {
-			throw new Error("No token found");
+			throw new Error("No token set");
 		}
 
 		const baseUrl =
@@ -58,9 +57,9 @@ export async function onGenerateDrawing(drawingData: string) {
 }
 
 export async function onUploadPodcast(audioUrl) {
-	const token = await validateToken();
+	const token = process.env.AUTH_TOKEN;
 	if (!token) {
-		throw new Error("No token found");
+		throw new Error("No token set");
 	}
 
 	const response = await uploadPodcast({
@@ -80,9 +79,9 @@ export async function onTranscribePodcast(
 	prompt: string,
 	numberOfSpeakers: number,
 ) {
-	const token = await validateToken();
+	const token = process.env.AUTH_TOKEN;
 	if (!token) {
-		throw new Error("No token found");
+		throw new Error("No token set");
 	}
 
 	const response = await transcribePodcast({
@@ -100,9 +99,9 @@ export async function onTranscribePodcast(
 }
 
 export async function onGetChat(chatId: string) {
-	const token = await validateToken();
+	const token = process.env.AUTH_TOKEN;
 	if (!token) {
-		console.error("No token found");
+		console.error("No token set");
 		return [];
 	}
 
@@ -114,9 +113,9 @@ export async function onSummarisePodcast(
 	chatId: string,
 	speakers: Record<string, string>,
 ) {
-	const token = await validateToken();
+	const token = process.env.AUTH_TOKEN;
 	if (!token) {
-		throw new Error("No token found");
+		throw new Error("No token set");
 	}
 
 	const response = await summarisePodcast({
@@ -133,9 +132,9 @@ export async function onSummarisePodcast(
 }
 
 export async function onGeneratePodcastImage(chatId: string) {
-	const token = await validateToken();
+	const token = process.env.AUTH_TOKEN;
 	if (!token) {
-		throw new Error("No token found");
+		throw new Error("No token set");
 	}
 
 	const response = await generatePodcastImage({
@@ -159,9 +158,9 @@ export async function onCreateChat(
 ) {
 	"use server";
 
-	const token = await validateToken();
+	const token = process.env.AUTH_TOKEN;
 	if (!token) {
-		console.error("No token found");
+		console.error("No token set");
 		return [];
 	}
 
@@ -179,9 +178,9 @@ export async function onCreateChat(
 export async function onChatSelect(chatId: string) {
 	"use server";
 
-	const token = await validateToken();
+	const token = process.env.AUTH_TOKEN;
 	if (!token) {
-		console.error("No token found");
+		console.error("No token set");
 		return [];
 	}
 
@@ -211,7 +210,7 @@ export async function onReaction(
 ) {
 	"use server";
 
-	const token = await validateToken();
+	const token = process.env.AUTH_TOKEN;
 	if (!token) {
 		return;
 	}
@@ -228,9 +227,9 @@ export async function onReaction(
 export async function onTranscribe(audio: Blob) {
 	"use server";
 
-	const token = await validateToken();
+	const token = process.env.AUTH_TOKEN;
 	if (!token) {
-		throw new Error("No token found");
+		throw new Error("No token set");
 	}
 
 	const response = await sendTranscription({

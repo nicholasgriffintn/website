@@ -1,12 +1,9 @@
-import { redirect } from "next/navigation";
-
 import { PageLayout } from "@/components/PageLayout";
 import { InnerPage } from "@/components/InnerPage";
 import { AnyoneCanDraw } from "@/components/AnyoneCanDraw";
-import { validateToken } from "@/lib/auth";
-import { handleTokenLogin } from '@/actions/auth';
-import { LoginForm } from "@/components/LoginForm";
 import { Link } from "@/components/Link";
+import { getAuthSession } from "@/lib/auth";
+import { SignInForm } from "@/components/SignInForm";
 
 export const dynamic = "force-dynamic";
 
@@ -16,37 +13,29 @@ export const metadata = {
 		"A drawing app that uses AI to generate paintings from your drawings or just play the guessing game.",
 };
 
-export default async function AnyoneCanDrawHome({ searchParams }) {
-	const searchParamValues = await searchParams;
-	const urlToken = searchParamValues.token as string | undefined;
+export default async function AnyoneCanDrawHome() {
+	const { user } = await getAuthSession({
+		refreshCookie: false,
+	});
 
-	if (urlToken) {
-		redirect(`/api/auth?token=${urlToken}&redirect=/anyone-can-draw`);
-	}
-
-	const token = await validateToken();
-
-	if (!token) {
+	if (!user) {
 		return (
-      <PageLayout>
-        <InnerPage>
-          <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
-            Unauthorized
-          </h1>
-          <div className="grid grid-cols-5 gap-4">
-            <div className="col-span-5 md:col-span-3 lg:col-span-3 pt-5">
-              <p className="text-red-600">
-                Access denied. Please enter a valid token.
-              </p>
-              <LoginForm
-                onSubmit={handleTokenLogin}
-                redirectUrl="/anyone-can-draw"
-              />
-            </div>
-          </div>
-        </InnerPage>
-      </PageLayout>
-    );
+			<PageLayout>
+				<InnerPage>
+					<h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
+						Unauthorized
+					</h1>
+					<div className="grid grid-cols-5 gap-4">
+						<div className="col-span-5 md:col-span-3 lg:col-span-3 pt-5">
+							<p className="text-red-600">
+								Access denied. Please login to access this page.
+							</p>
+							<SignInForm />
+						</div>
+					</div>
+				</InnerPage>
+			</PageLayout>
+		);
 	}
 
 	return (
