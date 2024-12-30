@@ -60,7 +60,7 @@ export function useGameState(
 					case "gamesList":
 						setAvailableGames(data.games);
 						break;
-					case "gameState":
+					case "gameState": {
 						const isParticipant = data.users.some(
 							(user: User) => user.id === playerId,
 						);
@@ -84,6 +84,7 @@ export function useGameState(
 							setUsers(data.users);
 						}
 						break;
+					}
 					case "drawingUpdate":
 						setGameState((prevState) => ({
 							...prevState,
