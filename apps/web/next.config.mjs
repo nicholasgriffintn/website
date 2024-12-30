@@ -34,6 +34,11 @@ const nextConfig = {
 				destination: "/ai/chat",
 				permanent: true,
 			},
+			{
+				source: "/anyone-can-draw",
+				destination: "/games/anyone-can-draw",
+				permanent: true,
+			},
 		];
 	},
 };

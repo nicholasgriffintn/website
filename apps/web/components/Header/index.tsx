@@ -15,6 +15,10 @@ export function Header() {
       href: '/ai',
     },
     {
+      title: 'Games',
+      href: '/games',
+    },
+    {
       title: 'Contact',
       href: '/contact',
     },
