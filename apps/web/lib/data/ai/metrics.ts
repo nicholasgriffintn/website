@@ -1,4 +1,4 @@
-import type { Metric } from "@/app/ai-metrics/types";
+import type { Metric } from "@/app/ai/metrics/types";
 
 export async function getAiMetrics({
 	token,
