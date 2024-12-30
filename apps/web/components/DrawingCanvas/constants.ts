@@ -28,3 +28,17 @@ export const COLORS = [
 export const LINE_WIDTHS = [2, 4, 6, 8, 12, 16];
 
 export const GAME_DURATION = 120; // 2 minutes in seconds
+
+export const DEFAULT_GAME_STATE = {
+		isActive: false,
+		isLobby: true,
+		gameName: "",
+		targetWord: "",
+		timeRemaining: GAME_DURATION,
+		guesses: [],
+		hasWon: false,
+		currentDrawer: undefined,
+		endTime: undefined,
+		statusMessage: undefined,
+		drawingData: undefined,
+	}

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { GameState, User, GameListItem } from "../types";
-import { GAME_DURATION } from "../constants";
+import { DEFAULT_GAME_STATE } from "../constants";
 
 const BASE_URL =
 	process.env.NODE_ENV === "development"
@@ -14,18 +14,8 @@ export function useGameState(
 	clearCanvas?: () => void,
 ) {
 	const [gameState, setGameState] = useState<GameState>({
-		isActive: false,
-		isLobby: true,
+		...DEFAULT_GAME_STATE,
 		gameId: initialGameId,
-		gameName: "",
-		targetWord: "",
-		timeRemaining: GAME_DURATION,
-		guesses: [],
-		hasWon: false,
-		currentDrawer: undefined,
-		endTime: undefined,
-		statusMessage: undefined,
-		drawingData: undefined,
 	});
 	const [users, setUsers] = useState<Array<User>>([]);
 	const [isConnected, setIsConnected] = useState(false);

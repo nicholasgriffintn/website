@@ -22,6 +22,7 @@ import { useGameState } from "./hooks/useGameState";
 import { GameStatus } from "./Components/GameStatus";
 import { Chat } from "./Components/Chat";
 import { GenerateDrawing } from "./Components/GenerateDrawing";
+import { DEFAULT_GAME_STATE } from "./constants";
 
 export function DrawingCanvas({
 	user,
@@ -136,12 +137,8 @@ export function DrawingCanvas({
 		}
 	};
 
-	const playerId = user?.username;
-	const playerName = user?.name;
-
-	if (!playerId || !playerName) {
-		return <div>Loading...</div>;
-	}
+	const playerId = user?.username || "";
+	const playerName = user?.name || "";
 
 	const {
 		isConnected,
@@ -155,7 +152,14 @@ export function DrawingCanvas({
 		leaveGame,
 		updateDrawing,
 		submitGuess,
-	} = useGameState(gameId, playerId, playerName, clearCanvas);
+	} = gameMode
+		? useGameState(gameId, playerId, playerName, clearCanvas)
+		: {
+				isConnected: false,
+				gameState: DEFAULT_GAME_STATE,
+				users: [],
+				availableGames: [],
+			};
 
 	const handleDrawingComplete = async () => {
 		if (
@@ -163,8 +167,10 @@ export function DrawingCanvas({
 			canvasRef.current &&
 			gameState.currentDrawer === playerId
 		) {
-			const drawingData = canvasRef.current.toDataURL("image/png");
-			await updateDrawing(drawingData);
+			if (updateDrawing) {
+				const drawingData = canvasRef.current.toDataURL("image/png");
+				await updateDrawing(drawingData);
+			}
 		}
 	};
 

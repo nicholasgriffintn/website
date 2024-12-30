@@ -9,11 +9,11 @@ interface GameStatusProps {
 	users: Array<User>;
 	gameState: GameState;
 	availableGames: GameListItem[];
-	onCreateGame: (name: string) => void;
-	onJoinGame: (gameId: string) => void;
-	onStartGame: () => void;
-	onEndGame: () => void;
-	onLeaveGame: () => void;
+	onCreateGame?: (name: string) => void;
+	onJoinGame?: (gameId: string) => void;
+	onStartGame?: () => void;
+	onEndGame?: () => void;
+	onLeaveGame?: () => void;
 	isConnected: boolean;
 	isDrawer: boolean;
 }
@@ -67,7 +67,7 @@ export function GameStatus({
 								/>
 								<Button
 									onClick={() => {
-										onCreateGame(newGameName);
+										onCreateGame?.(newGameName);
 										setNewGameName("");
 									}}
 									disabled={!newGameName.trim()}
@@ -95,7 +95,7 @@ export function GameStatus({
 												</div>
 											</div>
 											<Button
-												onClick={() => onJoinGame(game.id)}
+												onClick={() => onJoinGame?.(game.id)}
 												disabled={!game.isLobby}
 												className="w-full sm:w-auto mt-2 sm:mt-0"
 											>

@@ -16,7 +16,7 @@ interface DrawingResponse {
 }
 
 interface DrawingCanvasProps {
-	user: DBUser;
+	user?: DBUser;
 	onSubmit: (drawingData: string) => Promise<any>;
 	result: string | null;
 	gameMode?: boolean;
