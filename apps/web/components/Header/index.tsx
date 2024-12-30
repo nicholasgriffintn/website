@@ -11,6 +11,10 @@ export function Header() {
       href: '/projects',
     },
     {
+      title: 'AI',
+      href: '/ai',
+    },
+    {
       title: 'Contact',
       href: '/contact',
     },

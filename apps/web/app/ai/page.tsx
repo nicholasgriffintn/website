@@ -1,3 +1,5 @@
+import { MessageSquare, Activity, LineChart } from "lucide-react";
+
 import { PageLayout } from "@/components/PageLayout";
 import { Link } from "@/components/Link";
 import { InnerPage } from "@/components/InnerPage";
@@ -31,15 +33,51 @@ export default async function Home() {
 								<Link href="/blog/my-thoughts-and-principles-around-the-use-of-ai">
 									blog post
 								</Link>{" "}
-								for more of my thoughts on the use of AI in the industry.
+								for more of my thoughts on the use of AI in the industry. You'll{" "}
+								also find some of the applications I've built with AI below.
 							</p>
 							<p>
-								Also, if you'd like to generate your own AI manifesto, you
+								If you'd like to generate your own AI manifesto, you
 								should start with this{" "}
 								<Link href="https://www.bydamo.la/p/ai-manifesto">page</Link>.
 							</p>
 						</div>
 					</div>
+				</div>
+
+				<h2 className="text-xl md:text-2xl font-bold text-primary-foreground mt-8 mb-4">
+					AI Applications
+				</h2>
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+					<Link underline={false} href="/chat" className="block p-6 rounded-lg border border-border hover:border-primary transition-colors">
+						<div className="flex items-center gap-3 mb-2">
+							<MessageSquare className="w-6 h-6" />
+							<h3 className="font-semibold text-lg">AI Chat</h3>
+						</div>
+						<p className="text-muted-foreground">
+							Interactive chat interface powered by advanced language models, available for signed in only.
+						</p>
+					</Link>
+
+					<Link underline={false} href="/ai-benchmarks" className="block p-6 rounded-lg border border-border hover:border-primary transition-colors">
+						<div className="flex items-center gap-3 mb-2">
+							<Activity className="w-6 h-6" />
+							<h3 className="font-semibold text-lg">AI Benchmarks</h3>
+						</div>
+						<p className="text-muted-foreground">
+							Performance comparisons of different AI models and configurations.
+						</p>
+					</Link>
+
+					<Link underline={false} href="/ai-metrics" className="block p-6 rounded-lg border border-border hover:border-primary transition-colors">
+						<div className="flex items-center gap-3 mb-2">
+							<LineChart className="w-6 h-6" />
+							<h3 className="font-semibold text-lg">AI Metrics</h3>
+						</div>
+						<p className="text-muted-foreground">
+							Analytics and insights from my AI system usage and performance.
+						</p>
+					</Link>
 				</div>
 			</InnerPage>
 		</PageLayout>

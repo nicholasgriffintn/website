@@ -8,7 +8,7 @@ on:
     branches:
       - main
     paths:
-      - apps/web/*
+      - apps/web/**
   workflow_dispatch:
 
 jobs:
