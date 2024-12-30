@@ -284,7 +284,11 @@ export class Multiplayer implements DurableObject {
 				}
 
 				if (game.gameState.drawingData) {
-					if (now - game.lastAIGuessTime >= this.AI_GUESS_COOLDOWN) {
+					const aiHasGuessedCorrectly = game.gameState.guesses.some(
+						guess => guess.playerId === this.AI_PLAYER_ID && guess.correct
+					);
+
+					if (!aiHasGuessedCorrectly && now - game.lastAIGuessTime >= this.AI_GUESS_COOLDOWN) {
 						try {
 							const aiGuess = await onAIGuessDrawing(
 								game.gameState.drawingData,

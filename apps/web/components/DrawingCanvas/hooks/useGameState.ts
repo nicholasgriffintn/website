@@ -271,7 +271,7 @@ export function useGameState(
 
 			wsRef.current.send(
 				JSON.stringify({
-					action: "guess",
+					action: "submitGuess",
 					gameId: gameState.gameId,
 					playerId,
 					guess,

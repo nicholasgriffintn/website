@@ -1,6 +1,6 @@
-import { GameState } from "../types";
+import type { GameState } from "../types";
 
-export default function Chat({
+export function Chat({
 	gameState,
 	onGuess,
 	isDrawer,
@@ -28,10 +28,26 @@ export default function Chat({
 						}`}
 					>
 						<span className="font-medium">{guess.playerName}:</span>{" "}
-						{guess.guess}
+						{guess.correct && !isDrawer ? `✨ You guessed correctly with ${guess.guess}! ✨` : guess.guess}
 					</div>
 				))}
-				{!isDrawer && <span>TODO: Put a form here to guess</span>}
+				{!isDrawer && (
+					<form onSubmit={handleGuess} className="mt-4 flex gap-2">
+						<input
+							type="text"
+							name="guess"
+							placeholder="Enter your guess..."
+							className="flex-1 rounded-md border px-3 py-2"
+							autoComplete="off"
+						/>
+						<button
+							type="submit"
+							className="bg-primary text-primary-foreground px-4 py-2 rounded-md"
+						>
+							Guess
+						</button>
+					</form>
+				)}
 			</div>
 		</div>
 	);

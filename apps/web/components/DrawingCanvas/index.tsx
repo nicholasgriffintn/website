@@ -20,7 +20,7 @@ import { Result } from "./Components/Result";
 import { Canvas } from "./Components/Canvas";
 import { useGameState } from "./hooks/useGameState";
 import { GameStatus } from "./Components/GameStatus";
-import Chat from "./Components/Chat";
+import { Chat } from "./Components/Chat";
 import { GenerateDrawing } from "./Components/GenerateDrawing";
 
 export function DrawingCanvas({
