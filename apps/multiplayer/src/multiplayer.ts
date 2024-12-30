@@ -28,6 +28,20 @@ export class Multiplayer implements DurableObject {
 	private readonly AI_GUESS_COOLDOWN = 10000;
 	private readonly BASE_CORRECT_GUESSER_SCORE = 5;
 	private readonly BASE_CORRECT_DRAWER_SCORE = 2;
+	private readonly AI_NAMES = [
+		"DoodleBot 🤖",
+		"Pixel Picasso 🎨",
+		"SketchSage 🎯",
+		"The Guesstimator 🔍",
+		"PixelProphet 🔮",
+		"VisionBot 👁️",
+		"DrawingDecoder 🎨",
+		"ShapeShaman 🔻",
+		"MasterpieceMind 🧠",
+		"ArtOracle 🧞",
+		"VisualVoyager 🚀",
+		"PencilProdigy ✏️"
+	];
 
 	constructor(state: DurableObjectState, env: Env) {
 		this.state = state;
@@ -132,10 +146,12 @@ export class Multiplayer implements DurableObject {
 	}) {
 		try {
 			const gameId = crypto.randomUUID();
+			const randomAIName = this.AI_NAMES[Math.floor(Math.random() * this.AI_NAMES.length)];
+			
 			const newGame = {
 				name: gameName,
 				users: new Map([
-					[this.AI_PLAYER_ID, { name: "AI Assistant", score: 0 }],
+					[this.AI_PLAYER_ID, { name: randomAIName, score: 0 }],
 				]),
 				gameState: {
 					isActive: false,

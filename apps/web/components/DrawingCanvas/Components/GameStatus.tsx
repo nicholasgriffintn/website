@@ -113,6 +113,8 @@ export function GameStatus({
 		);
 	}
 
+	const aiPlayer = users.find(u => u.id === "ai-player");
+
 	if (gameState.isLobby) {
 		return (
 			<div className="p-4 space-y-4">
@@ -126,7 +128,7 @@ export function GameStatus({
 				</div>
 
 				{gameState.gameId && (
-					<div className="space-y-2">
+					<div className="space-y-4">
 						<h3 className="font-medium">Players:</h3>
 						<div className="space-y-1">
 							{users
@@ -156,6 +158,18 @@ export function GameStatus({
 										</div>
 									);
 								})}
+						</div>
+
+						<div className="mt-4">
+							<h3 className="font-medium">AI:</h3>
+							<div className="text-sm p-2 rounded-md flex justify-between items-center bg-blue-100 dark:bg-blue-900">
+								<span className="flex items-center gap-2">
+									🤖 {aiPlayer?.name}
+								</span>
+								<span className="font-medium">
+									Score: {aiPlayer?.score || 0}
+								</span>
+							</div>
 						</div>
 					</div>
 				)}
