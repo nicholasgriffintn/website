@@ -65,7 +65,15 @@ export function useGameState(
 							(user: User) => user.id === playerId,
 						);
 
-						if (!isParticipant && data.users.length <= 1) {
+						if (isParticipant) {
+							setGameState((prevState) => ({
+								...prevState,
+								...data.gameState,
+								gameId: data.gameId,
+								gameName: data.gameName,
+							}));
+							setUsers(data.users);
+						} else if (data.gameId === gameState.gameId) {
 							setGameState((prevState) => ({
 								...prevState,
 								gameId: null,
@@ -74,14 +82,6 @@ export function useGameState(
 								isLobby: true,
 							}));
 							setUsers([]);
-						} else {
-							setGameState((prevState) => ({
-								...prevState,
-								...data.gameState,
-								gameId: data.gameId,
-								gameName: data.gameName,
-							}));
-							setUsers(data.users);
 						}
 						break;
 					}
@@ -92,13 +92,15 @@ export function useGameState(
 						}));
 						break;
 					case "gameCreated":
-						setGameState((prevState) => ({
-							...prevState,
-							...data.gameState,
-							gameId: data.gameId,
-							gameName: data.gameName,
-						}));
-						setUsers(data.users);
+						if (data.users.some((user: User) => user.id === playerId)) {
+							setGameState((prevState) => ({
+								...prevState,
+								...data.gameState,
+								gameId: data.gameId,
+								gameName: data.gameName,
+							}));
+							setUsers(data.users);
+						}
 						ws.send(JSON.stringify({ action: "getGames" }));
 						break;
 					case "gameStarted":

@@ -125,7 +125,7 @@ export function GameStatus({
 					</p>
 				</div>
 
-				{users.length > 0 && (
+				{gameState.gameId && (
 					<div className="space-y-2">
 						<h3 className="font-medium">Players:</h3>
 						<div className="space-y-1">
