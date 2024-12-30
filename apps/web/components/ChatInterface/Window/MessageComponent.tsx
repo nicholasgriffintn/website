@@ -280,7 +280,6 @@ const MessageTimestamp = ({ message }: { message: ChatMessage }) => (
 );
 
 export function MessageComponent({ message, onReaction }: MessageProps) {
-	console.log("message", message);
 	if (message.tool_calls?.length) {
 		return <ToolCallMessage message={message} />;
 	}

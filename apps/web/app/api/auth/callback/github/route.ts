@@ -32,12 +32,6 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  console.log({
-    code,
-    state,
-    storedStateValue,
-  });
-
   if (state !== storedStateValue) {
     return new Response('Incorrect state provided', {
       status: 400,

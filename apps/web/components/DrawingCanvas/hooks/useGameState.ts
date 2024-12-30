@@ -112,7 +112,7 @@ export function useGameState(
 
 		ws.onclose = () => {
 			setIsConnected(false);
-			console.log("WebSocket closed");
+			console.info("WebSocket closed");
 			setTimeout(() => {
 				if (wsRef.current?.readyState === WebSocket.CLOSED) {
 					wsRef.current = null;

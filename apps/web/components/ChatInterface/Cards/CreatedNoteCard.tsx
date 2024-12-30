@@ -1,8 +1,6 @@
 export function CreatedNoteCard({ data }: any) {
 	if (!data) return null;
 
-	console.log(data);
-
 	return (
 		<div className="bg-black-50 rounded-lg">
 			<h3 className="text-lg font-semibold mb-3">Created Note</h3>

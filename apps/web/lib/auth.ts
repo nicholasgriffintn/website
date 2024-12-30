@@ -50,6 +50,7 @@ export async function validateSessionToken(token: string) {
         name: userTable.name,
         avatar_url: userTable.avatar_url,
         email: userTable.email,
+        username: userTable.github_username,
       },
     })
     .from(sessionTable)

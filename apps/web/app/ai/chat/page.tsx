@@ -49,6 +49,21 @@ export default async function Chat() {
 		);
 	}
 
+	const isUserMe = user?.username === "nicholasgriffintn";
+
+	if (!isUserMe) {
+		return (
+			<PageLayout>
+				<InnerPage>
+					<h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
+						Unauthorized
+					</h1>
+					<p>Sorry, I'm only making this available to me for now.</p>
+				</InnerPage>
+			</PageLayout>
+		);
+	}
+
 	const data = await getData(user.email);
 
 	return (
