@@ -8,7 +8,7 @@ export function Link({
 	underline = true,
 	className,
 	muted = false,
-	target,
+	target = "_self",
 	showExternalIcon = true,
 	...props
 }: {
@@ -25,6 +25,7 @@ export function Link({
 		<NextLink
 			{...props}
 			href={href}
+			target={target}
 			className={clsx(
 				className,
 				"inline font-bold p-0 transition-colors hover:underline hover:outline-none decoration-1 decoration-skip-ink-none underline-offset-[0.25em] hover:decoration-2",
