@@ -84,6 +84,12 @@ export function useGameState(
 							setUsers(data.users);
 						}
 						break;
+					case "drawingUpdate":
+						setGameState((prevState) => ({
+							...prevState,
+							drawingData: data.drawingData,
+						}));
+						break;
 					case "gameCreated":
 						setGameState((prevState) => ({
 							...prevState,

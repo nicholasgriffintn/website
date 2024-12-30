@@ -24,6 +24,7 @@ import Chat from "./Components/Chat";
 import { GenerateDrawing } from "./Components/GenerateDrawing";
 
 export function DrawingCanvas({
+	user,
 	onSubmit,
 	result,
 	gameMode,
@@ -135,9 +136,12 @@ export function DrawingCanvas({
 		}
 	};
 
-	// TODO: make this dynamic (user should enter them)
-	const playerId = "anonymous";
-	const playerName = "Anonymous";
+	const playerId = user?.username;
+	const playerName = user?.name;
+
+	if (!playerId || !playerName) {
+		return <div>Loading...</div>;
+	}
 
 	const {
 		isConnected,

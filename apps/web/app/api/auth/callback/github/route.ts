@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
     const userId = await db
       .insert(user)
       .values({
-        email: providerUser.email,
+        email: providerUser.email || `${providerUser.id}+${providerUser.login}@users.noreply.github.com`,
         name: providerUser.name || providerUser.login,
         avatar_url: providerUser.avatar_url,
         github_username: providerUser.login,

@@ -1,4 +1,4 @@
-import {
+import type {
 	GameState,
 	JoinRequest,
 	StartGameRequest,
@@ -7,7 +7,7 @@ import {
 	Env,
 } from "./types";
 import { GAME_WORDS } from "./constants";
-import { DurableObject, DurableObjectState } from "@cloudflare/workers-types";
+import type { DurableObject, DurableObjectState } from "@cloudflare/workers-types";
 import { onAIGuessDrawing } from "./utils/ai-utils";
 
 export class Multiplayer implements DurableObject {
@@ -215,6 +215,8 @@ export class Multiplayer implements DurableObject {
 		gameId,
 		playerId,
 	}: { gameId: string } & StartGameRequest) {
+		console.log("handleStartGame", gameId, playerId);
+		console.log(this.games);
 		const game = this.games.get(gameId);
 		if (!game) throw new Error("Game not found");
 		if (game.gameState.isActive) return;

@@ -1,3 +1,5 @@
+import type { User as DBUser } from "@/types/auth";
+
 interface DrawingResponse {
 	response: {
 		status: string;
@@ -14,6 +16,7 @@ interface DrawingResponse {
 }
 
 interface DrawingCanvasProps {
+	user: DBUser;
 	onSubmit: (drawingData: string) => Promise<any>;
 	result: string | null;
 	gameMode?: boolean;

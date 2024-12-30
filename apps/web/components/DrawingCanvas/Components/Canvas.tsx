@@ -26,6 +26,7 @@ export function Canvas({
   const lastY = useRef(0);
 
   useEffect(() => {
+    console.log("drawingData", drawingData);
     if (!drawingData || !canvasRef?.current) return;
 
     const image = new Image();
@@ -159,6 +160,7 @@ export function Canvas({
         onMouseDown={startDrawing}
         onMouseUp={stopDrawing}
         onMouseOut={stopDrawing}
+        onBlur={stopDrawing}
         onTouchStart={startDrawing}
         onTouchEnd={stopDrawing}
       />

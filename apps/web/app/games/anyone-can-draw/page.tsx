@@ -57,7 +57,7 @@ export default async function AnyoneCanDrawHome() {
 						</div>
 					</div>
 				</div>
-				<AnyoneCanDraw />
+				<AnyoneCanDraw user={user} />
 			</InnerPage>
 		</PageLayout>
 	);

@@ -4,8 +4,13 @@ import { useState } from "react";
 
 import { DrawingCanvas } from "@/components/DrawingCanvas";
 import { onGenerateDrawing } from "@/actions/chat";
+import type { User as DBUser } from "@/types/auth";
 
-export function AnyoneCanDraw() {
+export function AnyoneCanDraw({
+	user,
+}: {
+	user: DBUser;
+}) {
 	const [result, setResult] = useState<string | null>(null);
 
 	const handleSubmit = async (drawingData: string): Promise<any> => {
@@ -20,6 +25,6 @@ export function AnyoneCanDraw() {
 	};
 
 	return (
-		<DrawingCanvas onSubmit={handleSubmit} result={result} gameMode={true} />
+		<DrawingCanvas user={user} onSubmit={handleSubmit} result={result} gameMode={true} />
 	);
 }
