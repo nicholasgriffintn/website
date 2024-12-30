@@ -30,7 +30,7 @@ export default async function AnyoneCanDrawHome() {
 							<p className="text-red-600">
 								Access denied. Please login to access this page.
 							</p>
-							<SignInForm />
+							<SignInForm redirectUrl="/games/anyone-can-draw" />
 						</div>
 					</div>
 				</InnerPage>

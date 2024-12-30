@@ -41,7 +41,7 @@ export default async function Chat() {
 							<p className="text-red-600">
 								Access denied. Please login to access this page.
 							</p>
-							<SignInForm />
+							<SignInForm redirectUrl="/ai/chat" />
 						</div>
 					</div>
 				</InnerPage>

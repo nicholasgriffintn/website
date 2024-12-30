@@ -25,6 +25,8 @@ export async function GET(request: NextRequest) {
 
   const storedState = cookieStore.get('github_oauth_state');
   const storedStateValue = storedState?.value;
+  const storedRedirectUrl = cookieStore.get('github_oauth_redirect');
+  const redirectUrl = storedRedirectUrl?.value || '/';
 
   if (!code || !state || !storedStateValue) {
     return new Response('Incorrect params provided', {
@@ -62,7 +64,7 @@ export async function GET(request: NextRequest) {
       return new Response('Success', {
         status: 301,
         headers: {
-          Location: '/',
+          Location: redirectUrl,
         },
       });
     }
@@ -84,7 +86,7 @@ export async function GET(request: NextRequest) {
       return new Response('Success', {
         status: 301,
         headers: {
-          Location: '/',
+          Location: redirectUrl,
         },
       });
     }
@@ -123,7 +125,7 @@ export async function GET(request: NextRequest) {
     return new Response('Success', {
       status: 301,
       headers: {
-        Location: '/',
+        Location: redirectUrl,
       },
     });
   } catch (e) {
