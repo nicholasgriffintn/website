@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 
-export function SignInForm({ redirectUrl }: { redirectUrl: string }) {
+export function SignInForm({ redirectUrl }: { redirectUrl?: string }) {
     return (
         <form action={`/api/auth/github`} method="GET" className="flex flex-col gap-2">
             <input type="hidden" name="redirectUrl" value={redirectUrl} />
