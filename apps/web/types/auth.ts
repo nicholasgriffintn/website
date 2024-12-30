@@ -13,7 +13,7 @@ export interface GitHubUser {
 
 export type User = {
   email: string;
-  name: string;
-  avatar_url: string;
-  username: string;
+  name: string | null;
+  avatar_url: string | null;
+  username: string | null;
 }
