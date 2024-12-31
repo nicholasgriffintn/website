@@ -29,6 +29,7 @@ export class DrawingGame extends BaseMultiplayerGame {
 				id,
 				{
 					...game,
+					id,
 					users: new Map(game.users),
 					timerInterval: null,
 					lastAIGuessTime: game.lastAIGuessTime || 0,
@@ -284,18 +285,11 @@ export class DrawingGame extends BaseMultiplayerGame {
 
 				if (aiGuess.guess) {
 					game.lastAIGuessTime = Date.now();
-
-					const gameId = Array.from(this.games.entries()).find(
-						([_, g]) => g === game,
-					)?.[0];
-
-					if (gameId) {
-						await this.handleGuess({
-							gameId,
-							playerId: DrawingGame.AI_PLAYER_ID,
-							guess: aiGuess.guess,
-						});
-					}
+					await this.handleGuess({
+						gameId: game.id,
+						playerId: DrawingGame.AI_PLAYER_ID,
+						guess: aiGuess.guess,
+					});
 				}
 			}
 		} catch (error) {
@@ -336,5 +330,6 @@ export class DrawingGame extends BaseMultiplayerGame {
 		}
 
 		await this.saveGames();
+		await this.broadcastGameState(game.id);
 	}
 }

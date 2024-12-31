@@ -135,6 +135,7 @@ export abstract class BaseMultiplayerGame {
 		const gameState = this.initializeGameState(gameName, gameId);
 
 		const newGame: RuntimeGameData = {
+			id: gameId,
 			name: gameName,
 			users: new Map([[playerId, { name: playerName, score: 0 }]]),
 			gameState,

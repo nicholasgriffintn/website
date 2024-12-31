@@ -22,6 +22,7 @@ export interface BaseGameConfig {
 }
 
 export interface RuntimeGameData {
+    id: string;
     name: string;
     users: Map<string, BaseUserData>;
     gameState: BaseGameState;
