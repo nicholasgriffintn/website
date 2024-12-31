@@ -278,36 +278,17 @@ export abstract class BaseMultiplayerGame {
 		const game = this.games.get(gameId);
 		if (!game) return;
 
-		// Remove drawing data from game state to avoid size limits
-		if (message.gameState) {
-			message.gameState = {
-				...message.gameState,
-				drawingData: undefined,
-			};
-		}
-
-		// For drawing updates, send only the drawing data
 		if (message.type === "drawingUpdate") {
 			const { drawingData, ...messageWithoutDrawing } = message;
 
-			const messageStr = JSON.stringify({
-				...messageWithoutDrawing,
-				gameId,
-				gameName: game.name,
-				users: Array.from(game.users.entries()).map(([id, data]) => ({
-					id,
-					...data,
-				})),
-			});
-
 			for (const ws of this.state.getWebSockets()) {
 				try {
-					ws.send(messageStr);
 					if (drawingData) {
 						ws.send(
 							JSON.stringify({
-								type: "drawingData",
-								data: drawingData,
+								type: "drawingUpdate",
+								drawingData: drawingData,
+								gameId,
 							}),
 						);
 					}
@@ -316,6 +297,13 @@ export abstract class BaseMultiplayerGame {
 				}
 			}
 			return;
+		}
+
+		if (message.gameState) {
+			message.gameState = {
+				...message.gameState,
+				drawingData: undefined,
+			};
 		}
 
 		const messageStr = JSON.stringify({

@@ -199,7 +199,12 @@ export class DrawingGame extends BaseMultiplayerGame {
 
 		const guesser = game.users.get(playerId);
 		if (guesser) {
-			guesser.score += this.config.correctGuesserScore * timeBasedMultiplier;
+			guesser.score =
+				Math.round(
+					(guesser.score +
+						this.config.correctGuesserScore * timeBasedMultiplier) *
+						10,
+				) / 10;
 		}
 
 		const nonDrawerPlayers = Array.from(game.users.entries()).filter(
@@ -212,9 +217,13 @@ export class DrawingGame extends BaseMultiplayerGame {
 			: undefined;
 
 		if (drawer) {
-			drawer.score +=
-				this.config.correctDrawerScore *
-				(timeBasedMultiplier / nonDrawerPlayers.length);
+			drawer.score =
+				Math.round(
+					(drawer.score +
+						(this.config.correctDrawerScore * timeBasedMultiplier) /
+							nonDrawerPlayers.length) *
+						10,
+				) / 10;
 		}
 
 		const correctGuesses = new Set(
@@ -257,7 +266,7 @@ export class DrawingGame extends BaseMultiplayerGame {
 
 		this.broadcast(gameId, {
 			type: "drawingUpdate",
-			drawingData: game.gameState.drawingData,
+			drawingData,
 		});
 	}
 
