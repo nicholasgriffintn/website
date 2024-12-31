@@ -148,11 +148,13 @@ export class DrawingGame extends BaseMultiplayerGame {
 		const game = this.games.get(gameId) as DrawingRuntimeGameData;
 		if (!game) return;
 
-		if (game.gameState.isActive && game.gameState.currentDrawer === playerId) {
+		if (game.gameState.currentDrawer === playerId) {
 			game.gameState.isActive = false;
+			game.gameState.isLobby = true;
+			game.gameState.currentDrawer = undefined;
 			game.gameState.statusMessage = {
 				type: "failure",
-				message: "Game ended - drawer left the game",
+				message: "Game ended - drawer left the game"
 			};
 			await this.saveGames();
 		}

@@ -202,14 +202,15 @@ export abstract class BaseMultiplayerGame {
 		if (!game) return;
 
 		game.users.delete(playerId);
+		await this.handlePlayerLeave(gameId, playerId);
 		await this.saveGames();
-
+		
 		this.broadcast(gameId, {
 			type: "playerLeft",
 			playerId,
 		});
-
-		await this.handlePlayerLeave(gameId, playerId);
+		
+		await this.broadcastGameState(gameId);
 	}
 
 	protected startGameTimer(gameId: string) {

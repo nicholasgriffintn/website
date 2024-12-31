@@ -63,14 +63,11 @@ export function useGameState(
 								gameName: data.gameName,
 							}));
 							setUsers(data.users);
-						} else if (data.gameId === gameState.gameId) {
-							setGameState((prevState) => ({
-								...prevState,
+						} else {
+							setGameState({
+								...DEFAULT_GAME_STATE,
 								gameId: null,
-								gameName: "",
-								isActive: false,
-								isLobby: true,
-							}));
+							});
 							setUsers([]);
 						}
 						break;

@@ -128,6 +128,11 @@ export function GameStatus({
 					<p className="text-sm text-muted-foreground">
 						Waiting for players to join...
 					</p>
+					{gameState.statusMessage && (
+						<div className={`text-sm text-muted-foreground ${gameState.statusMessage.type === "success" ? "text-green-500" : "text-red-500"}`}>
+							{gameState.statusMessage.message}
+						</div>
+					)}
 				</div>
 
 				{gameState.gameId && (
