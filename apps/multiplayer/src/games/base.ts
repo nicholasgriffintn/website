@@ -279,7 +279,7 @@ export abstract class BaseMultiplayerGame {
 		if (!game) return;
 
 		if (message.type === "drawingUpdate") {
-			const { drawingData, ...messageWithoutDrawing } = message;
+			const { drawingData } = message;
 
 			for (const ws of this.state.getWebSockets()) {
 				try {
@@ -297,13 +297,6 @@ export abstract class BaseMultiplayerGame {
 				}
 			}
 			return;
-		}
-
-		if (message.gameState) {
-			message.gameState = {
-				...message.gameState,
-				drawingData: undefined,
-			};
 		}
 
 		const messageStr = JSON.stringify({

@@ -254,14 +254,12 @@ export class DrawingGame extends BaseMultiplayerGame {
 		const game = this.games.get(gameId) as DrawingRuntimeGameData;
 		if (!game || !game.gameState.isActive) return;
 
-		game.gameState.drawingData = drawingData;
-
 		if (
 			this.config.aiEnabled &&
 			(!game.lastAIGuessTime ||
 				Date.now() - game.lastAIGuessTime >= this.config.aiGuessCooldown)
 		) {
-			await this.processAIGuess(game);
+			await this.processAIGuess(game, drawingData);
 		}
 
 		this.broadcast(gameId, {
@@ -270,17 +268,17 @@ export class DrawingGame extends BaseMultiplayerGame {
 		});
 	}
 
-	private async processAIGuess(game: DrawingRuntimeGameData) {
+	private async processAIGuess(
+		game: DrawingRuntimeGameData,
+		drawingData: string,
+	) {
 		try {
 			const aiHasGuessedCorrectly = game.gameState.guesses.some(
 				(guess) => guess.playerId === DrawingGame.AI_PLAYER_ID && guess.correct,
 			);
 
 			if (!aiHasGuessedCorrectly) {
-				const aiGuess = await onAIGuessDrawing(
-					game.gameState.drawingData ?? "",
-					this.env,
-				);
+				const aiGuess = await onAIGuessDrawing(drawingData, this.env);
 
 				if (aiGuess.guess) {
 					game.lastAIGuessTime = Date.now();
