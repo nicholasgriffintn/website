@@ -119,3 +119,18 @@ export const GAME_WORDS = [
 	"sunscreen",
 	"vanilla",
 ];
+
+export const AI_NAMES = [
+	"DoodleBot 🤖",
+	"Pixel Picasso 🎨",
+	"SketchSage 🎯",
+	"The Guesstimator 🔍",
+	"PixelProphet 🔮",
+	"VisionBot 👁️",
+	"DrawingDecoder 🎨",
+	"ShapeShaman 🔻",
+	"MasterpieceMind 🧠",
+	"ArtOracle 🧞",
+	"VisualVoyager 🚀",
+	"PencilProdigy ✏️",
+];

@@ -163,17 +163,19 @@ export function GameStatus({
 								})}
 						</div>
 
-						<div className="mt-4">
-							<h3 className="font-medium">AI:</h3>
-							<div className="text-sm p-2 rounded-md flex justify-between items-center bg-blue-100 dark:bg-blue-900">
-								<span className="flex items-center gap-2">
-									🤖 {aiPlayer?.name}
-								</span>
-								<span className="font-medium">
-									Score: {aiPlayer?.score || 0}
-								</span>
+						{aiPlayer && (
+							<div className="mt-4">
+								<h3 className="font-medium">AI:</h3>
+								<div className="text-sm p-2 rounded-md flex justify-between items-center bg-blue-100 dark:bg-blue-900">
+									<span className="flex items-center gap-2">
+										🤖 {aiPlayer?.name}
+									</span>
+									<span className="font-medium">
+										Score: {aiPlayer?.score || 0}
+									</span>
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 				)}
 

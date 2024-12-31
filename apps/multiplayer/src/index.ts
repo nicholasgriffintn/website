@@ -15,19 +15,18 @@ const app = new Hono<Env>();
 
 /**
  * WebSocket handler for game connections
- * @route GET /anyone-can-draw
+ * @route GET /:gameType
  */
-app.get("/anyone-can-draw", async (c: Context) => {
-	const gameId = c.req.query("gameId");
+app.get("/:gameType", async (c: Context) => {
+	const gameType = c.req.param("gameType");
+	const gameId = c.req.query("gameId") ?? "";
 
 	const upgradeHeader = c.req.raw.headers.get("Upgrade");
 	if (!upgradeHeader || upgradeHeader !== "websocket") {
-		return new Response("Durable Object expected Upgrade: websocket", {
-			status: 426,
-		});
+		return new Response("Expected Upgrade: websocket", { status: 426 });
 	}
 
-	const id = c.env.MULTIPLAYER.idFromName(gameId);
+	const id = c.env.MULTIPLAYER.idFromName(`${gameType}:${gameId}`);
 	const stub = c.env.MULTIPLAYER.get(id);
 
 	return stub.fetch(c.req.raw);
