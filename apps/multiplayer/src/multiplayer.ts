@@ -5,6 +5,8 @@ import type {
 	GuessRequest,
 	DrawingUpdateRequest,
 	Env,
+	StoredGameData,
+	RuntimeGameData,
 } from "./types";
 import { GAME_WORDS } from "./constants";
 import type { DurableObject, DurableObjectState } from "@cloudflare/workers-types";
@@ -13,16 +15,7 @@ import { onAIGuessDrawing } from "./utils/ai-utils";
 export class Multiplayer implements DurableObject {
 	private state: DurableObjectState;
 	private env: Env;
-	private games: Map<
-		string,
-		{
-			name: string;
-			users: Map<string, { name: string; score: number }>;
-			gameState: GameState;
-			timerInterval: number | null;
-			lastAIGuessTime: number;
-		}
-	>;
+	private games: Map<string, RuntimeGameData>;
 	private readonly GAME_DURATION = 120;
 	private readonly AI_PLAYER_ID = "ai-player";
 	private readonly AI_GUESS_COOLDOWN = 10000;
@@ -51,11 +44,17 @@ export class Multiplayer implements DurableObject {
 		this.state.blockConcurrencyWhile(async () => {
 			const storedGames = await this.state.storage.get("games");
 			if (storedGames) {
-				this.games = new Map(storedGames as [string, any][]);
-				for (const [gameId, game] of this.games) {
-					game.users = new Map(Array.from(game.users) as [string, any][]);
-					game.timerInterval = null;
-				}
+				const runtimeGames = (storedGames as [string, StoredGameData][]).map(
+					([id, game]): [string, RuntimeGameData] => [
+						id,
+						{
+							...game,
+							users: new Map(game.users),
+							timerInterval: null,
+						}
+					]
+				);
+				this.games = new Map(runtimeGames);
 			}
 		});
 	}
@@ -474,7 +473,14 @@ export class Multiplayer implements DurableObject {
 		}
 	}
 
-	private broadcast(gameId: string, message: any) {
+	private broadcast(gameId: string, message: {
+		type: string;
+		gameState?: GameState;
+		gameId?: string;
+		gameName?: string;
+		users?: Array<{ id: string; name: string; score: number }>;
+		[key: string]: unknown;
+	}) {
 		const game = this.games.get(gameId);
 		if (!game) return;
 

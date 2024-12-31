@@ -63,7 +63,7 @@ export interface GuessRequest {
 
 export interface DrawingUpdateRequest {
 	gameId: string;
-	drawingData: any;
+	drawingData: string;
 }
 
 export interface BaseResponse {
@@ -96,4 +96,20 @@ export interface GameListItem {
 	playerCount: number;
 	isLobby: boolean;
 	isActive: boolean;
+}
+
+export interface StoredGameData {
+	name: string;
+	users: [string, { name: string; score: number }][];
+	gameState: GameState;
+	timerInterval: null;
+	lastAIGuessTime: number;
+}
+
+export interface RuntimeGameData {
+	name: string;
+	users: Map<string, { name: string; score: number }>;
+	gameState: GameState;
+	timerInterval: number | null;
+	lastAIGuessTime: number;
 }

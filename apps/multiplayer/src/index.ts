@@ -1,5 +1,5 @@
-import { Context, Hono } from "hono";
-import { DurableObjectNamespace } from "@cloudflare/workers-types";
+import { type Context, Hono } from "hono";
+import type { DurableObjectNamespace } from "@cloudflare/workers-types";
 
 import { Multiplayer } from "./multiplayer";
 import { handleApiError } from "./utils/errors";

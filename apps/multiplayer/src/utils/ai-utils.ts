@@ -1,4 +1,4 @@
-import { Env } from "../types";
+import type { Env } from "../types";
 
 const usedGuesses = new Set<string>();
 
