@@ -17,12 +17,14 @@ export abstract class BaseMultiplayerGame {
 	protected state: DurableObjectState;
 	protected env: Env;
 	protected games: Map<string, RuntimeGameData>;
+	protected wsToPlayer: Map<WebSocket, string>;
 
 	constructor(state: DurableObjectState, env: Env, config: BaseGameConfig) {
 		this.state = state;
 		this.env = env;
 		this.games = new Map();
 		this.config = config;
+		this.wsToPlayer = new Map();
 
 		this.initializeStorage();
 	}
@@ -52,6 +54,10 @@ export abstract class BaseMultiplayerGame {
 	async webSocketMessage(ws: WebSocket, message: string) {
 		try {
 			const data = JSON.parse(message);
+
+			if ((data.action === 'join' || data.action === 'createGame') && data.playerId) {
+				this.wsToPlayer.set(ws, data.playerId);
+			}
 
 			switch (data.action) {
 				case "createGame":
@@ -98,6 +104,16 @@ export abstract class BaseMultiplayerGame {
 
 	async webSocketClose(ws: WebSocket, code: number, reason: string) {
 		try {
+			const playerId = this.wsToPlayer.get(ws);
+			if (playerId) {
+				for (const [gameId, game] of this.games.entries()) {
+					if (game.users.has(playerId)) {
+						await this.handleLeave({ gameId, playerId });
+					}
+				}
+				this.wsToPlayer.delete(ws);
+			}
+
 			if (code !== 1006 && code >= 1000 && code < 5000) {
 				ws.close(code, reason || "Durable Object is closing WebSocket");
 			}
@@ -281,16 +297,14 @@ export abstract class BaseMultiplayerGame {
 		if (message.type === "drawingUpdate") {
 			const { drawingData } = message;
 
-			for (const ws of this.state.getWebSockets()) {
+			for (const [ws, playerId] of this.wsToPlayer.entries()) {
 				try {
-					if (drawingData) {
-						ws.send(
-							JSON.stringify({
-								type: "drawingUpdate",
-								drawingData: drawingData,
-								gameId,
-							}),
-						);
+					if (drawingData && playerId !== game.gameState.currentDrawer) {
+						ws.send(JSON.stringify({
+							type: "drawingUpdate",
+							drawingData,
+							gameId,
+						}));
 					}
 				} catch (error) {
 					console.error("Error sending message to WebSocket:", error);

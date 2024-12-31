@@ -3,6 +3,7 @@ export interface BaseGameState {
     isLobby: boolean;
     timeRemaining: number;
     endTime?: number;
+    currentDrawer?: string;
     statusMessage?: {
         type: 'success' | 'failure';
         message: string;
