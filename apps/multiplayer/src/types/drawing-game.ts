@@ -19,6 +19,7 @@ export interface DrawingGameState extends BaseGameState {
 }
 
 export interface DrawingGameConfig extends BaseGameConfig {
+	gameDuration: number;
 	aiEnabled: boolean;
 	aiGuessCooldown: number;
 	correctGuesserScore: number;

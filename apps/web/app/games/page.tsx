@@ -1,4 +1,4 @@
-import { Brush } from "lucide-react";
+import { Brush, Circle } from "lucide-react";
 
 import { PageLayout } from "@/components/PageLayout";
 import { InnerPage } from "@/components/InnerPage";
@@ -40,6 +40,12 @@ export default async function Home() {
 						title="Anyone Can Draw"
 						description="A game where you play against others and AI to get the highest score guessing what others drew."
 						href="/games/anyone-can-draw"
+					/>
+					<LinkCard
+						icon={<Circle className="w-6 h-6" />}
+						title="Plot Twist (WIP)"
+						description="A game where you collaborate with others to create a story, then vote on the best ending."
+						href="/games/plot-twist"
 					/>
 				</div>
 			</InnerPage>

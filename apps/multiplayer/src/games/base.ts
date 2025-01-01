@@ -8,38 +8,59 @@ import type {
 	StoredGameData,
 } from "../types/base-game";
 
-export abstract class BaseMultiplayerGame {
+export abstract class BaseMultiplayerGame<
+	TGameState extends BaseGameState = BaseGameState,
+	TRuntimeData extends RuntimeGameData = RuntimeGameData,
+	TGameStartParams = { gameId: string; playerId: string }
+> {
 	protected static readonly AI_PLAYER_ID = "ai-player";
+	protected games: Map<string, TRuntimeData> = new Map();
+	protected wsToPlayer: Map<WebSocket, string> = new Map();
 	protected readonly config: BaseGameConfig & {
 		aiEnabled?: boolean;
 		aiNames?: string[];
 	};
-	protected state: DurableObjectState;
-	protected env: Env;
-	protected games: Map<string, RuntimeGameData>;
-	protected wsToPlayer: Map<WebSocket, string>;
 
-	constructor(state: DurableObjectState, env: Env, config: BaseGameConfig) {
-		this.state = state;
-		this.env = env;
-		this.games = new Map();
+	constructor(
+		protected readonly state: DurableObjectState,
+		protected readonly env: Env,
+		config: BaseGameConfig & {
+			aiEnabled?: boolean;
+			aiNames?: string[];
+		},
+	) {
 		this.config = config;
-		this.wsToPlayer = new Map();
-
-		this.initializeStorage();
-	}
-
-	protected async initializeStorage() {
-		await this.state.blockConcurrencyWhile(async () => {
-			const storedGames = await this.state.storage.get("games");
+		this.state.blockConcurrencyWhile(async () => {
+			const storedGames = await this.state.storage.get<unknown>("games");
 			if (storedGames) {
-				const runtimeGames = this.deserializeGames(storedGames);
-				this.games = new Map(runtimeGames);
+				const deserializedGames = this.deserializeGames(storedGames);
+				for (const [id, game] of deserializedGames) {
+					this.games.set(id, game);
+				}
 			}
 		});
 	}
 
-	async fetch(request: Request) {
+	protected async initializeStorage() {
+		try {
+			await this.state.blockConcurrencyWhile(async () => {
+				const storedGames = await this.state.storage.get("games");
+				if (storedGames) {
+					const runtimeGames = this.deserializeGames(storedGames);
+					this.games = new Map(runtimeGames);
+				} else {
+					this.games = new Map();
+				}
+			});
+		} catch (error) {
+			console.error('Error initializing storage:', error);
+			throw error;
+		}
+	}
+
+	async fetch() {
+		await this.initializeStorage();
+
 		const webSocketPair = new WebSocketPair();
 		const [client, server] = Object.values(webSocketPair);
 
@@ -55,7 +76,10 @@ export abstract class BaseMultiplayerGame {
 		try {
 			const data = JSON.parse(message);
 
-			if ((data.action === 'join' || data.action === 'createGame') && data.playerId) {
+			if (
+				(data.action === "join" || data.action === "createGame") &&
+				data.playerId
+			) {
 				this.wsToPlayer.set(ws, data.playerId);
 			}
 
@@ -114,7 +138,13 @@ export abstract class BaseMultiplayerGame {
 				this.wsToPlayer.delete(ws);
 			}
 
-			if (code !== 1006 && code >= 1000 && code < 5000) {
+			if (
+				code >= 1000 &&
+				code <= 1015 &&
+				code !== 1004 &&
+				code !== 1005 &&
+				code !== 1006
+			) {
 				ws.close(code, reason || "Durable Object is closing WebSocket");
 			}
 		} catch (error) {
@@ -131,41 +161,48 @@ export abstract class BaseMultiplayerGame {
 		playerId: string;
 		playerName: string;
 	}) {
-		const gameId = crypto.randomUUID();
-		const gameState = this.initializeGameState(gameName, gameId);
+		try {
+			const gameId = crypto.randomUUID();
+			const gameState = this.initializeGameState(gameName, gameId);
 
-		const newGame: RuntimeGameData = {
-			id: gameId,
-			name: gameName,
-			users: new Map([[playerId, { name: playerName, score: 0 }]]),
-			gameState,
-			timerInterval: null,
-		};
+			const newGame: RuntimeGameData = {
+				id: gameId,
+				name: gameName,
+				users: new Map([[playerId, { name: playerName, score: 0 }]]),
+				gameState,
+				timerInterval: null,
+			};
 
-		this.games.set(gameId, newGame);
+			// Cast to TRuntimeData after creating a valid RuntimeGameData
+			const typedGame = newGame as unknown as TRuntimeData;
+			this.games.set(gameId, typedGame);
 
-		if (this.config.aiEnabled) {
-			const randomAiName =
-				this.config.aiNames?.[
-					Math.floor(Math.random() * this.config.aiNames.length)
-				];
+			if (this.config.aiEnabled) {
+				const randomAiName =
+					this.config.aiNames?.[
+						Math.floor(Math.random() * this.config.aiNames.length)
+					];
 
-			newGame.users.set(BaseMultiplayerGame.AI_PLAYER_ID, {
-				name: randomAiName || "AI Player",
-				score: 0,
+				typedGame.users.set((this.constructor as typeof BaseMultiplayerGame).AI_PLAYER_ID, {
+					name: randomAiName || "AI Player",
+					score: 0,
+				});
+			}
+
+			await this.saveGames();
+
+			this.broadcast(gameId, {
+				type: "gameCreated",
+				gameId,
+				gameName,
+				gameState,
 			});
+
+			return gameId;
+		} catch (error) {
+			console.error('Error in handleCreateGame:', error);
+			throw error;
 		}
-
-		await this.saveGames();
-
-		this.broadcast(gameId, {
-			type: "gameCreated",
-			gameId,
-			gameName,
-			gameState,
-		});
-
-		return gameId;
 	}
 
 	protected async handleJoin({
@@ -177,18 +214,26 @@ export abstract class BaseMultiplayerGame {
 		playerId: string;
 		playerName: string;
 	}) {
-		const game = this.games.get(gameId);
-		if (!game) throw new Error("Game not found");
+		try {
+			const game = this.games.get(gameId);
+			if (!game) {
+				console.error('Game not found:', gameId);
+				throw new Error("Game not found");
+			}
 
-		if (!game.users.has(playerId)) {
-			game.users.set(playerId, { name: playerName, score: 0 });
-			await this.saveGames();
+			if (!game.users.has(playerId)) {
+				game.users.set(playerId, { name: playerName, score: 0 });
+				await this.saveGames();
 
-			this.broadcast(gameId, {
-				type: "playerJoined",
-				playerId,
-				playerName,
-			});
+				this.broadcast(gameId, {
+					type: "playerJoined",
+					playerId,
+					playerName,
+				});
+			}
+		} catch (error) {
+			console.error('Error in handleJoin:', error);
+			throw error;
 		}
 	}
 
@@ -205,27 +250,28 @@ export abstract class BaseMultiplayerGame {
 		game.users.delete(playerId);
 		await this.handlePlayerLeave(gameId, playerId);
 		await this.saveGames();
-		
+
 		this.broadcast(gameId, {
 			type: "playerLeft",
 			playerId,
 		});
-		
+
 		await this.broadcastGameState(gameId);
 	}
 
 	protected startGameTimer(gameId: string) {
 		const game = this.games.get(gameId);
-		if (!game) return;
+		if (!game || !this.config.gameDuration) return;
 
 		if (game.timerInterval) {
 			clearInterval(game.timerInterval);
 		}
 
-		game.timerInterval = setInterval(async () => {
+		game.timerInterval = setInterval(() => {
 			if (!game.gameState.isActive) {
-				if (game.timerInterval !== null) {
+				if (game.timerInterval) {
 					clearInterval(game.timerInterval);
+					game.timerInterval = null;
 				}
 				return;
 			}
@@ -237,13 +283,21 @@ export abstract class BaseMultiplayerGame {
 					Math.ceil((game.gameState.endTime - now) / 1000),
 				);
 
-				await this.broadcastGameState(gameId);
+				this.broadcastGameState(gameId).catch(error => {
+					console.error('Error broadcasting game state:', error);
+				});
 
 				if (game.gameState.timeRemaining <= 0) {
-					await this.handleGameTimeout(gameId);
+					if (game.timerInterval) {
+						clearInterval(game.timerInterval);
+						game.timerInterval = null;
+					}
+					this.handleGameTimeout(gameId).catch(error => {
+						console.error('Error handling game timeout:', error);
+					});
 				}
 			}
-		}, 1000) as unknown as number;
+		}, 1000);
 	}
 
 	async alarm() {
@@ -251,7 +305,7 @@ export abstract class BaseMultiplayerGame {
 			if (
 				game.gameState.isActive &&
 				game.gameState.endTime &&
-				Date.now() >= game.gameState.endTime
+					Date.now() >= game.gameState.endTime
 			) {
 				await this.handleGameTimeout(gameId);
 			}
@@ -279,17 +333,23 @@ export abstract class BaseMultiplayerGame {
 	}
 
 	protected async saveGames() {
-		const storedGames: [string, StoredGameData][] = Array.from(
-			this.games.entries(),
-		).map(([id, game]) => [
-			id,
-			{
-				...game,
-				users: Array.from(game.users.entries()),
-				timerInterval: null,
-			},
-		]);
-		await this.state.storage.put("games", storedGames);
+		try {
+			const storedGames: [string, StoredGameData][] = Array.from(
+				this.games.entries(),
+			).map(([id, game]) => [
+				id,
+				{
+					...game,
+					users: Array.from(game.users.entries()),
+					timerInterval: null,
+				},
+			]);
+
+			await this.state.storage.put("games", storedGames);
+		} catch (error) {
+			console.error('Error saving games:', error);
+			throw error;
+		}
 	}
 
 	protected broadcast(gameId: string, message: any) {
@@ -302,11 +362,13 @@ export abstract class BaseMultiplayerGame {
 			for (const [ws, playerId] of this.wsToPlayer.entries()) {
 				try {
 					if (drawingData && playerId !== game.gameState.currentDrawer) {
-						ws.send(JSON.stringify({
-							type: "drawingUpdate",
-							drawingData,
-							gameId,
-						}));
+						ws.send(
+							JSON.stringify({
+								type: "drawingUpdate",
+								drawingData,
+								gameId,
+							}),
+						);
 					}
 				} catch (error) {
 					console.error("Error sending message to WebSocket:", error);
@@ -315,15 +377,20 @@ export abstract class BaseMultiplayerGame {
 			return;
 		}
 
-		const messageStr = JSON.stringify({
-			...message,
-			gameId,
-			gameName: game.name,
-			users: Array.from(game.users.entries()).map(([id, data]) => ({
-				id,
-				...data,
-			})),
-		});
+		let messageStr: string;
+		if (typeof message === 'string') {
+			messageStr = message;
+		} else {
+			messageStr = JSON.stringify({
+				...message,
+				gameId,
+				gameName: game.name,
+				users: Array.from(game.users.entries()).map(([id, data]) => ({
+					id,
+					...data,
+				})),
+			});
+		}
 
 		for (const ws of this.state.getWebSockets()) {
 			try {
@@ -335,7 +402,7 @@ export abstract class BaseMultiplayerGame {
 	}
 
 	private getGamesList() {
-		return Array.from(this.games.entries()).map(([gameId, game]) => ({
+		const gamesList = Array.from(this.games.entries()).map(([gameId, game]) => ({
 			id: gameId,
 			name: game.name,
 			playerCount: game.users.size,
@@ -346,27 +413,23 @@ export abstract class BaseMultiplayerGame {
 			isLobby: game.gameState.isLobby,
 			isActive: game.gameState.isActive,
 		}));
+		
+		return gamesList;
 	}
 
 	protected abstract deserializeGames(
 		storedGames: unknown,
-	): [string, RuntimeGameData][];
+	): [string, TRuntimeData][];
 	protected abstract initializeGameState(
 		gameName: string,
 		creator: string,
-	): BaseGameState;
+	): TGameState;
 	protected abstract handleGameAction(
 		action: string,
 		data: any,
-		game: RuntimeGameData | undefined,
+		game: TRuntimeData | undefined,
 	): Promise<void>;
-	protected abstract handleGameStart({
-		gameId,
-		playerId,
-	}: {
-		gameId: string;
-		playerId: string;
-	}): Promise<void>;
+	protected abstract handleGameStart(params: TGameStartParams): Promise<void>;
 	protected abstract handleGameTimeout(gameId: string): Promise<void>;
 	protected abstract handlePlayerLeave(
 		gameId: string,

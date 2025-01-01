@@ -8,10 +8,10 @@ const BASE_URL =
 		: "wss://website-multiplayer.nickgriffin.uk";
 
 export function useGameState(
-	initialGameId: string | null = null,
 	playerId: string,
 	playerName: string,
 	clearCanvas?: () => void,
+	initialGameId: string | null = null,
 ) {
 	const [gameState, setGameState] = useState<GameState>({
 		...DEFAULT_GAME_STATE,
@@ -22,6 +22,7 @@ export function useGameState(
 	const [availableGames, setAvailableGames] = useState<GameListItem[]>([]);
 	const wsRef = useRef<WebSocket | null>(null);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: gameState updates too often
 	useEffect(() => {
 		const ws = new WebSocket(`${BASE_URL}/anyone-can-draw`);
 		wsRef.current = ws;
@@ -246,7 +247,7 @@ export function useGameState(
 				}),
 			);
 		},
-		[gameState.gameId, playerId],
+		[gameState.gameId],
 	);
 
 	const submitGuess = useCallback(

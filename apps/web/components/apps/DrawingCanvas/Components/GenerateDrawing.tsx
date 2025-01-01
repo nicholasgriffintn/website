@@ -1,7 +1,7 @@
 import { Loader2 } from "lucide-react";
 
-import { Button } from "../../ui/button";
-import { GameState } from "../types";
+import { Button } from "@/components/ui/button";
+import type { GameState } from "../types";
 
 export function GenerateDrawing({
 	handleSubmit,

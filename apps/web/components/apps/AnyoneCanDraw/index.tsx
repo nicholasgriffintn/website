@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { DrawingCanvas } from "@/components/DrawingCanvas";
+import { DrawingCanvas } from "@/components/apps/DrawingCanvas";
 import { onGenerateDrawing } from "@/actions/chat";
 import type { User as DBUser } from "@/types/auth";
 

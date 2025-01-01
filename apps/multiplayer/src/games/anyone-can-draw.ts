@@ -8,15 +8,20 @@ import type {
 	DrawingGameState,
 } from "../types/drawing-game";
 
-export class DrawingGame extends BaseMultiplayerGame {
+export class DrawingGame extends BaseMultiplayerGame<
+	DrawingGameState,
+	DrawingRuntimeGameData
+> {
 	public static readonly AI_PLAYER_ID = "ai-player";
 	protected readonly config: DrawingGameConfig;
 
 	constructor(state: DurableObjectState, env: Env, config: DrawingGameConfig) {
 		super(state, env, {
-			gameDuration: config.gameDuration,
 			minPlayers: config.minPlayers,
 			maxPlayers: config.maxPlayers,
+			gameDuration: config.gameDuration,
+			aiEnabled: config.aiEnabled,
+			aiNames: config.aiNames,
 		});
 		this.config = config;
 	}
@@ -83,7 +88,7 @@ export class DrawingGame extends BaseMultiplayerGame {
 		gameId: string;
 		playerId: string;
 	}): Promise<void> {
-		const game = this.games.get(gameId) as DrawingRuntimeGameData;
+		const game = this.games.get(gameId);
 		if (!game) throw new Error("Game not found");
 
 		if (game.gameState.isActive || !this.validateGameStart(game)) {
@@ -197,8 +202,9 @@ export class DrawingGame extends BaseMultiplayerGame {
 		game: DrawingRuntimeGameData,
 		playerId: string,
 	) {
-		const timeBasedMultiplier =
-			game.gameState.timeRemaining / this.config.gameDuration;
+		const timeBasedMultiplier = game.gameState.timeRemaining !== undefined
+			? game.gameState.timeRemaining / this.config.gameDuration
+			: 1;
 
 		const guesser = game.users.get(playerId);
 		if (guesser) {

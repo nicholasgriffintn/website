@@ -1,11 +1,11 @@
 export interface BaseGameState {
     isActive: boolean;
     isLobby: boolean;
-    timeRemaining: number;
+    timeRemaining?: number;
     endTime?: number;
     currentDrawer?: string;
     statusMessage?: {
-        type: 'success' | 'failure';
+        type: 'success' | 'error' | 'info' | 'warning' | 'failure';
         message: string;
     };
 }
@@ -16,9 +16,10 @@ export interface BaseUserData {
 }
 
 export interface BaseGameConfig {
-    gameDuration: number;
     minPlayers: number;
     maxPlayers?: number;
+    gameDuration?: number;
+    roundsPerPlayer?: number;
 }
 
 export interface RuntimeGameData {
@@ -26,7 +27,7 @@ export interface RuntimeGameData {
     name: string;
     users: Map<string, BaseUserData>;
     gameState: BaseGameState;
-    timerInterval: number | null;
+    timerInterval?: number | null;
 }
 
 export interface StoredGameData {
