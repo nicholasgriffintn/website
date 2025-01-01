@@ -102,10 +102,12 @@ export function DrawingCanvas({
 		setHistoryIndex(0);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: causes issues
 	useEffect(() => {
 		initCanvas();
 	}, []);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: causes issues
 	useEffect(() => {
 		const handleKeyboard = (e: KeyboardEvent) => {
 			if ((e.metaKey || e.ctrlKey) && e.key === "z") {

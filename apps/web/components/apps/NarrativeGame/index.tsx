@@ -236,7 +236,12 @@ function NarrativeGameInner({
 								}
 								className="bg-blue-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-600 hover:text-muted-foreground disabled:bg-gray-400 disabled:text-muted-foreground transition-colors"
 							>
-								{isLoading ? "Loading..." : "Request AI Help"}
+								{isLoading
+									? "Loading..."
+									: !!gameState.aiCooldownEnd &&
+											gameState.aiCooldownEnd > Date.now()
+										? "AI is on cooldown. Please wait..."
+										: "Request AI Help"}
 							</button>
 						</div>
 					)}
