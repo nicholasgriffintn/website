@@ -140,7 +140,10 @@ export class NarrativeGame extends BaseMultiplayerGame<
 		updateFn?: (game: NarrativeRuntimeGameData) => Promise<any>,
 	): Promise<void> {
 		const game = this.games.get(gameId);
-		if (!game?.gameState) return;
+		if (!game?.gameState) {
+			console.info("Game not found");
+			return;
+		}
 
 		const prevState = structuredClone(game.gameState);
 
@@ -170,7 +173,8 @@ export class NarrativeGame extends BaseMultiplayerGame<
 	}): Promise<void> {
 		const game = this.games.get(gameId);
 		if (!game) {
-			throw new Error("Game not found");
+			console.error("Game not found");
+			return;
 		}
 
 		if (game.gameState.isActive) {
@@ -310,11 +314,13 @@ export class NarrativeGame extends BaseMultiplayerGame<
 	}) {
 		await this.safeStateUpdate(gameId, async (game) => {
 			if (!game.gameState.isActive) {
-				throw new Error("Game is not active");
+				console.error("Game is not active");
+				return;
 			}
 
 			if (playerId !== game.gameState.currentTurn) {
-				throw new Error("It's not your turn");
+				console.error("It's not your turn");
+				return;
 			}
 
 			const newContribution: StoryContribution = {
@@ -332,7 +338,6 @@ export class NarrativeGame extends BaseMultiplayerGame<
 				user.score += 5;
 			}
 
-			// Update turn
 			const humanPlayers = Array.from(game.users.keys()).filter(
 				(id) => id !== NarrativeGame.AI_PLAYER_ID,
 			);
@@ -346,20 +351,17 @@ export class NarrativeGame extends BaseMultiplayerGame<
 					await this.handleGameEnd(game);
 					return;
 				}
-				return {
-					message: {
-						type: "info" as const,
-						message: `Round ${game.gameState.currentRound} of ${game.gameState.totalRounds} begins!`,
-					},
+				game.gameState.statusMessage = {
+					type: "info" as const,
+					message: `Round ${game.gameState.currentRound} of ${game.gameState.totalRounds} begins!`,
 				};
+				return;
 			}
 
 			const nextPlayer = game.users.get(game.gameState.currentTurn);
-			return {
-				message: {
-					type: "success" as const,
-					message: `Contribution added successfully! Round ${game.gameState.currentRound}/${game.gameState.totalRounds} - It's ${nextPlayer?.name}'s turn now!`,
-				},
+			game.gameState.statusMessage = {
+				type: "success" as const,
+				message: `Contribution added successfully! Round ${game.gameState.currentRound}/${game.gameState.totalRounds} - It's ${nextPlayer?.name}'s turn now!`,
 			};
 		});
 	}
@@ -916,6 +918,7 @@ Return exactly 3 blended themes:
 		}));
 
 		await this.broadcast(
+      game.id,
 			JSON.stringify({
 				type: "gameState",
 				gameId: game.id,
@@ -923,7 +926,6 @@ Return exactly 3 blended themes:
 				gameState,
 				users,
 			}),
-			game.id,
 		);
 	}
 
@@ -932,7 +934,10 @@ Return exactly 3 blended themes:
 	 */
 	protected async broadcastGameState(gameId: string): Promise<void> {
 		const game = this.games.get(gameId) as NarrativeRuntimeGameData;
-		if (!game) return;
+		if (!game) {
+			console.info("Game not found");
+			return;
+    };
 		await this.handleGameState(game);
 	}
 
@@ -957,11 +962,11 @@ Return exactly 3 blended themes:
 		});
 
 		await this.broadcast(
+      '*',
 			JSON.stringify({
 				type: "gamesList",
 				games,
 			}),
-			"*",
 		);
 	}
 
@@ -1021,7 +1026,10 @@ Return exactly 3 blended themes:
 		playerName: string;
 	}) {
 		const game = this.games.get(gameId) as NarrativeRuntimeGameData;
-		if (!game) throw new Error("Game not found");
+		if (!game) {
+			console.error("Game not found");
+			return;
+		}
 
 		if (!game.users.has(playerId)) {
 			game.users.set(playerId, { name: playerName, score: 0 });
@@ -1030,6 +1038,7 @@ Return exactly 3 blended themes:
 			console.info(`${playerName} joined the game!`);
 
 			await this.broadcast(
+        gameId,
 				JSON.stringify({
 					type: "playerJoined",
 					playerId,
@@ -1042,7 +1051,6 @@ Return exactly 3 blended themes:
 						score: data.score,
 					})),
 				}),
-				gameId,
 			);
 
 			await this.broadcastGameState(gameId);

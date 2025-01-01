@@ -40,7 +40,7 @@ export class Multiplayer {
 					break;
 				case "plot-twist":
 					this.game = new NarrativeGame(this.state, this.env, {
-						minPlayers: 1,
+						minPlayers: 2,
 						maxPlayers: 8,
 						aiEnabled: true,
 						aiInterventionCooldown: 30000,

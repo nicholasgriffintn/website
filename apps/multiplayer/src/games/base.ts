@@ -173,7 +173,6 @@ export abstract class BaseMultiplayerGame<
 				timerInterval: null,
 			};
 
-			// Cast to TRuntimeData after creating a valid RuntimeGameData
 			const typedGame = newGame as unknown as TRuntimeData;
 			this.games.set(gameId, typedGame);
 
@@ -217,8 +216,8 @@ export abstract class BaseMultiplayerGame<
 		try {
 			const game = this.games.get(gameId);
 			if (!game) {
-				console.error('Game not found:', gameId);
-				throw new Error("Game not found");
+				console.error(`handleJoin: Game not found: ${gameId}`);
+				return;
 			}
 
 			if (!game.users.has(playerId)) {
@@ -353,8 +352,24 @@ export abstract class BaseMultiplayerGame<
 	}
 
 	protected broadcast(gameId: string, message: any) {
+		if (gameId === '*') {
+			const messageStr = typeof message === 'string' ? message : JSON.stringify(message);
+			
+			for (const ws of this.state.getWebSockets()) {
+				try {
+					ws.send(messageStr);
+				} catch (error) {
+					console.error("Error sending message to WebSocket:", error);
+				}
+			}
+			return;
+		}
+
 		const game = this.games.get(gameId);
-		if (!game) return;
+		if (!game) {
+			console.error(`broadcast: Game not found. ${gameId}`);
+			return;
+		}
 
 		if (message.type === "drawingUpdate") {
 			const { drawingData } = message;
@@ -394,6 +409,7 @@ export abstract class BaseMultiplayerGame<
 
 		for (const ws of this.state.getWebSockets()) {
 			try {
+				console.info("Sending message to WebSocket:", messageStr);
 				ws.send(messageStr);
 			} catch (error) {
 				console.error("Error sending message to WebSocket:", error);
