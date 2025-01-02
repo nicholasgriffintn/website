@@ -425,19 +425,19 @@ export class NarrativeGame extends BaseMultiplayerGame<
 						{
 							role: "system",
 							content:
-								"You are enhancing an ongoing story. Provide exactly three suggestions in the numbered format specified. Be concise and specific.",
+								"You are a story enhancer. You must respond with EXACTLY three numbered suggestions, one per line. No introduction, no explanation, no additional text. Just three numbered lines starting with 1., 2., and 3.",
 						},
 						{
 							role: "user",
-							content: `Given this story so far:
+							content: `Story so far:
 "${story}"
 
-Provide exactly three suggestions in this format:
-1. [A dramatic twist that changes the direction of the story]
-2. [A possible way to resolve current plot threads]
-3. [A new element to enhance the existing narrative]
+Respond with exactly three lines in this format:
+1. [dramatic twist]
+2. [resolution]
+3. [enhancement]
 
-Each suggestion should be 1-2 sentences maximum.`,
+Each line must start with the number and period, followed by a single space. Each suggestion must be 1-2 sentences.`,
 						},
 					],
 				},
