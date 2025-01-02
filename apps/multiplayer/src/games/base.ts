@@ -76,6 +76,8 @@ export abstract class BaseMultiplayerGame<
 		try {
 			const data = JSON.parse(message);
 
+			console.log("Received message:", { data });
+
 			if (
 				(data.action === "join" || data.action === "createGame") &&
 				data.playerId
@@ -409,7 +411,6 @@ export abstract class BaseMultiplayerGame<
 
 		for (const ws of this.state.getWebSockets()) {
 			try {
-				console.info("Sending message to WebSocket:", messageStr);
 				ws.send(messageStr);
 			} catch (error) {
 				console.error("Error sending message to WebSocket:", error);

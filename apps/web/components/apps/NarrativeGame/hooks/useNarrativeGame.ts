@@ -47,22 +47,49 @@ export function useNarrativeGame(
 
 	const sendAction = useCallback((action: string, data: any) => {
 		if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+			console.error('WebSocket not connected, attempting to reconnect...');
+			// Attempt to reconnect
+			const ws = new WebSocket(`${BASE_URL}/plot-twist`);
+			wsRef.current = ws;
+			
+			// Queue the message to be sent after connection
+			ws.onopen = () => {
+				console.log('Reconnected, sending queued message');
+				ws.send(JSON.stringify({ action, ...data }));
+			};
+			
 			setStatusMessage({
-				type: "error",
-				message: "Not connected to server",
+				type: "warning",
+				message: "Reconnecting to server...",
 			});
 			return;
 		}
-		console.log('Sending action:', { action, ...data });
-		setIsLoading(true);
-		wsRef.current.send(JSON.stringify({ action, ...data }));
+		
+		try {
+			console.log('Sending action:', { action, ...data });
+			setIsLoading(true);
+			wsRef.current.send(JSON.stringify({ action, ...data }));
+
+			const timeoutId = setTimeout(() => {
+				setIsLoading(false);
+			}, 5000);
+
+			const cleanup = () => {
+				clearTimeout(timeoutId);
+				wsRef.current?.removeEventListener('message', cleanup);
+			};
+			wsRef.current.addEventListener('message', cleanup);
+		} catch (error) {
+			console.error('Error sending message:', error);
+			setStatusMessage({
+				type: "error",
+				message: "Failed to send message to server",
+			});
+			setIsLoading(false);
+		}
 	}, []);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: gameState updates too often
-	useEffect(() => {
-		const ws = new WebSocket(`${BASE_URL}/plot-twist`);
-		wsRef.current = ws;
-
+	const setupWebSocketHandlers = (ws: WebSocket) => {
 		ws.onopen = () => {
 			console.log("WebSocket connected");
 			setIsConnected(true);
@@ -122,11 +149,20 @@ export function useNarrativeGame(
 						console.log('Player joined:', data);
 						setGameState(prevState => ({
 							...prevState,
+							...data.gameState,
 							gameId: data.gameId,
 							gameName: data.gameName,
-							isLobby: true,
 						}));
 						setUsers(data.users);
+						break;
+					case "error":
+						setStatusMessage({
+							type: "error",
+							message: data.error || "An error occurred",
+						});
+						break;
+					default:
+						console.log('Unknown message type:', data.type);
 						break;
 				}
 			} catch (error) {
@@ -163,6 +199,14 @@ export function useNarrativeGame(
 				message: "Connection error occurred",
 			});
 		};
+	};
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: gameState updates too often
+	useEffect(() => {
+		const ws = new WebSocket(`${BASE_URL}/plot-twist`);
+		wsRef.current = ws;
+
+		setupWebSocketHandlers(ws);
 
 		return () => {
 			if (ws.readyState === WebSocket.OPEN) {
@@ -264,21 +308,48 @@ export function useNarrativeGame(
 		}));
 	}, [gameState.gameId, playerId, sendAction]);
 
+	const submitContributionVote = useCallback((contributionId: number) => {
+		if (!gameState.gameId) return;
+		sendAction("contributionVote", { gameId: gameState.gameId, playerId, contributionId });
+	}, [gameState.gameId, playerId, sendAction]);
+
+	const submitAlternativeEnding = useCallback((text: string) => {
+		if (!gameState.gameId) return;
+		sendAction("alternativeEnding", { gameId: gameState.gameId, playerId, text });
+	}, [gameState.gameId, playerId, sendAction]);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: gameState updates too often
+	useEffect(() => {
+		const checkConnection = setInterval(() => {
+			if (wsRef.current?.readyState === WebSocket.CLOSED) {
+				console.log('Connection lost, attempting to reconnect...');
+				const ws = new WebSocket(`${BASE_URL}/plot-twist`);
+				wsRef.current = ws;
+				
+				setupWebSocketHandlers(ws);
+			}
+		}, 5000);
+
+		return () => clearInterval(checkConnection);
+	}, []);
+
 	return {
 		gameState,
-		users,
-		isConnected,
-		isLoading,
-		availableGames,
-		statusMessage,
-		createGame,
-		joinGame,
-		submitContribution,
-		voteOnSuggestion,
-		requestAIIntervention,
-		startGame,
-		submitThemeVote,
-		endGame,
-		leaveGame,
+			users,
+			isConnected,
+			isLoading,
+			availableGames,
+			statusMessage,
+			createGame,
+			joinGame,
+			submitContribution,
+			voteOnSuggestion,
+			requestAIIntervention,
+			startGame,
+			submitThemeVote,
+			endGame,
+			leaveGame,
+			submitContributionVote,
+			submitAlternativeEnding,
 	};
 }

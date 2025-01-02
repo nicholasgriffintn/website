@@ -11,22 +11,22 @@ interface Props {
 export function AISuggestions({ suggestions, onVote, isLoading }: Props) {
   return (
     <div className="space-y-4">
-      <h3 className="text-xl font-bold text-gray-800 mb-4">🤖 AI Suggestions</h3>
+      <h3 className="text-xl font-bold text-foreground mb-4">🤖 AI Suggestions</h3>
       <div className="grid gap-4">
         {suggestions.map((suggestion, index) => (
           <div
             key={`${suggestion.type}-${suggestion.suggestion.substring(0, 20)}`}
-            className="bg-white rounded-lg shadow-sm border border-gray-100 p-4"
+            className="bg-card rounded-lg shadow-sm border border-gray-100 p-4"
           >
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
                 {suggestion.type.charAt(0).toUpperCase() + suggestion.type.slice(1)}
               </span>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-muted-foreground">
                 {suggestion.votes} votes
               </span>
             </div>
-            <p className="text-gray-800 mb-3">{suggestion.suggestion}</p>
+            <p className="text-foreground mb-3">{suggestion.suggestion}</p>
             <button
               type="button"
               onClick={() => onVote(index)}

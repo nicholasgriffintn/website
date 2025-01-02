@@ -47,29 +47,29 @@ export class NarrativeGame extends BaseMultiplayerGame<
 		return (
 			storedGames as [
 				string,
-				StoredGameData & { lastAIInterventionTime?: number },
+				StoredGameData & { lastAIInterventionTime?: number; gameState: NarrativeGameState },
 			][]
 		).map(([id, game]) => {
 			const gameState: NarrativeGameState = {
 				isActive: game.gameState.isActive,
 				isLobby: game.gameState.isLobby,
-				theme: "",
-				contributions: [],
-				currentTurn: undefined,
-				storyPrompt: "",
-				hasEnded: false,
-				score: 0,
-				aiSuggestions: [],
-				lastContribution: null,
-				themeVotes: [],
-				selectedThemes: [],
-				isVotingPhase: false,
-				isReviewPhase: false,
-				contributionReviews: [],
-				alternativeEndings: [],
-				currentRound: 0,
-				totalRounds: 0,
-				timeRemaining: 0,
+				theme: game.gameState.theme || "",
+				contributions: game.gameState.contributions || [],
+				currentTurn: game.gameState.currentTurn,
+				storyPrompt: game.gameState.storyPrompt || "",
+				hasEnded: game.gameState.hasEnded || false,
+				score: game.gameState.score || 0,
+				aiSuggestions: game.gameState.aiSuggestions || [],
+				lastContribution: game.gameState.lastContribution || null,
+				themeVotes: game.gameState.themeVotes || [],
+				selectedThemes: game.gameState.selectedThemes || [],
+				isVotingPhase: game.gameState.isVotingPhase || false,
+				isReviewPhase: game.gameState.isReviewPhase || false,
+				contributionReviews: game.gameState.contributionReviews || [],
+				alternativeEndings: game.gameState.alternativeEndings || [],
+				currentRound: game.gameState.currentRound || 0,
+				totalRounds: game.gameState.totalRounds || 0,
+				timeRemaining: game.gameState.timeRemaining || 0,
 				statusMessage: game.gameState.statusMessage,
 			};
 
@@ -141,7 +141,7 @@ export class NarrativeGame extends BaseMultiplayerGame<
 	): Promise<void> {
 		const game = this.games.get(gameId);
 		if (!game?.gameState) {
-			console.info("Game not found");
+			console.log("Game not found");
 			return;
 		}
 
@@ -156,7 +156,7 @@ export class NarrativeGame extends BaseMultiplayerGame<
 		} catch (error) {
 			console.error("Error updating game state:", error);
 			game.gameState = prevState;
-			console.info("Game state restored due to error");
+			console.log("Game state restored due to error");
 		}
 	}
 
@@ -178,17 +178,17 @@ export class NarrativeGame extends BaseMultiplayerGame<
 		}
 
 		if (game.gameState.isActive) {
-			console.info("Game is already active");
+			console.log("Game is already active");
 			return;
 		}
 
 		if (!game.gameState.selectedThemes.includes(theme)) {
-			console.info("Invalid theme selected");
+			console.log("Invalid theme selected");
 			return;
 		}
 
 		if (!this.validateGameStart(game)) {
-			console.info(`Need at least ${this.config.minPlayers} players to start`);
+			console.log(`Need at least ${this.config.minPlayers} players to start`);
 			return;
 		}
 
@@ -272,10 +272,16 @@ export class NarrativeGame extends BaseMultiplayerGame<
 		data: any,
 		game: NarrativeRuntimeGameData | undefined,
 	): Promise<void> {
-		if (!game) return;
+		console.log("Received game action:", { action, data, gameExists: !!game });
+		
+		if (!game) {
+			console.error("Game not found for action:", { action, gameId: data?.gameId });
+			return;
+		}
 
 		switch (action) {
 			case "addContribution":
+				console.log("Handling contribution:", data);
 				await this.handleContribution(data);
 				break;
 			case "voteOnSuggestion":
@@ -312,16 +318,29 @@ export class NarrativeGame extends BaseMultiplayerGame<
 		playerId: string;
 		contribution: string;
 	}) {
+		console.log("Starting contribution handler:", { gameId, playerId });
+		
 		await this.safeStateUpdate(gameId, async (game) => {
+			console.log("Game state check:", { 
+				isActive: game.gameState.isActive,
+				currentTurn: game.gameState.currentTurn,
+				playerMatch: playerId === game.gameState.currentTurn
+			});
+
 			if (!game.gameState.isActive) {
 				console.error("Game is not active");
 				return;
 			}
 
 			if (playerId !== game.gameState.currentTurn) {
-				console.error("It's not your turn");
+				console.error("It's not your turn", {
+					expected: game.gameState.currentTurn,
+					received: playerId
+				});
 				return;
 			}
+
+			console.log("Adding contribution", contribution);
 
 			const newContribution: StoryContribution = {
 				playerId,
@@ -438,7 +457,7 @@ Each suggestion should be 1-2 sentences maximum.`,
 						index === 0 ? "twist" : index === 1 ? "resolution" : "enhancement",
 					suggestion: suggestion.replace(/^\d\.\s*/, ""),
 					votes: 0,
-					voters: [],
+					voters: [] as string[],
 				}));
 
 			game.lastAIInterventionTime = now;
@@ -465,6 +484,12 @@ Each suggestion should be 1-2 sentences maximum.`,
 		game.gameState.hasEnded = true;
 		game.gameState.isActive = false;
 
+		game.gameState.contributionReviews = game.gameState.contributions.map((_, index) => ({
+			contributionId: index,
+			votes: 0,
+			voters: [],
+		}));
+
 		const reviewTimeout = setTimeout(async () => {
 			await this.finalizeReviewPhase(game);
 		}, 120000);
@@ -473,7 +498,7 @@ Each suggestion should be 1-2 sentences maximum.`,
 		game.gameState.isReviewPhase = true;
 		game.gameState.statusMessage = {
 			type: "info",
-			message: "All rounds completed! Review phase starting...",
+			message: "All rounds completed! Review phase starting... You have 2 minutes to vote on the best contributions and suggest alternative endings.",
 		};
 
 		await this.safeStateUpdate(game.id);
@@ -490,59 +515,62 @@ Each suggestion should be 1-2 sentences maximum.`,
 	}) {
 		const game = this.games.get(gameId) as NarrativeRuntimeGameData;
 		if (!game || !game.gameState.isActive) {
-			console.info("Game is not active");
+			console.log("Game is not active");
 			return;
 		}
 
+		console.log("Current AI suggestions:", JSON.stringify(game.gameState.aiSuggestions, null, 2));
+		console.log("Voting on suggestion", suggestionIndex);
+
 		try {
 			if (suggestionIndex >= game.gameState.aiSuggestions.length) {
-				console.info("Invalid suggestion selected");
+				console.log("Invalid suggestion selected");
 				return;
 			}
 
-			if (
-				game.gameState.aiSuggestions[suggestionIndex].voters?.includes(playerId)
-			) {
-				console.info("You have already voted for this suggestion");
+			const suggestion = game.gameState.aiSuggestions[suggestionIndex];
+			console.log("Found suggestion:", JSON.stringify(suggestion, null, 2));
+
+			if (!suggestion.voters) {
+				console.log("No voters array found, initializing");
+				suggestion.voters = [];
+			}
+
+			if (suggestion.voters.includes(playerId)) {
+				console.log("You have already voted for this suggestion");
 				return;
 			}
 
-			game.gameState.aiSuggestions[suggestionIndex].votes++;
-			game.gameState.aiSuggestions[suggestionIndex].voters =
-				game.gameState.aiSuggestions[suggestionIndex].voters || [];
-			game.gameState.aiSuggestions[suggestionIndex].voters.push(playerId);
+			suggestion.votes++;
+			suggestion.voters.push(playerId);
+			console.log("Updated suggestion:", JSON.stringify(suggestion, null, 2));
 
 			const user = game.users.get(playerId);
 			if (user) {
 				user.score += 2;
 			}
 
-			if (
-				game.gameState.aiSuggestions[suggestionIndex].votes >=
-				Math.ceil(game.users.size / 2)
-			) {
+			if (suggestion.votes >= Math.ceil(game.users.size / 2)) {
 				await this.applyAISuggestion(game, suggestionIndex);
 
-				const voters =
-					game.gameState.aiSuggestions[suggestionIndex].voters || [];
-				for (const voterId of voters) {
+				for (const voterId of suggestion.voters) {
 					const voter = game.users.get(voterId);
 					if (voter) {
 						voter.score += 3;
 					}
 				}
 
-				console.info(
+				console.log(
 					"AI suggestion applied to the story! (+5 points for voters)",
 				);
 			} else {
-				console.info("Vote recorded (+2 points)");
+				console.log("Vote recorded (+2 points)");
 			}
 
 			await this.safeStateUpdate(gameId);
 		} catch (error) {
 			console.error("Error handling vote:", error);
-			console.info("Failed to process vote. Please try again.");
+			console.log("Failed to process vote. Please try again.");
 		}
 	}
 
@@ -556,7 +584,7 @@ Each suggestion should be 1-2 sentences maximum.`,
 	}) {
 		const game = this.games.get(gameId) as NarrativeRuntimeGameData;
 		if (!game || !game.gameState.isActive) {
-			console.info("Game is not active");
+			console.log("Game is not active");
 			return;
 		}
 
@@ -676,7 +704,7 @@ Each suggestion should be 1-2 sentences maximum.`,
 	}) {
 		await this.safeStateUpdate(gameId, async (game) => {
 			if (!game.gameState.isLobby) {
-				console.info("Cannot vote for theme at this time");
+				console.log("Cannot vote for theme at this time");
 				return;
 			}
 
@@ -771,7 +799,7 @@ Return exactly 3 blended themes:
 	}) {
 		const game = this.games.get(gameId) as NarrativeRuntimeGameData;
 		if (!game || !game.gameState.isReviewPhase) {
-			console.info("Cannot vote at this time");
+			console.log("Cannot vote at this time");
 			return;
 		}
 
@@ -781,14 +809,14 @@ Return exactly 3 blended themes:
 			);
 
 			if (!review || review.voters.includes(playerId)) {
-				console.info("Invalid vote or already voted for this contribution");
+				console.log("Invalid vote or already voted for this contribution");
 				return;
 			}
 
 			review.votes++;
 			review.voters.push(playerId);
 
-			console.info("Vote recorded");
+			console.log("Vote recorded");
 			await this.safeStateUpdate(gameId);
 		} catch (error) {
 			console.error("Error handling contribution vote:", error);
@@ -809,7 +837,7 @@ Return exactly 3 blended themes:
 	}) {
 		const game = this.games.get(gameId) as NarrativeRuntimeGameData;
 		if (!game || !game.gameState.isReviewPhase) {
-			console.info("Cannot suggest alternative ending at this time");
+			console.log("Cannot suggest alternative ending at this time");
 			return;
 		}
 
@@ -821,7 +849,7 @@ Return exactly 3 blended themes:
 				voters: [],
 			});
 
-			console.info("Alternative ending suggested");
+			console.log("Alternative ending suggested");
 			await this.safeStateUpdate(gameId);
 		} catch (error) {
 			console.error("Error handling alternative ending:", error);
@@ -890,7 +918,7 @@ Return exactly 3 blended themes:
 	}) {
 		const game = this.games.get(gameId) as NarrativeRuntimeGameData;
 		if (!game || !game.gameState.isActive) {
-			console.info("Game is not active");
+			console.log("Game is not active");
 			return;
 		}
 
@@ -918,13 +946,13 @@ Return exactly 3 blended themes:
 		}));
 
 		await this.broadcast(
-      game.id,
+			game.id,
 			JSON.stringify({
 				type: "gameState",
 				gameId: game.id,
 				gameName: game.name,
-				gameState,
-				users,
+					gameState,
+					users,
 			}),
 		);
 	}
@@ -935,9 +963,9 @@ Return exactly 3 blended themes:
 	protected async broadcastGameState(gameId: string): Promise<void> {
 		const game = this.games.get(gameId) as NarrativeRuntimeGameData;
 		if (!game) {
-			console.info("Game not found");
+			console.log("Game not found");
 			return;
-    };
+		}
 		await this.handleGameState(game);
 	}
 
@@ -962,7 +990,7 @@ Return exactly 3 blended themes:
 		});
 
 		await this.broadcast(
-      '*',
+			'*',
 			JSON.stringify({
 				type: "gamesList",
 				games,
@@ -1035,10 +1063,10 @@ Return exactly 3 blended themes:
 			game.users.set(playerId, { name: playerName, score: 0 });
 			await this.saveGames();
 
-			console.info(`${playerName} joined the game!`);
+			console.log(`${playerName} joined the game!`);
 
 			await this.broadcast(
-        gameId,
+				gameId,
 				JSON.stringify({
 					type: "playerJoined",
 					playerId,

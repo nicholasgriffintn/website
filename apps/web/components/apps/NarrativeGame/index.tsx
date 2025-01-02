@@ -26,6 +26,8 @@ function NarrativeGameInner({
 	submitContribution,
 	voteOnSuggestion,
 	requestAIIntervention,
+	submitContributionVote,
+	submitAlternativeEnding,
 	playerId,
 }: {
 	gameState: any;
@@ -41,6 +43,8 @@ function NarrativeGameInner({
 	submitContribution: (contribution: string) => void;
 	voteOnSuggestion: (suggestionIndex: number) => void;
 	requestAIIntervention: () => void;
+	submitContributionVote: (contributionId: number) => void;
+	submitAlternativeEnding: (text: string) => void;
 	playerId: string;
 }) {
 	if (!gameState.gameId) {
@@ -72,31 +76,126 @@ function NarrativeGameInner({
 	return (
 		<>
 			{(gameState.hasEnded || gameState.isReviewPhase) && (
-				<div className="mb-6 bg-green-50 rounded-lg p-6 border border-green-200">
-					<h3 className="text-2xl font-bold mb-4 text-green-800">
-						Game Complete! 🎉
-					</h3>
-					<div className="space-y-3">
-						<h4 className="font-medium text-lg text-green-700 mb-2">
-							Final Scores:
-						</h4>
-						{users
-							.sort((a, b) => b.score - a.score)
-							.map((user) => (
-								<div
-									key={user.id}
-									className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm"
-								>
-									<span className="font-medium text-foreground">
-										{user.name}
-									</span>
-									<span className="text-lg font-bold text-green-600">
-										{user.score} points
-									</span>
-								</div>
-							))}
+				<>
+					<div className="mb-6 bg-green-50 rounded-lg p-6 border border-green-200">
+						<h3 className="text-2xl font-bold mb-4 text-green-800">
+							Game Complete! 🎉
+						</h3>
+						<div className="space-y-3">
+							<h4 className="font-medium text-lg text-green-700 mb-2">
+								Final Scores:
+							</h4>
+							{users
+								.sort((a, b) => b.score - a.score)
+								.map((user) => (
+									<div
+										key={user.id}
+										className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm"
+									>
+										<span className="font-medium text-black">
+											{user.name}
+										</span>
+										<span className="text-lg font-bold text-green-600">
+											{user.score} points
+										</span>
+									</div>
+								))}
+						</div>
 					</div>
-				</div>
+
+					{gameState.isReviewPhase && (
+						<>
+							<div className="mb-8">
+								<h3 className="text-xl font-bold mb-4">Vote on Best Contributions</h3>
+								<div className="space-y-4">
+									{gameState.contributions.map((contribution, index) => {
+										const review = gameState.contributionReviews.find(
+											(r) => r.contributionId === index
+										);
+										const hasVoted = review?.voters.includes(playerId);
+
+										return (
+											<div
+												key={`${contribution.playerId}-${contribution.timestamp}`}
+												className="bg-card rounded-lg p-4 border"
+											>
+												<div className="flex items-center justify-between mb-2">
+													<span className="font-medium">
+														{users.find((u) => u.id === contribution.playerId)?.name}
+													</span>
+													<span className="text-sm text-gray-500">
+														{review?.votes || 0} votes
+													</span>
+												</div>
+												<p className="mb-4">{contribution.text}</p>
+												<button
+													type="button"
+													onClick={() => submitContributionVote(index)}
+													disabled={hasVoted || isLoading}
+													className="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 disabled:bg-gray-400"
+												>
+													{hasVoted ? "Already Voted" : "Vote for this contribution"}
+												</button>
+											</div>
+										);
+									})}
+								</div>
+							</div>
+
+							<div className="mb-8">
+								<h3 className="text-xl font-bold mb-4">Suggest an Alternative Ending</h3>
+								<form
+									onSubmit={(e) => {
+										e.preventDefault();
+										const formData = new FormData(e.currentTarget);
+										const text = formData.get("alternativeEnding") as string;
+										if (text?.trim()) {
+											submitAlternativeEnding(text);
+											e.currentTarget.reset();
+										}
+									}}
+									className="space-y-4"
+								>
+									<textarea
+										name="alternativeEnding"
+										className="w-full p-4 bg-white border rounded-lg"
+										placeholder="Write an alternative ending for the story..."
+										rows={4}
+										required
+									/>
+									<button
+										type="submit"
+										disabled={isLoading}
+										className="bg-green-500 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-600 disabled:bg-gray-400"
+									>
+										Submit Alternative Ending
+									</button>
+								</form>
+
+								{gameState.alternativeEndings.length > 0 && (
+									<div className="mt-6">
+										<h4 className="font-medium text-lg mb-4">Proposed Alternative Endings</h4>
+										<div className="space-y-4">
+											{gameState.alternativeEndings.map((ending) => (
+												<div key={`${ending.playerId}-${ending.text.substring(0, 20)}`} className="bg-white rounded-lg p-4 border">
+													<div className="flex items-center justify-between mb-2">
+														<span className="font-medium">
+															{users.find((u) => u.id === ending.playerId)?.name}
+														</span>
+														<span className="text-sm text-gray-500">
+															{ending.votes} votes
+														</span>
+													</div>
+													<p>{ending.text}</p>
+												</div>
+											))}
+										</div>
+									</div>
+								)}
+							</div>
+						</>
+					)}
+				</>
 			)}
 
 			<div className="mb-8">
@@ -267,6 +366,8 @@ export function NarrativeGame({ playerId, playerName, initialGameId }: Props) {
 		submitThemeVote,
 		endGame,
 		leaveGame,
+		submitContributionVote,
+		submitAlternativeEnding,
 	} = useNarrativeGame(playerId, playerName);
 
 	return (
@@ -294,6 +395,8 @@ export function NarrativeGame({ playerId, playerName, initialGameId }: Props) {
 				submitContribution={submitContribution}
 				voteOnSuggestion={voteOnSuggestion}
 				requestAIIntervention={requestAIIntervention}
+				submitContributionVote={submitContributionVote}
+				submitAlternativeEnding={submitAlternativeEnding}
 				playerId={playerId}
 			/>
 		</div>
