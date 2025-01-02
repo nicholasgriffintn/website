@@ -49,6 +49,7 @@ export interface NarrativeGameState {
   alternativeEndings: AlternativeEnding[];
   aiCooldownEnd?: number;
   statusMessage?: StatusMessage;
+  notification?: StatusMessage;
 }
 
 export interface ThemeVote {

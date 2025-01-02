@@ -41,7 +41,7 @@ export function useNarrativeGame(
 	const [users, setUsers] = useState<Array<User>>([]);
 	const [isConnected, setIsConnected] = useState(false);
 	const [availableGames, setAvailableGames] = useState<GameListItem[]>([]);
-	const [statusMessage, setStatusMessage] = useState<StatusMessage | null>(null);
+	const [connectionMessage, setConnectionMessage] = useState<StatusMessage | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const wsRef = useRef<WebSocket | null>(null);
 
@@ -58,7 +58,7 @@ export function useNarrativeGame(
 				ws.send(JSON.stringify({ action, ...data }));
 			};
 			
-			setStatusMessage({
+			setConnectionMessage({
 				type: "warning",
 				message: "Reconnecting to server...",
 			});
@@ -81,7 +81,7 @@ export function useNarrativeGame(
 			wsRef.current.addEventListener('message', cleanup);
 		} catch (error) {
 			console.error('Error sending message:', error);
-			setStatusMessage({
+			setConnectionMessage({
 				type: "error",
 				message: "Failed to send message to server",
 			});
@@ -93,7 +93,7 @@ export function useNarrativeGame(
 		ws.onopen = () => {
 			console.log("WebSocket connected");
 			setIsConnected(true);
-			setStatusMessage({
+			setConnectionMessage({
 				type: "success",
 				message: "Connected to game server",
 			});
@@ -129,7 +129,6 @@ export function useNarrativeGame(
 							gameName: data.gameName,
 						});
 						setUsers(data.users);
-						setStatusMessage(data.gameState.statusMessage || null);
 						break;
 					case "gamesList":
 						setAvailableGames(data.games);
@@ -156,7 +155,7 @@ export function useNarrativeGame(
 						setUsers(data.users);
 						break;
 					case "error":
-						setStatusMessage({
+						setConnectionMessage({
 							type: "error",
 							message: data.error || "An error occurred",
 						});
@@ -168,7 +167,7 @@ export function useNarrativeGame(
 			} catch (error) {
 				setIsLoading(false);
 				console.error("Error parsing WebSocket message:", error);
-				setStatusMessage({
+				setConnectionMessage({
 					type: "error",
 					message: "Error processing server message",
 				});
@@ -179,7 +178,7 @@ export function useNarrativeGame(
 			console.log("WebSocket closed");
 			setIsConnected(false);
 			setIsLoading(false);
-			setStatusMessage({
+			setConnectionMessage({
 				type: "warning",
 				message: "Connection lost. Please refresh the page to reconnect.",
 			});
@@ -194,7 +193,7 @@ export function useNarrativeGame(
 		ws.onerror = (error) => {
 			console.error("WebSocket error:", error);
 			setIsConnected(false);
-			setStatusMessage({
+			setConnectionMessage({
 				type: "error",
 				message: "Connection error occurred",
 			});
@@ -253,14 +252,14 @@ export function useNarrativeGame(
 		(contribution: string) => {
 			console.log('Submitting contribution:', { gameId: gameState.gameId, playerId, contribution });
 			if (!gameState.isActive) {
-				setStatusMessage({
+				setConnectionMessage({
 					type: "error",
 					message: "Game is not active",
 				});
 				return;
 			}
 			if (gameState.currentTurn !== playerId) {
-				setStatusMessage({
+				setConnectionMessage({
 					type: "error",
 					message: "It's not your turn",
 				});
@@ -339,7 +338,7 @@ export function useNarrativeGame(
 			isConnected,
 			isLoading,
 			availableGames,
-			statusMessage,
+			statusMessage: connectionMessage,
 			createGame,
 			joinGame,
 			submitContribution,

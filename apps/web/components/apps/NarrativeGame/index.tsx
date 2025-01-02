@@ -5,6 +5,7 @@ import { StatusMessage } from "./components/StatusMessage";
 import { GameLobby } from "./components/GameLobby";
 import { GameHeader } from "./components/GameHeader";
 import { GameContent } from "./components/GameContent";
+import { ConnectionStatus } from "./components/ConnectionStatus";
 
 interface Props {
   playerId: string;
@@ -18,7 +19,8 @@ export function NarrativeGame({ playerId, playerName, initialGameId }: Props) {
     users,
     isLoading,
     availableGames,
-    statusMessage,
+    statusMessage: connectionMessage,
+    isConnected,
     createGame,
     submitContribution,
     voteOnSuggestion,
@@ -34,12 +36,27 @@ export function NarrativeGame({ playerId, playerName, initialGameId }: Props) {
 
   return (
     <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-      <div className="col-span-full">
-        {statusMessage && (
-          <StatusMessage
-            type={statusMessage.type}
-            message={statusMessage.message}
-          />
+      <div className="col-span-full flex flex-col gap-2">
+        <ConnectionStatus 
+          isConnected={isConnected}
+          connectionMessage={connectionMessage}
+        />
+
+        {(gameState.notification || gameState.statusMessage) && (
+          <div className="space-y-2">
+            {gameState.notification && (
+              <StatusMessage
+                type={gameState.notification.type}
+                message={gameState.notification.message}
+              />
+            )}
+            {gameState.statusMessage && (
+              <StatusMessage
+                type={gameState.statusMessage.type}
+                message={gameState.statusMessage.message}
+              />
+            )}
+          </div>
         )}
       </div>
 

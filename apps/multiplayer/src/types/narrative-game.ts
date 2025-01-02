@@ -57,6 +57,7 @@ export interface NarrativeGameState extends BaseGameState {
 	aiSuggestions: AIIntervention[];
 	lastContribution: StoryContribution | null;
 	statusMessage?: StatusMessage;
+	notification?: StatusMessage;
 	themeVotes: ThemeVote[];
 	selectedThemes: string[];
 	isVotingPhase: boolean;

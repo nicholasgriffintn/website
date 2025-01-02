@@ -372,15 +372,15 @@ export class NarrativeGame extends BaseMultiplayerGame<
 				}
 				game.gameState.statusMessage = {
 					type: "info" as const,
-					message: `Round ${game.gameState.currentRound} of ${game.gameState.totalRounds} begins!`,
+					message: `Round ${game.gameState.currentRound} of ${game.gameState.totalRounds}`,
 				};
 				return;
 			}
 
 			const nextPlayer = game.users.get(game.gameState.currentTurn);
-			game.gameState.statusMessage = {
+			game.gameState.notification = {
 				type: "success" as const,
-				message: `Contribution added successfully! Round ${game.gameState.currentRound}/${game.gameState.totalRounds} - It's ${nextPlayer?.name}'s turn now!`,
+				message: `Contribution added successfully! It's ${nextPlayer?.name}'s turn now!`,
 			};
 		});
 	}
@@ -560,11 +560,15 @@ Each line must start with the number and period, followed by a single space. Eac
 					}
 				}
 
-				console.log(
-					"AI suggestion applied to the story! (+5 points for voters)",
-				);
+				game.gameState.notification = {
+					type: "success",
+					message: "AI suggestion applied to the story! (+5 points for voters)",
+				};
 			} else {
-				console.log("Vote recorded (+2 points)");
+				game.gameState.notification = {
+					type: "info",
+					message: "Vote recorded (+2 points)",
+				};
 			}
 
 			await this.safeStateUpdate(gameId);
@@ -607,7 +611,7 @@ Each line must start with the number and period, followed by a single space. Eac
 			}
 
 			if (game) {
-				game.gameState.statusMessage = {
+				game.gameState.notification = {
 					type: "info",
 					message: "AI is analyzing the story...",
 				};
@@ -618,8 +622,8 @@ Each line must start with the number and period, followed by a single space. Eac
 			game.lastAIInterventionTime = now;
 
 			if (game) {
-				game.gameState.statusMessage = {
-					type: "info",
+				game.gameState.notification = {
+					type: "success",
 					message: "AI has provided new suggestions!",
 				};
 			}
@@ -898,6 +902,10 @@ Return exactly 3 blended themes:
 					type: "success",
 					message: "Review phase complete! Final scores have been calculated.",
 				};
+				game.gameState.notification = {
+					type: "success",
+					message: "Review phase complete! Final scores have been calculated.",
+				};
 			}
 
 			await this.safeStateUpdate(game.id);
@@ -927,6 +935,10 @@ Return exactly 3 blended themes:
 			game.gameState.statusMessage = {
 				type: "success",
 				message: "Game ended! Review phase starting...",
+			};
+			game.gameState.notification = {
+				type: "info",
+				message: "Review phase in progress",
 			};
 			await this.safeStateUpdate(gameId);
 		} catch (error) {
