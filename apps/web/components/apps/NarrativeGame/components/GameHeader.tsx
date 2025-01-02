@@ -15,7 +15,7 @@ export function GameHeader({ gameState, users, playerId, onEndGame, onLeaveGame 
     <Card>
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">{gameState.storyPrompt || "Loading story..."}</h1>
+          <h1 className="text-2xl font-bold">Plot Twist</h1>
           <div className="space-x-2">
             {gameState.isActive && !gameState.hasEnded && !gameState.isReviewPhase && (
               <Button onClick={onEndGame} variant="destructive">
