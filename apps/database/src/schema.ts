@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { integer, sqliteTable, primaryKey, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, primaryKey, text, uniqueIndex, index } from "drizzle-orm/sqlite-core";
 
 export const user = sqliteTable("user", {
   id: integer({ mode: "number" }).primaryKey({ autoIncrement: true }),
@@ -19,7 +19,15 @@ export const user = sqliteTable("user", {
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
   setup_at: text(),
   terms_accepted_at: text(),
-});
+},
+	(table) => {
+		return {
+			emailIdx: uniqueIndex("email_idx").on(table.email),
+			githubUsernameIdx: uniqueIndex("github_username_idx").on(table.github_username),
+			twitterUsernameIdx: uniqueIndex("twitter_username_idx").on(table.twitter_username),
+		};
+	},
+);
 
 export type User = typeof user.$inferSelect;
 
@@ -40,7 +48,12 @@ export const session = sqliteTable("session", {
   user_id: integer()
     .notNull()
     .references(() => user.id),
-  expires_at: text().notNull(),
+	expires_at: text().notNull(),
+	last_extended_at: text("last_extended_at").default(sql`(CURRENT_TIMESTAMP)`).notNull()
+}, (table) => {
+	return {
+		expiresAtIdx: index("expires_at_idx").on(table.expires_at),
+	};
 });
 
 export type Session = typeof session.$inferSelect;

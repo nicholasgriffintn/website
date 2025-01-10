@@ -13,51 +13,58 @@ import {
   user as userTable,
   type Session,
 } from '@/lib/data/db/schema';
+import { Cache } from '@/lib/cache';
+
+const sessionCache = new Cache();
 
 export const SESSION_COOKIE_NAME = 'session';
 
 export function generateSessionToken(): string {
-  const bytes = new Uint8Array(20);
-  crypto.getRandomValues(bytes);
-  return encodeBase32LowerCaseNoPadding(bytes);
+	const bytes = new Uint8Array(20);
+	crypto.getRandomValues(bytes);
+	const token = encodeBase32LowerCaseNoPadding(bytes);
+	return encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 }
 
 export async function createSession(
   token: string,
   userId: number
 ): Promise<Session> {
-  const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const now = new Date();
+  const sessionId = token;
   const session: Session = {
     id: sessionId,
     user_id: userId,
-    expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+    expires_at: new Date(now.getTime() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+		last_extended_at: now.toISOString(),
   };
   await db.insert(sessionTable).values(session);
   return session;
 }
 
 export async function validateSessionToken(token: string) {
-  const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+  const sessionId = token;
   const now = Date.now();
+
+  const cached = await sessionCache.get(sessionId);
+  if (cached) {
+    return cached;
+  }
 
   const results = await db
     .select({
       session: {
         user_id: sessionTable.user_id,
         expires_at: sessionTable.expires_at,
+        last_extended_at: sessionTable.last_extended_at,
       },
-      user: {
-        name: userTable.name,
-        avatar_url: userTable.avatar_url,
-        email: userTable.email,
-        username: userTable.github_username,
-      },
+      user: userTable
     })
     .from(sessionTable)
     .innerJoin(userTable, eq(sessionTable.user_id, userTable.id))
     .where(eq(sessionTable.id, sessionId));
 
-  if (results.length < 1 || !results[0]) {
+  if (results.length < 1) {
     return { session: null, user: null };
   }
 
@@ -65,22 +72,41 @@ export async function validateSessionToken(token: string) {
   const expiresAt = new Date(session.expires_at).getTime();
 
   if (now >= expiresAt) {
-    await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
+    await Promise.all([
+      db.delete(sessionTable).where(eq(sessionTable.id, sessionId)),
+      sessionCache.invalidate(sessionId)
+    ]);
     return { session: null, user: null };
   }
 
   const shouldExtend = now >= expiresAt - 1000 * 60 * 60 * 24 * 15;
   if (shouldExtend) {
-    session.expires_at = new Date(now + 1000 * 60 * 60 * 24 * 30).toISOString();
-    db.update(sessionTable)
-      .set({
-        expires_at: session.expires_at,
-      })
-      .where(eq(sessionTable.id, sessionId))
-      .catch(console.error);
+    const lastExtendedAt = new Date(session.last_extended_at).getTime();
+    const timeSinceLastExtension = now - lastExtendedAt;
+
+    if (timeSinceLastExtension > 24 * 60 * 60 * 1000) {
+      const newExpiresAt = new Date(now + 1000 * 60 * 60 * 24 * 30).toISOString();
+      const newLastExtendedAt = new Date(now).toISOString();
+      
+      session.expires_at = newExpiresAt;
+      session.last_extended_at = newLastExtendedAt;
+      
+      await Promise.all([
+        db.update(sessionTable)
+          .set({
+            expires_at: newExpiresAt,
+            last_extended_at: newLastExtendedAt,
+          })
+          .where(eq(sessionTable.id, sessionId)),
+        sessionCache.invalidate(sessionId) // Invalidate old cache
+      ]);
+    }
   }
 
-  return { session, user };
+  const result = { session, user };
+  await sessionCache.set(sessionId, result);
+  
+  return result;
 }
 
 export type SessionUser = NonNullable<
@@ -88,7 +114,10 @@ export type SessionUser = NonNullable<
 >;
 
 export async function invalidateSession(sessionId: string): Promise<void> {
-  await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
+  await Promise.all([
+    db.delete(sessionTable).where(eq(sessionTable.id, sessionId)),
+    sessionCache.invalidate(sessionId)
+  ]);
 }
 
 export function setSessionTokenCookie(
@@ -129,36 +158,22 @@ export async function getAuthSession(
 
   const { session, user } = await validateSessionToken(tokenValue);
 
-  if (refreshCookie) {
+	if (refreshCookie) {
     if (session === null) {
       cookieStore.delete(SESSION_COOKIE_NAME);
       return { session: null, user: null };
     }
 
-    setSessionTokenCookie(
-      cookieStore,
-      tokenValue,
-      new Date(session.expires_at)
-    );
-  }
+		const now = Date.now();
+		const lastExtendedAt = new Date(session.last_extended_at).getTime();
+		const timeSinceLastExtension = now - lastExtendedAt;
+
+		if (timeSinceLastExtension > 24 * 60 * 60 * 1000) {
+			setSessionTokenCookie(cookieStore, tokenValue, new Date(session.expires_at));
+		}
+	}
 
   return { session, user };
 }
 
-export async function getFullAuthSession() {
-  const { session, user } = await getAuthSession();
-
-  if (!session) {
-    return { session: null, user: null };
-  }
-
-  if (user && user.email) {
-    const userData = await db
-      .select()
-      .from(userTable)
-      .where(eq(userTable.email, user.email));
-    return { session, user: userData[0] };
-  }
-
-  return { session, user: null };
-}
+export const getFullAuthSession = getAuthSession;
