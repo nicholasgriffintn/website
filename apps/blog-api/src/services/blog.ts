@@ -1,4 +1,4 @@
-import { BlogPost, QueryParams } from "../types";
+import type { BlogPost, QueryParams } from "../types";
 
 export class BlogService {
     constructor(private readonly db: D1Database) {}
@@ -17,8 +17,8 @@ export class BlogService {
             image_alt: doc.image_alt,
             metadata: typeof doc.metadata === 'string' ? JSON.parse(doc.metadata) : doc.metadata,
             tags: typeof doc.tags === 'string' ? JSON.parse(doc.tags) : doc.tags,
-            draft: Boolean(doc.draft),
-            archived: Boolean(doc.archived),
+            draft: doc.draft ? 1 : 0,
+            archived: doc.archived ? 1 : 0,
             audio_url: doc.audio_url
         };
     }
@@ -28,10 +28,10 @@ export class BlogService {
         const queryParams: any[] = ['blog'];
 
         if (!params.drafts) {
-            conditions.push('(draft = 0 OR draft = false OR draft = "false" OR draft IS NULL)');
+            conditions.push('(draft = 0 OR draft IS NULL)');
         }
         if (!params.archived) {
-            conditions.push('(archived = 0 OR archived = false OR archived = "false" OR archived IS NULL)');
+            conditions.push('(archived = 0 OR archived IS NULL)');
         }
 
         const query = `
@@ -46,9 +46,18 @@ export class BlogService {
             ORDER BY created_at DESC
         `;
 
+        console.log(JSON.stringify({
+            query,
+            queryParams
+        }, null, 2))
+
         const { results } = await this.db.prepare(query)
             .bind(...queryParams)
             .all();
+
+        console.log(JSON.stringify({
+            results: results[0]
+        }, null, 2))
 
         return results.map(this.parseDocument);
     }

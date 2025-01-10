@@ -4,8 +4,8 @@ export interface BlogMetadata {
     tags?: string[];
     image?: string | null;
     imageAlt?: string | null;
-    draft?: boolean;
-    archived?: boolean;
+    draft?: number;
+    archived?: number;
     date?: string;
     updated?: string | null;
     link?: string;
@@ -22,8 +22,8 @@ export interface BlogPost extends BlogMetadata {
     description: string | null;
     created_at: string;
     updated_at: string;
-    draft: boolean;
-    archived: boolean;
+    draft: number;
+    archived: number;
     image_url: string | null;
     image_alt: string | null;
     metadata: Record<string, unknown>;
