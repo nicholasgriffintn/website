@@ -4,8 +4,8 @@ export interface BlogMetadata {
     tags?: string[];
     image?: string | null;
     imageAlt?: string | null;
-    draft?: boolean;
-    archived?: boolean;
+    draft?: boolean | string;
+    archived?: boolean | string;
     date?: string;
     updated?: string | null;
     link?: string;

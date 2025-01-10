@@ -21,8 +21,8 @@ export class BlogProcessor {
             image_alt: metadata.imageAlt || null,
             slug,
             storage_key: key,
-            draft: metadata.draft ? 1 : 0,
-            archived: metadata.archived ? 1 : 0,
+            draft: metadata.draft && metadata.draft !== "false" ? 1 : 0,
+            archived: metadata.archived && metadata.archived !== "false" ? 1 : 0,
             created_at: metadata.date || now,
             updated_at: metadata.updated || null,
             content: "", // Will be set later
