@@ -17,13 +17,14 @@ export class BlogService {
             image_alt: doc.image_alt,
             metadata: typeof doc.metadata === 'string' ? JSON.parse(doc.metadata) : doc.metadata,
             tags: typeof doc.tags === 'string' ? JSON.parse(doc.tags) : doc.tags,
-            draft: doc.draft ? 1 : 0,
-            archived: doc.archived ? 1 : 0,
+            draft: Boolean(doc.draft),
+            archived: Boolean(doc.archived),
             audio_url: doc.audio_url
         };
     }
 
     async getAllPosts(params: QueryParams): Promise<BlogPost[]> {
+
         const conditions: string[] = ['type = ?'];
         const queryParams: any[] = ['blog'];
 

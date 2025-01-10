@@ -1,4 +1,4 @@
-import { BlogMetadata, ProcessedBlogData } from "../types";
+import type { BlogMetadata, ProcessedBlogData } from "../types";
 
 export class BlogProcessor {
     constructor(private readonly db: D1Database) {}
@@ -21,8 +21,8 @@ export class BlogProcessor {
             image_alt: metadata.imageAlt || null,
             slug,
             storage_key: key,
-            draft: metadata.draft || false,
-            archived: metadata.archived || false,
+            draft: metadata.draft ? 1 : 0,
+            archived: metadata.archived ? 1 : 0,
             created_at: metadata.date || now,
             updated_at: metadata.updated || null,
             content: "", // Will be set later
