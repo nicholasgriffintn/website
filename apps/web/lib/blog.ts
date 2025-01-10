@@ -1,5 +1,5 @@
 import { CacheManager } from "./cache";
-import { Heading } from "@/types/blog";
+import type { Heading } from "@/types/blog";
 const BASE_API_URL = "https://content.s3rve.co.uk";
 const cacheManager = new CacheManager<any>();
 
