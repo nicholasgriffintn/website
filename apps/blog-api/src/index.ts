@@ -1,12 +1,18 @@
 import { createResponse, parseFrontmatter } from "./utils";
 import { CORS_HEADERS } from "./constants";
 import { BlogService } from "./services/blog";
-import { QueryParams, QueueMessage } from "./types";
+import type { QueryParams, QueueMessage } from "./types";
 import { BlogProcessor } from "./services/blog-processor";
 import { StorageService } from "./services/storage";
 
-const handler: ExportedHandler<{ DB: D1Database, BUCKET: R2Bucket }, QueueMessage> = {
-    async fetch(request: Request, env: { DB: D1Database, BUCKET: R2Bucket }): Promise<Response> {
+interface Env {
+    DB: D1Database;
+    BUCKET: R2Bucket;
+    VERCEL_DEPLOY_HOOK_URL: string;
+}
+
+const handler: ExportedHandler<Env, QueueMessage> = {
+    async fetch(request: Request, env: Env): Promise<Response> {
         if (request.method === "OPTIONS") {
             return new Response(null, { headers: CORS_HEADERS });
         }
@@ -52,7 +58,7 @@ const handler: ExportedHandler<{ DB: D1Database, BUCKET: R2Bucket }, QueueMessag
             }, 500);
         }
     },
-    async queue(batch: MessageBatch<QueueMessage>, env: { BUCKET: R2Bucket, DB: D1Database }): Promise<void> {
+    async queue(batch: MessageBatch<QueueMessage>, env: Env): Promise<void> {
         if (batch.messages.length === 0) {
             return;
         }
@@ -80,6 +86,25 @@ const handler: ExportedHandler<{ DB: D1Database, BUCKET: R2Bucket }, QueueMessag
                 console.log(`Processed ${message.body.object.key}`);
             })
         );
+
+        const hasSuccessfulProcessing = results.some(result => result.status === 'fulfilled');
+
+        if (hasSuccessfulProcessing && env.VERCEL_DEPLOY_HOOK_URL) {
+            try {
+                console.log('Triggering Vercel deployment...');
+                const response = await fetch(env.VERCEL_DEPLOY_HOOK_URL, {
+                    method: 'POST',
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Deploy hook failed with status: ${response.status}`);
+                }
+                
+                console.log('Vercel deployment triggered successfully');
+            } catch (error) {
+                console.error('Failed to trigger Vercel deployment:', error);
+            }
+        }
 
         results.forEach((result, index) => {
             if (result.status === 'rejected') {
