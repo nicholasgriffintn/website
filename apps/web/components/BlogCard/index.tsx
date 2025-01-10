@@ -49,8 +49,8 @@ export function BlogCard({ post }) {
               {post.title}
             </Link>
           )}
-          {post.archived && <Badge>Archived</Badge>}
-          {post.draft && <Badge>Draft</Badge>}
+          {post.archived ? <Badge>Archived</Badge> : null}
+          {post.draft ? <Badge>Draft</Badge> : null}
         </CardTitle>
       </CardHeader>
       <CardContent>
