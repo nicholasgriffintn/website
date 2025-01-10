@@ -46,18 +46,9 @@ export class BlogService {
             ORDER BY created_at DESC
         `;
 
-        console.log(JSON.stringify({
-            query,
-            queryParams
-        }, null, 2))
-
         const { results } = await this.db.prepare(query)
             .bind(...queryParams)
             .all();
-
-        console.log(JSON.stringify({
-            results: results[0]
-        }, null, 2))
 
         return results.map(this.parseDocument);
     }
