@@ -89,8 +89,21 @@ const handler: ExportedHandler<Env, QueueMessage> = {
 
         const hasSuccessfulProcessing = results.some(result => result.status === 'fulfilled');
 
+        // biome-ignore lint/complexity/noForEach: <explanation>        
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                console.error(
+                    `Failed to process message ${batch.messages[index].body.object.key}:`,
+                    result.reason
+                );
+            }
+        });
+
         if (hasSuccessfulProcessing && env.VERCEL_DEPLOY_HOOK_URL) {
             try {
+                console.log('Waiting 60 seconds before triggering Vercel deployment...');
+                await new Promise(resolve => setTimeout(resolve, 60000)); // 60 second delay
+                
                 console.log('Triggering Vercel deployment...');
                 const response = await fetch(env.VERCEL_DEPLOY_HOOK_URL, {
                     method: 'POST',
@@ -105,15 +118,6 @@ const handler: ExportedHandler<Env, QueueMessage> = {
                 console.error('Failed to trigger Vercel deployment:', error);
             }
         }
-
-        results.forEach((result, index) => {
-            if (result.status === 'rejected') {
-                console.error(
-                    `Failed to process message ${batch.messages[index].body.object.key}:`,
-                    result.reason
-                );
-            }
-        });
 
         console.log(`Completed processing ${batch.messages.length} messages`);
     }
