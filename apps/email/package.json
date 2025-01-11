@@ -1,0 +1,15 @@
+{
+	"name": "website-eemail",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "wrangler dev src/index.ts",
+		"deploy": "wrangler deploy src/index.ts"
+	},
+	"dependencies": {
+		"postal-mime": "^2.4.1"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20241127.0",
+		"wrangler": "^3.91.0"
+	}
+}

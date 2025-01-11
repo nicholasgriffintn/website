@@ -62,6 +62,19 @@ importers:
         specifier: ^3.96.0
         version: 3.99.0(@cloudflare/workers-types@4.20241224.0)
 
+  apps/email:
+    dependencies:
+      postal-mime:
+        specifier: ^2.4.1
+        version: 2.4.1
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241127.0
+        version: 4.20241224.0
+      wrangler:
+        specifier: ^3.91.0
+        version: 3.99.0(@cloudflare/workers-types@4.20241224.0)
+
   apps/image-resizing:
     devDependencies:
       '@cloudflare/workers-types':
@@ -2600,6 +2613,9 @@ packages:
   pirates@4.0.6:
     resolution: {integrity: sha512-saLsH7WeYYPiD25LDuLRRY/i+6HaPYr6G1OUlN39otzkSTxKnubR9RTxS3/Kk50s1g2JTgFwWQDQyplC5/SHZg==}
     engines: {node: '>= 6'}
+
+  postal-mime@2.4.1:
+    resolution: {integrity: sha512-q1rHP0f7u0PNvnF/M7YFdkoV1T+q8lNm5hkviHHGEnycYvae7PSFuw7KTDe6PkEjkcjCVs/mPx0rMimncgxT0w==}
 
   postcss-import@15.1.0:
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
@@ -5549,6 +5565,8 @@ snapshots:
   pify@2.3.0: {}
 
   pirates@4.0.6: {}
+
+  postal-mime@2.4.1: {}
 
   postcss-import@15.1.0(postcss@8.4.49):
     dependencies:
