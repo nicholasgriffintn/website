@@ -1,7 +1,7 @@
 import { PageLayout } from "@/components/PageLayout";
 import { ContactLinks } from "@/components/ContactLinks";
-import { Link } from "@/components/Link";
 import { InnerPage } from "@/components/InnerPage";
+import { ContactForm } from "@/components/ContactForm";
 
 // TODO: Add form: https://github.com/nicholasgriffintn/NGWebsite2021/blob/16930e6c23a6a57a2ff61c1f802bcdd2c35aced4/src/pages/contact.js
 
@@ -35,11 +35,17 @@ export default async function Home() {
 						</div>
 					</div>
 				</div>
-				<p className="bg-[#555] mt-6 p-4">
-					Sorry, I'm currently working on rebuilding the form for this page,
-					while you wait, you can instead send me a message at{" "}
-					<Link href="mailto:me@nickgriffin.uk">me@nickgriffin.uk</Link>
-				</p>
+				<hr className="my-4" />
+				<ContactForm />
+				<hr className="my-4" />
+				<small>
+					If you prefer email clients over forms you can send me a message{" "}
+					{/* biome-ignore lint/a11y/useValidAnchor: We're obfuscating the email address */}
+					<a href="javascript:window.location.href=atob('bWFpbHRvOm1lQG5pY2tncmlmZmluLnVr')">
+						here
+					</a>
+					.
+				</small>
 			</InnerPage>
 		</PageLayout>
 	);
