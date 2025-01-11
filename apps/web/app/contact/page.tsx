@@ -2,8 +2,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { ContactLinks } from "@/components/ContactLinks";
 import { InnerPage } from "@/components/InnerPage";
 import { ContactForm } from "@/components/ContactForm";
-
-// TODO: Add form: https://github.com/nicholasgriffintn/NGWebsite2021/blob/16930e6c23a6a57a2ff61c1f802bcdd2c35aced4/src/pages/contact.js
+import { Link } from "@/components/Link";
 
 export const metadata = {
 	title: "Contact",
@@ -36,18 +35,13 @@ export default async function Home() {
 					</div>
 				</div>
 				<hr className="my-4" />
-				<ContactForm />
-				<hr className="my-4" />
 				<small>
 					If you prefer email clients over forms you can send me a message at{" "}
-					<a 
-						href="mailto:me@nickgriffin.uk"
-						className="underline hover:text-primary"
-					>
-						me@nickgriffin.uk
-					</a>
+					<Link href="mailto:me@nickgriffin.uk">me@nickgriffin.uk</Link>
 					.
 				</small>
+				<hr className="my-4" />
+				<ContactForm />
 			</InnerPage>
 		</PageLayout>
 	);
