@@ -6,6 +6,7 @@
 		"deploy": "wrangler deploy src/index.ts"
 	},
 	"dependencies": {
+		"mimetext": "^3.0.27",
 		"postal-mime": "^2.4.1"
 	},
 	"devDependencies": {
