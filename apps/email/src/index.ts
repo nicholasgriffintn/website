@@ -17,12 +17,13 @@ export default {
 
 		const formData = await request.formData();
 
-		const token = formData.get("token") as string;
+		const token = formData.get("cf-turnstile-response") as string;
 		const from = formData.get("from") as string;
 		const subject = formData.get("subject") as string;
 		const body = formData.get("body") as string;
 
 		if (!token || !from || !subject || !body) {
+			console.log("Missing required fields");
 			return new Response("Missing required fields", { status: 400 });
 		}
 
@@ -43,27 +44,43 @@ export default {
 		const validateTokenOutcome =
 			(await validateTokenResponse.json()) as SiteVerify;
 		if (!validateTokenOutcome.success) {
+			console.log("Invalid token");
 			return new Response("Invalid token", { status: 400 });
 		}
 
+    const msg = createMimeMessage();
+    msg.setSender({ name: "Contact Form Submission", addr: from });
+    msg.setRecipient(env.FORWARD_TO);
+    msg.setSubject(subject);
+    msg.addMessage({
+      contentType: "text/plain",
+      data: body,
+    });
+
+		console.log({
+      from,
+      to: env.FORWARD_TO,
+      raw: msg.asRaw()
+    });
+
+    const message = new EmailMessage(
+      from,
+      env.FORWARD_TO,
+      msg.asRaw(),
+    );
+
+		// @ts-ignore - types seem to be wrong
+		if (!message?.raw) {
+			console.log("Error creating email message");
+			return new Response("Internal server error", { status: 500 });
+		}
+
+		console.log(JSON.stringify(message, null, 2));
+
 		try {
-			const msg = createMimeMessage();
-			msg.setSender({ name: "Contact Form Submission", addr: from });
-			msg.setRecipient(env.FORWARD_TO);
-			msg.setSubject(subject);
-			msg.addMessage({
-				contentType: "text/plain",
-				data: body,
-			});
-
-			const message = new EmailMessage(
-				from,
-				env.FORWARD_TO,
-				msg.asRaw(),
-			);
-
 			await env.EMAIL.send(message);
 		} catch (e) {
+			console.log("Error sending email", e);
 			if (e instanceof Error) {
 				return new Response(e.message, { status: 500 });
 			}

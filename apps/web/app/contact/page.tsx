@@ -39,10 +39,12 @@ export default async function Home() {
 				<ContactForm />
 				<hr className="my-4" />
 				<small>
-					If you prefer email clients over forms you can send me a message{" "}
-					{/* biome-ignore lint/a11y/useValidAnchor: We're obfuscating the email address */}
-					<a href="javascript:window.location.href=atob('bWFpbHRvOm1lQG5pY2tncmlmZmluLnVr')">
-						here
+					If you prefer email clients over forms you can send me a message at{" "}
+					<a 
+						href="mailto:me@nickgriffin.uk"
+						className="underline hover:text-primary"
+					>
+						me@nickgriffin.uk
 					</a>
 					.
 				</small>
