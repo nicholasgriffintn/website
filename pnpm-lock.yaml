@@ -16,7 +16,7 @@ importers:
         version: 2.3.3
       typescript:
         specifier: ^5.6.3
-        version: 5.7.2
+        version: 5.7.3
 
   apps/blog-api:
     devDependencies:
@@ -57,7 +57,7 @@ importers:
         version: 0.30.1
       typescript:
         specifier: ^5.7.2
-        version: 5.7.2
+        version: 5.7.3
       wrangler:
         specifier: ^3.96.0
         version: 3.99.0(@cloudflare/workers-types@4.20241224.0)
@@ -252,7 +252,7 @@ importers:
         version: 3.4.17
       typescript:
         specifier: ^5.7.2
-        version: 5.7.2
+        version: 5.7.3
 
 packages:
 
@@ -3076,8 +3076,8 @@ packages:
     resolution: {integrity: sha512-DUHWQAcC8BTiUZDRzAYGvpSpGLiaOQPfYXlCieQbwUvmml/LRGIe3raKdrOPOoiX0DYlzxs2nH6BoWJoZrj8hA==}
     hasBin: true
 
-  typescript@5.7.2:
-    resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
+  typescript@5.7.3:
+    resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -6155,7 +6155,7 @@ snapshots:
       turbo-windows-64: 2.3.3
       turbo-windows-arm64: 2.3.3
 
-  typescript@5.7.2: {}
+  typescript@5.7.3: {}
 
   ufo@1.5.4: {}
 
