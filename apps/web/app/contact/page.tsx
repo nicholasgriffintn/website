@@ -30,7 +30,7 @@ export default async function Home() {
 								instead where you may be ignored, unless you have a really
 								interesting thing for me 🥸.
 							</p>
-							<ContactLinks />
+							<ContactLinks hideContactLink />
 						</div>
 					</div>
 				</div>
