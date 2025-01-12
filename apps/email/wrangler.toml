@@ -12,7 +12,6 @@ port = 8786
 
 [[send_email]]
 name = "EMAIL"
-destination_address = "me@nickgriffin.uk"
 
 [[r2_buckets]]
 binding = "R2_BUCKET"

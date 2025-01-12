@@ -2,6 +2,7 @@ import type { R2Bucket, SendEmail } from "@cloudflare/workers-types";
 
 export interface Env {
   FORWARD_TO: string;
+  SEND_TO: string;
   R2_BUCKET: R2Bucket
   TURNSTILE_SITE_KEY: string;
   TURNSTILE_SECRET_KEY: string;

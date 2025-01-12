@@ -10,6 +10,9 @@ import { Button } from '@/components/ui/button';
 
 export function ContactForm() {
   const [loading, setLoading] = useState(true);
+	const [submitting, setSubmitting] = useState(false);
+	const [success, setSuccess] = useState(false);
+	const [error, setError] = useState(false);
 
   const handleVerify = () => {
     setLoading(false);
@@ -17,6 +20,10 @@ export function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSuccess(false);
+    setError(false);
+    setSubmitting(true);
+		
     const formData = new FormData(e.currentTarget as HTMLFormElement);
 
     try {
@@ -26,18 +33,24 @@ export function ContactForm() {
       });
 
       const { ok } = await response.json();
+
+      setSubmitting(false);
       
       if (ok) {
-        alert('Message sent successfully!');
+				setSuccess(true);
         (e.target as HTMLFormElement).reset();
       } else {
-        alert('Failed to send message. Please try again.');
+        setError(true);
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      alert('Failed to send message. Please try again.');
+      setError(true);
     }
   };
+
+	if (success) {
+		return <div>Message sent successfully!</div>;
+	}
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
@@ -79,7 +92,11 @@ export function ContactForm() {
         onVerify={handleVerify}
       />
 
-      <Button type="submit" disabled={loading}>
+			{error && <div>Failed to send message. Please try again.</div>}
+			
+			{submitting && <div>Submitting...</div>}
+
+      <Button type="submit" disabled={loading || submitting}>
         Send Message
       </Button>
     </form>
