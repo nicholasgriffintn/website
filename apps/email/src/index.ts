@@ -30,7 +30,10 @@ export default {
 		}
 
 		if (method !== "POST") {
-			return Response.json({ ok: false }, { status: 405, headers: corsHeaders });
+			return Response.json(
+				{ ok: false },
+				{ status: 405, headers: corsHeaders },
+			);
 		}
 
 		const ip = request.headers.get("cf-connecting-ip");
@@ -44,11 +47,17 @@ export default {
 
 		if (!token || !from || !subject || !body) {
 			console.log("Missing required fields");
-			return Response.json({ ok: false }, { status: 400, headers: corsHeaders });
+			return Response.json(
+				{ ok: false },
+				{ status: 400, headers: corsHeaders },
+			);
 		}
 
 		if (blockList.includes(from)) {
-			return Response.json({ ok: false }, { status: 400, headers: corsHeaders });
+			return Response.json(
+				{ ok: false },
+				{ status: 400, headers: corsHeaders },
+			);
 		}
 
 		const validateTokenData = new FormData();
@@ -69,7 +78,10 @@ export default {
 			(await validateTokenResponse.json()) as SiteVerify;
 		if (!validateTokenOutcome.success) {
 			console.log("Invalid token");
-			return Response.json({ ok: false }, { status: 400, headers: corsHeaders });
+			return Response.json(
+				{ ok: false },
+				{ status: 400, headers: corsHeaders },
+			);
 		}
 
 		const msg = createMimeMessage();
@@ -98,13 +110,31 @@ ${body}
 			);
 
 			await env.EMAIL.send(message);
+
+			if (env.R2_BUCKET) {
+				const date = new Date().toISOString();
+				const emailId = `${date}-${from}`;
+
+				await env.R2_BUCKET.put(`${emailId}/email.json`, JSON.stringify({
+						from,
+						subject,
+						message: msg.asRaw(),
+					}),
+				);
+			}
 		} catch (e) {
 			console.error("Error sending email", e);
 			if (e instanceof Error) {
-				return Response.json({ ok: false }, { status: 500, headers: corsHeaders });
+				return Response.json(
+					{ ok: false },
+					{ status: 500, headers: corsHeaders },
+				);
 			}
 
-			return Response.json({ ok: false }, { status: 500, headers: corsHeaders });
+			return Response.json(
+				{ ok: false },
+				{ status: 500, headers: corsHeaders },
+			);
 		}
 
 		return Response.json({ ok: true }, { status: 200, headers: corsHeaders });
