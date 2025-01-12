@@ -202,8 +202,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       sugar-high:
-        specifier: ^0.7.5
-        version: 0.7.5
+        specifier: ^0.8.0
+        version: 0.8.1
       tailwind-container-break-out:
         specifier: ^2.0.9
         version: 2.0.9(tailwindcss@3.4.17)
@@ -2981,8 +2981,8 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     hasBin: true
 
-  sugar-high@0.7.5:
-    resolution: {integrity: sha512-lfGxo0il0Mx4WLdXEt0WsJ8V3QkQWssXnolj5xBurzlGJW07LuwmJWKtS0B2WJ5XWz1439RHngXAmzsnLD0rFA==}
+  sugar-high@0.8.1:
+    resolution: {integrity: sha512-PqdbMRoo1Q415DA6H0IQA2PunW8dKjoWQUceWylI9WaGkOZumN8+7JSui3xQUvGB8vWyjsY+VFyd2gFBofJYUw==}
 
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
@@ -6046,7 +6046,7 @@ snapshots:
       pirates: 4.0.6
       ts-interface-checker: 0.1.13
 
-  sugar-high@0.7.5: {}
+  sugar-high@0.8.1: {}
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
