@@ -86,6 +86,8 @@ const textModels = [
 	"Phi-3.5-mini-instruct",
 	"mythomax-l2-13b",
 	"deepseek-v3",
+	"deepseek-chat",
+	"deepseek-reasoner",
 ];
 
 const imageToTextModels = [
