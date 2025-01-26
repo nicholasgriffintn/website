@@ -41,6 +41,7 @@ export function SpotifyWidget({ data }: { data: RecentTracks | undefined }) {
 										unoptimized
 										width={700}
 										height={245}
+										loading="eager"
 									/>
 								</div>
 							) : null}
