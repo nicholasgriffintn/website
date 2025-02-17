@@ -17,7 +17,7 @@ export async function getAiMetrics({
 		const baseUrl =
 			process.env.NODE_ENV === "development"
 				? "http://localhost:8787"
-				: "https://assistant.nicholasgriffin.workers.dev";
+				: "https://chat-api.nickgriffin.uk";
 		const url = `${baseUrl}/metrics?status=${status}&limit=${limit}&interval=${interval}&timeframe=${timeframe}&type=performance`;
 
 		const res = await fetch(url, {

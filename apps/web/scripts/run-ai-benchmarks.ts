@@ -139,7 +139,7 @@ async function fetchModelResponse(model: string, benchmark: any) {
 		timestamp: new Date().toISOString(),
 	};
 
-	const baseUrl = "https://assistant.nicholasgriffin.workers.dev";
+	const baseUrl = "https://chat-api.nickgriffin.uk";
 	const token = process.env.AUTH_TOKEN;
 
 	console.log(`Fetching data for ${request.chatId}`);
