@@ -54,7 +54,7 @@ export default async function Home() {
 						icon={<MessageSquare className="w-6 h-6" />}
 						title="Chat"
 						description="Interactive chat interface powered by advanced language models, available for signed in only."
-						href="/ai/chat"
+						href="https://chat.nickgriffin.uk/"
 					/>
 					<LinkCard
 						icon={<Activity className="w-6 h-6" />}
