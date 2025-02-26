@@ -88,6 +88,7 @@ const textModels = [
 	"deepseek-v3",
 	"deepseek-chat",
 	"deepseek-reasoner",
+	"claude-3.7-sonnet",
 ];
 
 const imageToTextModels = [
@@ -98,6 +99,7 @@ const imageToTextModels = [
 	"claude-3-opus",
 	"llava",
 	"pixtral-large",
+	"claude-3.7-sonnet",
 ];
 
 const RATE_LIMIT = 50;
