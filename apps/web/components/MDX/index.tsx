@@ -1,7 +1,7 @@
 import gfm from 'remark-gfm';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { highlight } from 'sugar-high';
-import { createElement } from 'react';
+import { createElement, Children } from 'react';
 
 import { Link } from '@/components/Link';
 import { Image } from '@/components/Image';
@@ -93,7 +93,18 @@ function slugify(str) {
 
 function createHeading(level) {
   const Heading = ({ children }) => {
-    const slug = slugify(children);
+    const text = Children.toArray(children)
+      .map(child => {
+        if (typeof child === 'string') return child;
+        if (typeof child === 'object' && child.props) {
+          return child.props.children;
+        }
+        return '';
+      })
+      .join('');
+    
+    const slug = slugify(text);
+    
     return createElement(`h${level}`, { id: slug }, [
       createElement(
         'a',
@@ -109,7 +120,7 @@ function createHeading(level) {
               className: 'sr-only',
               key: `hidden-text-${slug}`,
             },
-            `Link to ${children}`
+            `Link to ${text}`
           ),
           createElement(
             'span',
@@ -126,7 +137,6 @@ function createHeading(level) {
   };
 
   Heading.displayName = `Heading${level}`;
-
   return Heading;
 }
 

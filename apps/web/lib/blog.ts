@@ -131,11 +131,14 @@ export function extractHeadings(content: string) {
 
 	while ((match = headingRegex.exec(content)) !== null) {
 		const level = match[1].length;
-		const text = match[2];
+		let text = match[2];
+        
+		text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+		
 		const slug = text
-			.toLowerCase()
-			.replace(/[^a-z0-9]+/g, '-')
-			.replace(/(^-|-$)/g, '');
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/(^-|-$)/g, '');
 
 			headings.push({
 				text,

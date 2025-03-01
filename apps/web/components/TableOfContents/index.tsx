@@ -1,5 +1,3 @@
-import { ChevronRight } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 import { Link } from "@/components/Link"
 import { ScrollArea } from "@/components/ui/scroll-area"
