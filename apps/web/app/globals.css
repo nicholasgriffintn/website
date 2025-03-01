@@ -198,3 +198,7 @@ h6:hover .anchor {
 	font-size: 0.9em;
 	font-family: var(--font-mono);
 }
+
+.list-disc {
+  margin-left: 1rem;
+}
