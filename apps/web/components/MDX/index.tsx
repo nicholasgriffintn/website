@@ -2,9 +2,11 @@ import gfm from 'remark-gfm';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { highlight } from 'sugar-high';
 import { createElement, Children } from 'react';
+import React from 'react';
 
 import { Link } from '@/components/Link';
 import { Image } from '@/components/Image';
+import { slugify } from '@/lib/slugs';
 
 function Table({ children, ...props }) {
   return (
@@ -80,24 +82,16 @@ function Code({ children, className, ...props }) {
   );
 }
 
-function slugify(str) {
-  return str
-    .toString()
-    .toLowerCase()
-    .trim() // Remove whitespace from both ends of a string
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/&/g, '-and-') // Replace & with 'and'
-    .replace(/[^\w\-]+/g, '') // Remove all non-word characters except for -
-    .replace(/\-\-+/g, '-'); // Replace multiple - with single -
-}
-
 function createHeading(level) {
   const Heading = ({ children }) => {
     const text = Children.toArray(children)
       .map(child => {
         if (typeof child === 'string') return child;
-        if (typeof child === 'object' && child.props) {
-          return child.props.children;
+        if (React.isValidElement(child)) {
+          const props = child.props as { children?: React.ReactNode };
+          if (props.children !== undefined) {
+            return props.children;
+          }
         }
         return '';
       })

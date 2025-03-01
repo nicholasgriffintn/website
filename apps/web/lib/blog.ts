@@ -1,5 +1,7 @@
 import { CacheManager } from "./cache";
 import type { Heading } from "@/types/blog";
+import { slugify } from "./slugs";
+
 const BASE_API_URL = "https://content.s3rve.co.uk";
 const cacheManager = new CacheManager<any>();
 
@@ -135,10 +137,7 @@ export function extractHeadings(content: string) {
         
 		text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
 		
-		const slug = text
-				.toLowerCase()
-				.replace(/[^a-z0-9]+/g, '-')
-				.replace(/(^-|-$)/g, '');
+		const slug = slugify(text);
 
 			headings.push({
 				text,
