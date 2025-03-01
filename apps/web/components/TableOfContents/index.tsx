@@ -15,7 +15,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   if (!headings.length) return null
 
   return (
-    <div className="rounded-lg border bg-background/50 text-foreground">
+    <div className="rounded-lg border bg-background/50 text-foreground md:max-h-[450px] overflow-y-auto">
       <div className="flex items-center px-4 pt-4">
         <h3 className="text-sm font-normal">Table of Contents</h3>
       </div>
