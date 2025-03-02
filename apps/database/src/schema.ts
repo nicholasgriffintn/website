@@ -60,6 +60,7 @@ export const document = sqliteTable("document", {
     image_alt: text(),
     tags: text(),
     audio_url: text(),
+    embedding_id: text(),
     created_at: text()
     .default(sql`(CURRENT_TIMESTAMP)`).notNull(),
     updated_at: text()

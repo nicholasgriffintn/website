@@ -19,12 +19,12 @@ export class BlogService {
             tags: typeof doc.tags === 'string' ? JSON.parse(doc.tags) : doc.tags,
             draft: Boolean(doc.draft),
             archived: Boolean(doc.archived),
-            audio_url: doc.audio_url
+            audio_url: doc.audio_url,
+            embedding_id: doc.embedding_id
         };
     }
 
     async getAllPosts(params: QueryParams): Promise<BlogPost[]> {
-
         const conditions: string[] = ['type = ?'];
         const queryParams: any[] = ['blog'];
 
@@ -47,18 +47,9 @@ export class BlogService {
             ORDER BY created_at DESC
         `;
 
-        console.log(JSON.stringify({
-            query,
-            queryParams
-        }, null, 2))
-
         const { results } = await this.db.prepare(query)
             .bind(...queryParams)
             .all();
-
-        console.log(JSON.stringify({
-            results: results[0]
-        }, null, 2))
 
         return results.map(this.parseDocument);
     }

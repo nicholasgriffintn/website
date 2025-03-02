@@ -8,6 +8,10 @@ routes = [
 	{ pattern = "blog.s3rve.co.uk", custom_domain = true }
 ]
 
+[observability]
+enabled = true
+head_sampling_rate = 1
+
 [[r2_buckets]]
 binding = 'BUCKET'
 bucket_name = 'blog'

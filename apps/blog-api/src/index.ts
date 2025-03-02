@@ -1,15 +1,10 @@
 import { createResponse, parseFrontmatter } from "./utils";
 import { CORS_HEADERS } from "./constants";
 import { BlogService } from "./services/blog";
-import type { QueryParams, QueueMessage } from "./types";
+import type { QueryParams, QueueMessage, Env } from "./types";
 import { BlogProcessor } from "./services/blog-processor";
 import { StorageService } from "./services/storage";
-
-interface Env {
-    DB: D1Database;
-    BUCKET: R2Bucket;
-    VERCEL_DEPLOY_HOOK_URL: string;
-}
+import { EmbeddingService } from "./services/embeeding";
 
 const handler: ExportedHandler<Env, QueueMessage> = {
     async fetch(request: Request, env: Env): Promise<Response> {
@@ -22,14 +17,14 @@ const handler: ExportedHandler<Env, QueueMessage> = {
         }
 
         try {
+            const blogService = new BlogService(env.DB);
+
             const url = new URL(request.url);
             const paths = url.pathname.slice(1).split("/");
 
             if (paths[0] !== "content") {
                 return createResponse({ error: "Not found" }, 404);
             }
-
-            const blogService = new BlogService(env.DB);
 
             if (paths.length === 1) {
                 const params: QueryParams = {
@@ -67,7 +62,8 @@ const handler: ExportedHandler<Env, QueueMessage> = {
         
         const storageService = new StorageService(env.BUCKET);
         const blogProcessor = new BlogProcessor(env.DB);
-
+        const embeddingService = new EmbeddingService(env.DB, env.ASSISTANT_API_KEY);
+        
         const results = await Promise.allSettled(
             batch.messages.map(async message => {
                 console.log(`Processing ${message.body.object.key}`);
@@ -82,7 +78,15 @@ const handler: ExportedHandler<Env, QueueMessage> = {
                 const processedData = blogProcessor.processMetadata(metadata, message.body.object.key);
                 processedData.content = blogContent;
 
-                await blogProcessor.saveBlogPost(processedData);
+                const embeddingResponse = await embeddingService.insertBlogPost(processedData);
+
+                const postData = {
+                    ...processedData,
+                    embedding_id: embeddingResponse?.data?.id
+                }
+
+                await blogProcessor.saveBlogPost(postData);
+
                 console.log(`Processed ${message.body.object.key}`);
             })
         );

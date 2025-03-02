@@ -22,6 +22,13 @@
       "when": 1734712646925,
       "tag": "0002_chilly_moon_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1740925595337,
+      "tag": "0003_tricky_nick_fury",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,1 @@
+ALTER TABLE `document` ADD `embedding_id` text;

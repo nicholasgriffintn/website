@@ -41,9 +41,9 @@ export class BlogProcessor {
             `INSERT INTO document (
                 id, title, description, tags, image_url, image_alt,
                 slug, storage_key, draft, archived, created_at,
-                updated_at, content, type, metadata
+                updated_at, content, type, metadata, embedding_id
             ) VALUES (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
             ON CONFLICT(id) DO UPDATE SET
                 title = excluded.title,
@@ -59,7 +59,8 @@ export class BlogProcessor {
                 updated_at = excluded.updated_at,
                 content = excluded.content,
                 type = excluded.type,
-                metadata = excluded.metadata`
+                metadata = excluded.metadata,
+                embedding_id = excluded.embedding_id`
           )
           .bind(
             data.id,
@@ -76,7 +77,8 @@ export class BlogProcessor {
             data.updated_at,
             data.content,
             data.type,
-            data.metadata
+            data.metadata,
+            data.embedding_id
           );
 
         try {

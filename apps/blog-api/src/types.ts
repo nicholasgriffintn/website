@@ -29,6 +29,7 @@ export interface BlogPost extends BlogMetadata {
     metadata: Record<string, unknown>;
     tags: string[];
     audio_url: string | null;
+    embedding_id?: string | null;
 }
 
 export interface QueryParams {
@@ -52,6 +53,7 @@ export interface ProcessedBlogData {
     content: string;
     type: string;
     metadata: string;
+    embedding_id?: string | null;
 }
 
 export interface QueueMessage {
@@ -68,4 +70,11 @@ export interface QueueMessage {
         bucket: string,
         object: string
     }
+}
+
+export interface Env {
+    DB: D1Database;
+    BUCKET: R2Bucket;
+    VERCEL_DEPLOY_HOOK_URL: string;
+    ASSISTANT_API_KEY: string;
 }
