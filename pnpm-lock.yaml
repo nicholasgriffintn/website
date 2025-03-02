@@ -44,7 +44,7 @@ importers:
     dependencies:
       drizzle-orm:
         specifier: 0.38.3
-        version: 0.38.3(@cloudflare/workers-types@4.20241224.0)(@types/react@19.0.3)(better-sqlite3@11.7.0)(react@19.0.0)
+        version: 0.38.3(@cloudflare/workers-types@4.20241224.0)(@types/react@19.0.4)(better-sqlite3@11.7.0)(react@19.0.0)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241218.0
@@ -178,8 +178,8 @@ importers:
         specifier: ^5.2.2
         version: 5.2.2(@types/react@19.0.4)(react@19.0.0)
       lucide-react:
-        specifier: ^0.469.0
-        version: 0.469.0(react@19.0.0)
+        specifier: ^0.477.0
+        version: 0.477.0(react@19.0.0)
       next:
         specifier: 15.1.3
         version: 15.1.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1562,9 +1562,6 @@ packages:
   '@types/react-scroll@1.8.10':
     resolution: {integrity: sha512-RD4Z7grbdNGOKwKnUBKar6zNxqaW3n8m9QSrfvljW+gmkj1GArb8AFBomVr6xMOgHPD3v1uV3BrIf01py57daQ==}
 
-  '@types/react@19.0.3':
-    resolution: {integrity: sha512-UavfHguIjnnuq9O67uXfgy/h3SRJbidAYvNjLceB+2RIKVRBzVsh0QO+Pw6BCSQqFS9xwzKfwstXx0m6AbAREA==}
-
   '@types/react@19.0.4':
     resolution: {integrity: sha512-3O4QisJDYr1uTUMZHA2YswiQZRq+Pd8D+GdVFYikTutYsTz+QZgWkAPnP7rx9txoI6EXKcPiluMqWPFV3tT9Wg==}
 
@@ -2299,8 +2296,8 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lucide-react@0.469.0:
-    resolution: {integrity: sha512-28vvUnnKQ/dBwiCQtwJw7QauYnE7yd2Cyp4tTTJpvglX4EMpbflcdBgrgToX2j71B3YvugK/NH3BGUk+E/p/Fw==}
+  lucide-react@0.477.0:
+    resolution: {integrity: sha512-yCf7aYxerFZAbd8jHJxjwe1j7jEMPptjnaOqdYeirFnEy85cNR3/L+o0I875CYFYya+eEVzZSbNuRk8BZPDpVw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -4293,11 +4290,6 @@ snapshots:
     dependencies:
       '@types/react': 19.0.4
 
-  '@types/react@19.0.3':
-    dependencies:
-      csstype: 3.1.3
-    optional: true
-
   '@types/react@19.0.4':
     dependencies:
       csstype: 3.1.3
@@ -4610,13 +4602,6 @@ snapshots:
       esbuild-register: 3.6.0(esbuild@0.19.12)
     transitivePeerDependencies:
       - supports-color
-
-  drizzle-orm@0.38.3(@cloudflare/workers-types@4.20241224.0)(@types/react@19.0.3)(better-sqlite3@11.7.0)(react@19.0.0):
-    optionalDependencies:
-      '@cloudflare/workers-types': 4.20241224.0
-      '@types/react': 19.0.3
-      better-sqlite3: 11.7.0
-      react: 19.0.0
 
   drizzle-orm@0.38.3(@cloudflare/workers-types@4.20241224.0)(@types/react@19.0.4)(better-sqlite3@11.7.0)(react@19.0.0):
     optionalDependencies:
@@ -5010,7 +4995,7 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lucide-react@0.469.0(react@19.0.0):
+  lucide-react@0.477.0(react@19.0.0):
     dependencies:
       react: 19.0.0
 
