@@ -147,7 +147,7 @@ async function fetchModelResponse(model: string, benchmark: any) {
 	console.log(`Fetching data for ${request.chatId}`);
 
 	try {
-		const response = await fetch(`${baseUrl}/chat`, {
+		const response = await fetch(`${baseUrl}/chat/completions`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -156,14 +156,18 @@ async function fetchModelResponse(model: string, benchmark: any) {
 				"x-user-email": "automation@undefined.computer",
 			},
 			body: JSON.stringify({
-				chat_id: request.chatId,
-				input: request.message,
-				date: request.timestamp,
+				completion_id: request.chatId,
+				messages: [	
+					{
+						role: "user",
+						content: request.message,
+					},
+				],
 				model: model,
 				mode: request.mode,
 				max_tokens: request.max_tokens,
 				role: request.role,
-				shouldSave: false,
+				store: false,
 				attachments: benchmark.attachments || undefined,
 			}),
 		});

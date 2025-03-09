@@ -60,7 +60,7 @@ export class EmbeddingService {
         content: postContent,
         type: post.type,
         metadata: formattedMetadata,
-        ragOptions: {
+        rag_options: {
           namespace: "blog-posts"
         }
       })
