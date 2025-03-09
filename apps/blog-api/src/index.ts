@@ -78,11 +78,16 @@ const handler: ExportedHandler<Env, QueueMessage> = {
                 const processedData = blogProcessor.processMetadata(metadata, message.body.object.key);
                 processedData.content = blogContent;
 
-                const embeddingResponse = await embeddingService.insertBlogPost(processedData);
+                let embeddingResponse;
+                try {
+                    embeddingResponse = await embeddingService.insertBlogPost(processedData);
+                } catch (error) {
+                    console.error('Error inserting blog post:', error);
+                }
 
                 const postData = {
                     ...processedData,
-                    embedding_id: embeddingResponse?.data?.id
+                    embedding_id: embeddingResponse?.data?.id || null
                 }
 
                 await blogProcessor.saveBlogPost(postData);

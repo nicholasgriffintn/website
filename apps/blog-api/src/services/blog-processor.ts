@@ -28,10 +28,11 @@ export class BlogProcessor {
             content: "", // Will be set later
             type: "blog",
             metadata: JSON.stringify({
-                hideFeaturedImage: metadata.hideFeaturedImage,
-                isBookmark: metadata.isBookmark,
-                link: metadata.link
-            })
+                hideFeaturedImage: metadata.hideFeaturedImage || false,
+                isBookmark: metadata.isBookmark || false,
+                link: metadata.link || null
+            }),
+            embedding_id: null
         };
     }
 
