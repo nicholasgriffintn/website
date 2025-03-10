@@ -2,92 +2,86 @@ import { CacheManager } from "./cache";
 import type { Heading } from "@/types/blog";
 import { slugify } from "./slugs";
 
-const BASE_API_URL = "https://content.s3rve.co.uk";
+const BASE_API_URL = 'https://content.s3rve.co.uk';
 const cacheManager = new CacheManager<any>();
 
 async function getApiData(path: string, params: Record<string, string> = {}) {
-	const queryString = new URLSearchParams(params).toString();
-	const fullPath = queryString ? `${path}?${queryString}` : path;
-	const cacheKey = `api_${fullPath}`;
+  const queryString = new URLSearchParams(params).toString();
+  const fullPath = queryString ? `${path}?${queryString}` : path;
+  const cacheKey = `api_${fullPath}`;
 
-	const cached = cacheManager.get(cacheKey);
-	if (cached) return cached;
+  const cached = cacheManager.get(cacheKey);
+  if (cached) return cached;
 
-	const url = `${BASE_API_URL}/${fullPath}`;
-	const response = await fetch(url);
+  const url = `${BASE_API_URL}/${fullPath}`;
+  const response = await fetch(url);
 
-	if (!response.ok) {
-		throw new Error(`HTTP error! status: ${response.status}`);
-	}
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
 
-	const data = await response.json();
-	cacheManager.set(cacheKey, data);
-	return data;
+  const data = await response.json();
+  cacheManager.set(cacheKey, data);
+  return data;
 }
 
 export async function getBlogPosts(showArchived = false) {
-	const params: Record<string, string> = {};
-	if (showArchived) params.archived = 'true';
+  const params: Record<string, string> = {
+    cacheBust: Math.random().toString(36).substring(2, 15),
+  };
+  if (showArchived) params.archived = 'true';
 
-	if (process.env.ENVIRONMENT === 'development') {
-		params.drafts = 'true';
-	}
+  if (process.env.ENVIRONMENT === 'development') {
+    params.drafts = 'true';
+  }
 
-	if (process.env.ENVIRONMENT === 'development') {
-		params.cacheBust = Math.random().toString(36).substring(2, 15);
-	}
-
-	try {
-		const posts = await getApiData('content', params);
-		return posts;
-	} catch (error) {
-		console.error('Failed to get blog posts:', error);
-		return [];
-	}
+  try {
+    const posts = await getApiData('content', params);
+    return posts;
+  } catch (error) {
+    console.error('Failed to get blog posts:', error);
+    return [];
+  }
 }
 
 export async function getBlogPostBySlug(slug: string) {
-	try {
-		const params: Record<string, string> = {};
+  try {
+    const params: Record<string, string> = {
+      cacheBust: Math.random().toString(36).substring(2, 15),
+    };
 
-		if (process.env.ENVIRONMENT === 'development') {
-			params.cacheBust = Math.random().toString(36).substring(2, 15);
-		}
-
-		const post = await getApiData(`content/${slug}`, params);
-		return post;
-	} catch (error) {
-		console.error('Failed to get blog post:', error);
-		return null;
-	}
+    const post = await getApiData(`content/${slug}`, params);
+    return post;
+  } catch (error) {
+    console.error('Failed to get blog post:', error);
+    return null;
+  }
 }
 
 export async function getPaginatedBlogPosts({
-	showArchived = false,
-	page = 1,
-	limit = 10,
+  showArchived = false,
+  page = 1,
+  limit = 10,
 }) {
-	const posts = await getBlogPosts(showArchived);
-	const startIndex = (page - 1) * limit;
-	const endIndex = startIndex + limit;
-	return posts.slice(startIndex, endIndex);
+  const posts = await getBlogPosts(showArchived);
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  return posts.slice(startIndex, endIndex);
 }
 
 export async function getAllTags() {
-	const posts = await getBlogPosts();
-	const tagCounts = posts.reduce(
-		(acc, post) => {
-			if (Array.isArray(post.tags)) {
-				post.tags.forEach((tag) => {
-					acc[tag] = (acc[tag] || 0) + 1;
-				});
-			}
-			return acc;
-		},
-		{} as Record<string, number>,
-	);
+  const posts = await getBlogPosts();
+  const tagCounts = posts.reduce((acc, post) => {
+    if (Array.isArray(post.tags)) {
+      // biome-ignore lint/complexity/noForEach: It works.
+      post.tags.forEach((tag) => {
+        acc[tag] = (acc[tag] || 0) + 1;
+      });
+    }
+    return acc;
+  }, {} as Record<string, number>);
 
-	return tagCounts;
+  return tagCounts;
 }
 
 export async function getBlogPostsByTag(tag: string) {
