@@ -1103,8 +1103,7 @@
             "total_time": 1.26783059
           }
         },
-        "status": "failed",
-        "reason": "No valid SVG tags found in response"
+        "status": "success"
       },
       {
         "model": "llama-4-maverick-instruct",
@@ -1142,8 +1141,7 @@
             "completion_tokens": 872
           }
         },
-        "status": "failed",
-        "reason": "No valid SVG tags found in response"
+        "status": "success"
       }
     ]
   },
