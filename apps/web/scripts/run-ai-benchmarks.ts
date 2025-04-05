@@ -89,6 +89,8 @@ const textModels = [
 	"deepseek-chat",
 	"deepseek-reasoner",
 	"claude-3.7-sonnet",
+	"llama-4-scout-17b",
+	"llama-4-maverick-instruct",
 ];
 
 const imageToTextModels = [
@@ -99,7 +101,7 @@ const imageToTextModels = [
 	"claude-3-opus",
 	"llava",
 	"pixtral-large",
-	"claude-3.7-sonnet",
+	"claude-3.7-sonnet"
 ];
 
 const RATE_LIMIT = 50;
@@ -141,7 +143,7 @@ async function fetchModelResponse(model: string, benchmark: any) {
 		timestamp: new Date().toISOString(),
 	};
 
-	const baseUrl = "https://chat-api.nickgriffin.uk";
+	const baseUrl = "https://api.polychat.app";
 	const token = process.env.AUTH_TOKEN;
 
 	console.log(`Fetching data for ${request.chatId}`);
@@ -169,6 +171,7 @@ async function fetchModelResponse(model: string, benchmark: any) {
 				role: request.role,
 				store: false,
 				attachments: benchmark.attachments || undefined,
+				stream: false,
 			}),
 		});
 
@@ -177,7 +180,7 @@ async function fetchModelResponse(model: string, benchmark: any) {
 				`Error fetching data for ${request.chatId}:`,
 				response.statusText,
 			);
-			console.log(response);
+			console.log(await response.json());
 			return {
 				model,
 				request,
