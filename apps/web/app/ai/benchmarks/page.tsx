@@ -17,9 +17,27 @@ import benchmarkData from "@/lib/data/ai-benchmarks.json";
 import { PageLayout } from "@/components/PageLayout";
 import { InnerPage } from "@/components/InnerPage";
 
+// Types for multi-modal content
+type TextContent = {
+	type: string;
+	text: string;
+	image_url?: undefined;
+};
+
+type ImageContent = {
+	type: string;
+	image_url: {
+		url: string;
+		detail: string;
+	};
+	text?: undefined;
+};
+
+type MultiModalContent = TextContent | ImageContent;
+
 type Message = {
 	role: string;
-	content: string;
+	content: string | MultiModalContent[];
 };
 
 type Choice = {
@@ -32,7 +50,7 @@ type ModelResponse = {
 	model?: string;
 	request: {
 		model: string;
-		message: string;
+		message: string | MultiModalContent[];
 		chatId?: string;
 		mode?: string;
 		role?: string;
@@ -61,15 +79,55 @@ async function getData(): Promise<Benchmark[]> {
 	return benchmarkData;
 }
 
-// Helper function to safely display content
-const safeContent = (content: any): string => {
-	if (content === null || content === undefined) return '';
-	if (typeof content === 'string') return content;
+// Helper function to render multi-modal content
+const renderMultiModalContent = (content: any): React.ReactNode => {
+	if (content === null || content === undefined) {
+		return '';
+	}
+	
+	if (typeof content === 'string') {
+		return content;
+	}
+	
+	if (Array.isArray(content)) {
+		return (
+			<div>
+				{content.map((item, index) => (
+					<div key={`item-${index}-${item.type || 'unknown'}`} className="mb-2">
+						{item.type === 'text' && item.text ? (
+							<div>{item.text}</div>
+						) : item.type === 'image_url' && item.image_url ? (
+							<div>
+								<p>[Image: {item.image_url.url}]</p>
+								<p>Detail: {item.image_url.detail}</p>
+							</div>
+						) : (
+							<div>{JSON.stringify(item)}</div>
+						)}
+					</div>
+				))}
+			</div>
+		);
+	}
+	
 	try {
 		return JSON.stringify(content);
 	} catch (e) {
 		return '[Object cannot be displayed]';
 	}
+};
+
+// Helper function to extract SVG content from a string
+const extractSvg = (content: string | MultiModalContent[] | undefined | null): string => {
+	if (!content) return "";
+	
+	if (typeof content !== 'string') return "";
+	
+	const match = content.match(/<svg[\s\S]*?<\/svg>/);
+	return match?.[0]?.replace(
+		/<svg/,
+		'<svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet"'
+	) ?? "";
 };
 
 export default async function Home() {
@@ -119,7 +177,7 @@ export default async function Home() {
 													<div className="mb-4">
 														<div className="font-semibold">User:</div>
 														<div className="whitespace-pre-wrap" suppressHydrationWarning>
-															{safeContent(model.request.message)}
+															{renderMultiModalContent(model.request.message)}
 														</div>
 													</div>
 													{model.response && typeof model.response === "object" && "choices" in model.response ? (
@@ -133,7 +191,7 @@ export default async function Home() {
 																	{choice.message?.role || 'Assistant'}:
 																</div>
 																<div className="whitespace-pre-wrap" suppressHydrationWarning>
-																	{safeContent(choice.message?.content)}
+																	{renderMultiModalContent(choice.message?.content)}
 																</div>
 															</div>
 														))
@@ -147,7 +205,7 @@ export default async function Home() {
 																	{message.role || 'Unknown'}:
 																</div>
 																<div className="whitespace-pre-wrap" suppressHydrationWarning>
-																	{safeContent(message.content)}
+																	{renderMultiModalContent(message.content)}
 																</div>
 															</div>
 														))
@@ -157,7 +215,7 @@ export default async function Home() {
 																{model.response.role || 'Unknown'}:
 															</div>
 															<div className="whitespace-pre-wrap" suppressHydrationWarning>
-																{safeContent(model.response.content)}
+																{renderMultiModalContent(model.response.content)}
 															</div>
 														</div>
 													) : null}
@@ -188,8 +246,8 @@ export default async function Home() {
 																	<div
 																		// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 																		dangerouslySetInnerHTML={{
-																			__html:
-																				(typeof model.response === "object" && "choices" in model.response
+																			__html: extractSvg(
+																				typeof model.response === "object" && "choices" in model.response
 																					? model.response.choices.find((choice: any) =>
 																							typeof choice.message?.content === "string" && choice.message?.content?.includes("<svg")
 																						)?.message?.content
@@ -200,12 +258,7 @@ export default async function Home() {
 																					: typeof model.response === "object" && "content" in model.response && typeof model.response.content === "string"
 																						? model.response.content
 																						: ""
-																				)
-																					?.match(/<svg[\s\S]*?<\/svg>/)?.[0]
-																					?.replace(
-																						/<svg/,
-																						'<svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet"',
-																					) ?? "",
+																			)
 																		}}
 																	/>
 																</div>
