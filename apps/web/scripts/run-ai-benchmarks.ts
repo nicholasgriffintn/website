@@ -38,15 +38,21 @@ const benchmarks = [
 	{
 		id: "what-is-the-time",
 		type: "image-to-text",
-		prompt: "What is the time?",
-		description:
-			"A standardised test to see if and how well LLMs can understand the time from an image. The expected output is `10:10:35`.",
-		attachments: [
+		prompt: [
 			{
-				type: "image",
-				url: clock,
+				type: "text",
+				text: "What is the time?",
+			},
+			{
+				type: "image_url",
+				image_url: {
+					url: clock,
+					detail: "auto",
+				},
 			},
 		],
+		description:
+			"A standardised test to see if and how well LLMs can understand the time from an image. The expected output is `10:10:35`.",
 	},
 ];
 
@@ -170,7 +176,6 @@ async function fetchModelResponse(model: string, benchmark: any) {
 				max_tokens: request.max_tokens,
 				role: request.role,
 				store: false,
-				attachments: benchmark.attachments || undefined,
 				stream: false,
 			}),
 		});
@@ -180,7 +185,7 @@ async function fetchModelResponse(model: string, benchmark: any) {
 				`Error fetching data for ${request.chatId}:`,
 				response.statusText,
 			);
-			console.log(await response.json());
+			console.log(JSON.stringify(await response.json(), null, 2));
 			return {
 				model,
 				request,
