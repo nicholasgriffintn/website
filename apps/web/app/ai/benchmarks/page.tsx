@@ -22,6 +22,12 @@ type Message = {
 	content: string;
 };
 
+type Choice = {
+	index: number;
+	message: Message;
+	finish_reason: string;
+};
+
 type ModelResponse = {
 	model?: string;
 	request: {
@@ -33,14 +39,14 @@ type ModelResponse = {
 		max_tokens?: number;
 		timestamp?: string;
 	};
-	response?: Message | Message[] | null;
+	response?: Message | Message[] | { choices: Choice[] } | null;
 	status?: string;
 	reason?: string | null;
 };
 
 type Benchmark = {
 	id: string;
-	prompt: string;
+	prompt: string | { type?: string; text: string } | any;
 	description: string;
 	models: ModelResponse[];
 };
@@ -54,6 +60,17 @@ export const metadata = {
 async function getData(): Promise<Benchmark[]> {
 	return benchmarkData;
 }
+
+// Helper function to safely display content
+const safeContent = (content: any): string => {
+	if (content === null || content === undefined) return '';
+	if (typeof content === 'string') return content;
+	try {
+		return JSON.stringify(content);
+	} catch (e) {
+		return '[Object cannot be displayed]';
+	}
+};
 
 export default async function Home() {
 	const data = await getData();
@@ -78,7 +95,15 @@ export default async function Home() {
 					<Card key={benchmark.id} className="mb-6">
 						<CardHeader>
 							<CardTitle>{benchmark.description}</CardTitle>
-							<CardDescription>Prompt: {benchmark.prompt}</CardDescription>
+							<CardDescription>
+								<span suppressHydrationWarning>
+									Prompt: {typeof benchmark.prompt === 'string' 
+										? benchmark.prompt 
+										: typeof benchmark.prompt === 'object' && benchmark.prompt !== null && 'text' in benchmark.prompt 
+											? String(benchmark.prompt.text) 
+											: '[Complex prompt]'}
+								</span>
+							</CardDescription>
 						</CardHeader>
 						<CardContent>
 							<Accordion type="single" collapsible className="w-full">
@@ -87,37 +112,52 @@ export default async function Home() {
 										key={`${benchmark.id}-${modelIndex}`}
 										value={`item-${modelIndex}`}
 									>
-										<AccordionTrigger>{model.request.model}</AccordionTrigger>
+										<AccordionTrigger suppressHydrationWarning>{model.request.model}</AccordionTrigger>
 										<AccordionContent>
 											<div className="flex flex-col md:flex-row">
 												<ScrollArea className="h-[400px] md:w-1/2 rounded-md border p-4 mr-0 md:mr-2 mb-4 md:mb-0">
 													<div className="mb-4">
 														<div className="font-semibold">User:</div>
-														<div className="whitespace-pre-wrap">
-															{model.request.message}
+														<div className="whitespace-pre-wrap" suppressHydrationWarning>
+															{safeContent(model.request.message)}
 														</div>
 													</div>
-													{model.response && Array.isArray(model.response) ? (
+													{model.response && typeof model.response === "object" && "choices" in model.response ? (
+														// Handle choices format
+														model.response.choices.map((choice: any, choiceIndex) => (
+															<div
+																key={`${benchmark.id}-${modelIndex}-choice-${choiceIndex}`}
+																className="mb-4"
+															>
+																<div className="font-semibold" suppressHydrationWarning>
+																	{choice.message?.role || 'Assistant'}:
+																</div>
+																<div className="whitespace-pre-wrap" suppressHydrationWarning>
+																	{safeContent(choice.message?.content)}
+																</div>
+															</div>
+														))
+													) : model.response && Array.isArray(model.response) ? (
 														model.response.map((message, messageIndex) => (
 															<div
 																key={`${benchmark.id}-${modelIndex}-${messageIndex}`}
 																className="mb-4"
 															>
-																<div className="font-semibold">
-																	{message.role}:
+																<div className="font-semibold" suppressHydrationWarning>
+																	{message.role || 'Unknown'}:
 																</div>
-																<div className="whitespace-pre-wrap">
-																	{message.content}
+																<div className="whitespace-pre-wrap" suppressHydrationWarning>
+																	{safeContent(message.content)}
 																</div>
 															</div>
 														))
-													) : model.response ? (
+													) : model.response && typeof model.response === "object" && "role" in model.response ? (
 														<div className="mb-4">
-															<div className="font-semibold">
-																{model.response.role}:
+															<div className="font-semibold" suppressHydrationWarning>
+																{model.response.role || 'Unknown'}:
 															</div>
-															<div className="whitespace-pre-wrap">
-																{model.response.content}
+															<div className="whitespace-pre-wrap" suppressHydrationWarning>
+																{safeContent(model.response.content)}
 															</div>
 														</div>
 													) : null}
@@ -131,11 +171,15 @@ export default async function Home() {
 														</div>
 													)}
 													{model.response &&
+														((typeof model.response === "object" && "choices" in model.response && 
+															model.response.choices?.some((choice: any) => 
+																typeof choice.message?.content === "string" && choice.message?.content?.includes("<svg"))) ||
 														(Array.isArray(model.response)
 															? model.response.some((message) =>
-																	message.content.includes("<svg"),
+																	typeof message.content === "string" && message.content?.includes("<svg"),
 																)
-															: model.response.content.includes("<svg")) && (
+															: typeof model.response === "object" && "content" in model.response && 
+																typeof model.response.content === "string" && model.response.content?.includes("<svg"))) && (
 															<div className="h-[400px] rounded-md border p-4 bg-white">
 																<h4 className="text-sm font-semibold mb-2 text-black">
 																	Generated SVG:
@@ -145,11 +189,17 @@ export default async function Home() {
 																		// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 																		dangerouslySetInnerHTML={{
 																			__html:
-																				(Array.isArray(model.response)
+																				(typeof model.response === "object" && "choices" in model.response
+																					? model.response.choices.find((choice: any) =>
+																							typeof choice.message?.content === "string" && choice.message?.content?.includes("<svg")
+																						)?.message?.content
+																					: Array.isArray(model.response)
 																					? model.response.find((message) =>
-																							message.content.includes("<svg"),
+																							typeof message?.content === "string" && message?.content?.includes("<svg"),
 																						)?.content
-																					: model.response.content
+																					: typeof model.response === "object" && "content" in model.response && typeof model.response.content === "string"
+																						? model.response.content
+																						: ""
 																				)
 																					?.match(/<svg[\s\S]*?<\/svg>/)?.[0]
 																					?.replace(
