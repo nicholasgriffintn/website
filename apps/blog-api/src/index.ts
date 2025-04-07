@@ -4,7 +4,6 @@ import { BlogService } from "./services/blog";
 import type { QueryParams, QueueMessage, Env } from "./types";
 import { BlogProcessor } from "./services/blog-processor";
 import { StorageService } from "./services/storage";
-import { EmbeddingService } from "./services/embeeding";
 
 const handler: ExportedHandler<Env, QueueMessage> = {
     async fetch(request: Request, env: Env): Promise<Response> {
@@ -62,8 +61,7 @@ const handler: ExportedHandler<Env, QueueMessage> = {
         
         const storageService = new StorageService(env.BUCKET);
         const blogProcessor = new BlogProcessor(env.DB);
-        const embeddingService = new EmbeddingService(env.DB, env.ASSISTANT_API_KEY);
-        
+
         const results = await Promise.allSettled(
             batch.messages.map(async message => {
                 console.log(`Processing ${message.body.object.key}`);
@@ -78,16 +76,8 @@ const handler: ExportedHandler<Env, QueueMessage> = {
                 const processedData = blogProcessor.processMetadata(metadata, message.body.object.key);
                 processedData.content = blogContent;
 
-                let embeddingResponse;
-                try {
-                    embeddingResponse = await embeddingService.insertBlogPost(processedData);
-                } catch (error) {
-                    console.error('Error inserting blog post:', error);
-                }
-
                 const postData = {
-                    ...processedData,
-                    embedding_id: embeddingResponse?.data?.id || null
+                    ...processedData
                 }
 
                 await blogProcessor.saveBlogPost(postData);
@@ -98,7 +88,6 @@ const handler: ExportedHandler<Env, QueueMessage> = {
 
         const hasSuccessfulProcessing = results.some(result => result.status === 'fulfilled');
 
-        // biome-ignore lint/complexity/noForEach: <explanation>        
         results.forEach((result, index) => {
             if (result.status === 'rejected') {
                 console.error(
