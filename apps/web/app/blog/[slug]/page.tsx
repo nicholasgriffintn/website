@@ -62,7 +62,7 @@ export default async function Home({ params }) {
 	const post = await getBlogPostBySlug(slug);
 
 	if (!post) {
-		notFound();
+		return <div>Post {slug} was not found</div>;
 	}
 
 	const dates = {
