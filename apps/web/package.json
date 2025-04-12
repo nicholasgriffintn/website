@@ -15,7 +15,6 @@
 	"dependencies": {
 		"@mdx-js/loader": "^3.1.0",
 		"@mdx-js/react": "^3.1.0",
-		"@mlc-ai/web-llm": "^0.2.77",
 		"@next/mdx": "^15.2.3",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
