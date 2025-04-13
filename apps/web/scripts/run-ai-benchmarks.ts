@@ -150,7 +150,7 @@ async function fetchModelResponse(model: string, benchmark: any) {
 	};
 
 	const baseUrl = "https://api.polychat.app";
-	const token = process.env.AUTH_TOKEN;
+	const token = process.env.ASSISTANT_AUTH_TOKEN;
 
 	console.log(`Fetching data for ${request.chatId}`);
 
