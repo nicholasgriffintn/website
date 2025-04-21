@@ -3,10 +3,12 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { highlight } from 'sugar-high';
 import { createElement, Children } from 'react';
 import React from 'react';
+import dynamic from 'next/dynamic';
 
 import { Link } from '@/components/Link';
 import { Image } from '@/components/Image';
 import { slugify } from '@/lib/slugs';
+const Mermaid = dynamic(() => import('./Mermaid'));
 
 function Table({ children, ...props }) {
   return (
@@ -47,6 +49,12 @@ function RoundedImage(props) {
 function Code({ children, className, ...props }) {
   // Check if this is a code block (has language) or inline code
   const isCodeBlock = /language-(\w+)/.exec(className || '');
+
+  // Render Mermaid diagrams for mermaid code blocks client-side
+  if (isCodeBlock && isCodeBlock[1] === 'mermaid') {
+    const chart = Children.toArray(children).join('');
+    return <Mermaid chart={chart} />;
+  }
 
   if (!isCodeBlock) {
     // Inline code styling
