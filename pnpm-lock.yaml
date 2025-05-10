@@ -16,7 +16,7 @@ importers:
         version: 2.3.3
       typescript:
         specifier: ^5.6.3
-        version: 5.7.2
+        version: 5.8.3
 
   apps/blog-api:
     devDependencies:
@@ -3366,6 +3366,11 @@ packages:
 
   typescript@5.7.2:
     resolution: {integrity: sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  typescript@5.8.3:
+    resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -6835,6 +6840,8 @@ snapshots:
       turbo-windows-arm64: 2.3.3
 
   typescript@5.7.2: {}
+
+  typescript@5.8.3: {}
 
   ufo@1.6.1: {}
 
