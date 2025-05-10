@@ -36,7 +36,7 @@ const nextConfig = {
 			},
 			{
 				source: "/anyone-can-draw",
-				destination: "/games/anyone-can-draw",
+				destination: "/apps/anyone-can-draw",
 				permanent: true,
 			},
 		];

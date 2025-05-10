@@ -1,12 +1,12 @@
-import { Brush } from "lucide-react";
+import { Brush, Spade, Lock } from "lucide-react";
 
 import { PageLayout } from "@/components/PageLayout";
 import { InnerPage } from "@/components/InnerPage";
 import { LinkCard } from "@/components/LinkCard";
 
 export const metadata = {
-	title: "Games",
-	description: "A collection of games that I have worked on.",
+	title: "Apps",
+	description: "A collection of apps that I am working on.",
 };
 
 export default async function Home() {
@@ -14,17 +14,17 @@ export default async function Home() {
 		<PageLayout>
 			<InnerPage>
 				<h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
-					Games
+					Apps
 				</h1>
 				<div className="grid grid-cols-5 gap-4">
 					<div className="col-span-5 md:col-span-3 lg:col-span-3 pt-5">
 						<div className="text-primary-foreground lg:max-w-[100%] prose dark:prose-invert">
 							<p>
-								Sometimes I make games, they're not super amazing, but I
+								Sometimes I make apps, they're not super amazing, but I
 								thought I'd share a few here anyway, you can check them out below.
 							</p>
 							<p>
-								Note: I've only just started doing this, so there's not many games
+								Note: I've only just started doing this, so there's not many apps
 								yet.
 							</p>
 						</div>
@@ -39,7 +39,21 @@ export default async function Home() {
 						icon={<Brush className="w-6 h-6" />}
 						title="Anyone Can Draw"
 						description="A game where you play against others and AI to get the highest score guessing what others drew."
-						href="/games/anyone-can-draw"
+						href="/apps/anyone-can-draw"
+					/>
+					<LinkCard
+						icon={<Spade className="w-6 h-6" />}
+						title="SprintJam"
+						description="An app for running sprint poker sessions during your team's refinement sessions."
+						href="https://sprintjam.co.uk"
+						external
+					/>
+					<LinkCard
+						icon={<Lock className="w-6 h-6" />}
+						title="ThreatJam (WIP)"
+						description="An app for running collaborative threat modelling sessions."
+						href="https://threatjam.com"
+						external
 					/>
 				</div>
 			</InnerPage>

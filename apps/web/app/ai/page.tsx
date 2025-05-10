@@ -55,6 +55,7 @@ export default async function Home() {
 						title="Chat"
 						description="Interactive chat interface powered by advanced language models, available for signed in only."
 						href="https://polchat.app/"
+						external
 					/>
 					<LinkCard
 						icon={<Activity className="w-6 h-6" />}
@@ -67,6 +68,7 @@ export default async function Home() {
 						title="Metrics"
 						description="Analytics and insights from my AI system usage and performance."
 						href="https://metrics.polchat.app/"
+						external
 					/>
 				</div>
 			</InnerPage>
