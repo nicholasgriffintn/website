@@ -45,7 +45,7 @@
 		"react-dom": "19.0.0",
 		"react-turnstile": "^1.1.4",
 		"remark-gfm": "^4.0.0",
-		"sugar-high": "^0.8.0",
+		"sugar-high": "^0.9.0",
 		"tailwind-container-break-out": "^2.0.9",
 		"tailwind-merge": "^2.6.0",
 		"tailwindcss-animate": "^1.0.7"
