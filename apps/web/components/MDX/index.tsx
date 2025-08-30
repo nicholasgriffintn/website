@@ -104,9 +104,9 @@ function createHeading(level) {
         return '';
       })
       .join('');
-    
+
     const slug = slugify(text);
-    
+
     return createElement(`h${level}`, { id: slug }, [
       createElement(
         'a',
@@ -143,13 +143,33 @@ function createHeading(level) {
 }
 
 function Wrapper({ children }) {
-  if (
-    children &&
-    typeof children === 'object' &&
-    (children.type === RoundedImage || children.type === Image)
-  ) {
-    return children;
+
+  const hasImageComponent = (child) => {
+    if (!child || typeof child !== 'object') return false;
+
+    if (child.type === RoundedImage || child.type === Image) return true;
+
+    if (child.type?.displayName === 'RoundedImage' || child.type?.name === 'RoundedImage') return true;
+    if (child.type?.displayName === 'Image' || child.type?.name === 'Image') return true;
+
+    if (child.type === 'img') return true;
+
+    return false;
+  };
+
+  if (children && typeof children === 'object' && !Array.isArray(children)) {
+    if (hasImageComponent(children)) {
+      return children;
+    }
   }
+
+  if (Array.isArray(children)) {
+    const hasImages = children.some(hasImageComponent);
+    if (hasImages) {
+      return <>{children}</>;
+    }
+  }
+
   return <p>{children}</p>;
 }
 
