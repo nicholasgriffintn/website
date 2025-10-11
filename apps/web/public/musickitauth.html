@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" async></script>
+</head>
+
+<body>
+  <h1>MusicKit Authorization</h1>
+  <p>This page will generate a new MusicKit user token.</p>
+  <form>
+    <label for="devtoken">Apple Music Developer Token:</label><br />
+    <input type="text" id="devtoken" size="100" value="YOUR_DEVELOPER_TOKEN_HERE" /><br />
+    <small>Get a developer token from your Apple Developer account. It must be valid and not expired.</small>
+  </form>
+  <button id="go">Authorize (click)</button>
+  <pre id="out"></pre>
+  <script>
+    let music;
+
+    document.addEventListener('musickitloaded', function () {
+      const output = document.getElementById('out');
+      const goButton = document.getElementById('go');
+      const tokenInput = document.getElementById('devtoken');
+
+      goButton.addEventListener('click', async () => {
+        const developerToken = tokenInput.value.trim();
+
+        if (!developerToken) {
+          output.textContent = 'Please enter a developer token before authorizing.';
+          return;
+        }
+
+        try {
+          // Configure with the latest developer token each time in case it changed.
+          music = await MusicKit.configure({ developerToken });
+        } catch (e) {
+          output.textContent = 'configure() failed: ' + e;
+          console.error(e);
+          return;
+        }
+
+        try {
+          const userToken = await music.authorize();
+          output.textContent = 'USER TOKEN:\n' + userToken;
+          console.log('Authorized user token:', userToken);
+        } catch (e) {
+          output.textContent = 'authorize() failed: ' + e;
+          console.error(e);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
