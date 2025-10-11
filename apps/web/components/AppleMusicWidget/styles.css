@@ -15,7 +15,7 @@
 .applemusic-widget-tracks {
   position: relative;
   width: 100%;
-  display: inline-block;
+  display: block;
 }
 
 .applemusic-widget-latest-background {
