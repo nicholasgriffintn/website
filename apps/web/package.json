@@ -35,7 +35,7 @@
 		"better-sqlite3": "^11.7.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
-		"drizzle-orm": "0.38.3",
+		"drizzle-orm": "0.44.6",
 		"html-react-parser": "^5.2.2",
 		"jose": "^6.1.0",
 		"lucide-react": "^0.509.0",
