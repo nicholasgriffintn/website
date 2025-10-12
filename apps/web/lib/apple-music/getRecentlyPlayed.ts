@@ -3,11 +3,15 @@ const musicKitToken = process.env.APPLE_MUSIC_MUSICKIT_TOKEN as string;
 
 export async function getRecentlyPlayed(limit = 10) {
   if (!userToken) {
-    throw new Error('Missing Apple Music user token in environment variables');
+    console.error('Missing Apple Music user token in environment variables');
+    return null;
   }
 
   if (!musicKitToken) {
-    throw new Error('Failed to obtain MusicKit token');
+    console.error(
+      'Missing Apple Music MusicKit token in environment variables'
+    );
+    return null;
   }
 
   const response = await fetch(

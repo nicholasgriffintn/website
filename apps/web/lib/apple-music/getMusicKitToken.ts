@@ -12,7 +12,8 @@ let tokenExpiry: number | null = null;
 
 export async function getMusicKitToken() {
   if (!privateKey || !keyId || !teamId) {
-    throw new Error('Missing Apple Music credentials in environment variables');
+    console.error('Missing Apple Music API credentials');
+    return null;
   }
 
   const now = Math.floor(Date.now() / 1000);
