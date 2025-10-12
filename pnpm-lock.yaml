@@ -110,7 +110,7 @@ importers:
         version: 3.1.0(@types/react@19.0.4)(react@19.0.0)
       '@next/mdx':
         specifier: ^15.2.3
-        version: 15.2.3(@mdx-js/loader@3.1.0(acorn@8.14.0))(@mdx-js/react@3.1.0(@types/react@19.0.4)(react@19.0.0))
+        version: 15.5.4(@mdx-js/loader@3.1.0(acorn@8.14.0))(@mdx-js/react@3.1.0(@types/react@19.0.4)(react@19.0.0))
       '@oslojs/crypto':
         specifier: ^1.0.1
         version: 1.0.1
@@ -1031,8 +1031,8 @@ packages:
   '@next/env@15.4.7':
     resolution: {integrity: sha512-PrBIpO8oljZGTOe9HH0miix1w5MUiGJ/q83Jge03mHEE0E3pyqzAy2+l5G6aJDbXoobmxPJTVhbCuwlLtjSHwg==}
 
-  '@next/mdx@15.2.3':
-    resolution: {integrity: sha512-rJAe5GvpTTA/i+9lQk/p321g0kXPLIuWJzUtRccW7w4l9vmOTGPPnXFjooEyYgyFcdbZxvJpSdjNq65VeQGKRQ==}
+  '@next/mdx@15.5.4':
+    resolution: {integrity: sha512-QUc14KkswCau2/Lul13t13v8QYRiEh3aeyUMUix5mK/Zd8c/J9NQuVvLGhxS7fxGPU+fOcv0GaXqZshkvNaX7A==}
     peerDependencies:
       '@mdx-js/loader': '>=0.15.0'
       '@mdx-js/react': '>=0.15.0'
@@ -3233,6 +3233,10 @@ packages:
     resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
     engines: {node: '>= 8'}
 
+  source-map@0.7.6:
+    resolution: {integrity: sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ==}
+    engines: {node: '>= 12'}
+
   sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
     deprecated: Please use @jridgewell/sourcemap-codec instead
@@ -4122,9 +4126,9 @@ snapshots:
 
   '@next/env@15.4.7': {}
 
-  '@next/mdx@15.2.3(@mdx-js/loader@3.1.0(acorn@8.14.0))(@mdx-js/react@3.1.0(@types/react@19.0.4)(react@19.0.0))':
+  '@next/mdx@15.5.4(@mdx-js/loader@3.1.0(acorn@8.14.0))(@mdx-js/react@3.1.0(@types/react@19.0.4)(react@19.0.0))':
     dependencies:
-      source-map: 0.7.4
+      source-map: 0.7.6
     optionalDependencies:
       '@mdx-js/loader': 3.1.0(acorn@8.14.0)
       '@mdx-js/react': 3.1.0(@types/react@19.0.4)(react@19.0.0)
@@ -6699,6 +6703,8 @@ snapshots:
   source-map@0.6.1: {}
 
   source-map@0.7.4: {}
+
+  source-map@0.7.6: {}
 
   sourcemap-codec@1.4.8: {}
 
