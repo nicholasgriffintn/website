@@ -1,32 +1,47 @@
-import { formatDate } from "@/lib/blog";
-import { Link } from "@/components/Link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { parseMarkdown } from "@/lib/markdown";
-import { Image } from "@/components/Image";
-import { Bookmark } from "lucide-react";
+'use client';
+
+import { Bookmark } from 'lucide-react';
+
+import { formatDate } from '@/lib/blog';
+import { Link } from '@/components/Link';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { parseMarkdown } from '@/lib/markdown';
+import { Image } from '@/components/Image';
+import { getYoutubeVideoId } from '@/lib/youtube';
+import { VideoCardPlayer } from '@/components/VideoCardPlayer';
 
 export function BlogCard({ post }) {
-	const postLink = post.metadata.link || `/blog/${post.slug}`;
-	const isBookmark = post.metadata.isBookmark;
-	const postContent = parseMarkdown(
-		post.description,
-		false,
-	);
+  const postLink = post.metadata.link || `/blog/${post.slug}`;
+  const isBookmark = post.metadata.isBookmark;
+  const postContent = parseMarkdown(post.description, false);
+  const youtubeVideoId = isBookmark
+    ? getYoutubeVideoId(post.metadata.link)
+    : null;
 
-	return (
+  return (
     <Card className="overflow-hidden relative">
-      {post.image_url && (
+      {youtubeVideoId ? (
         <div className="max-h-[190px] min-h-[190px] overflow-hidden h-full">
-          <Image
-            src={post.image_url}
-            alt={post.image_alt || post.title}
-            className="w-full object-cover"
-            loading="lazy"
-            width={700}
-            height={190}
+          <VideoCardPlayer
+            videoId={youtubeVideoId}
+            slug={post.slug}
+            title={post.title}
           />
         </div>
+      ) : (
+        post.image_url && (
+          <div className="max-h-[190px] min-h-[190px] overflow-hidden h-full">
+            <Image
+              src={post.image_url}
+              alt={post.image_alt || post.title}
+              className="w-full object-cover"
+              loading="lazy"
+              width={700}
+              height={190}
+            />
+          </div>
+        )
       )}
       <CardHeader>
         <CardTitle>
