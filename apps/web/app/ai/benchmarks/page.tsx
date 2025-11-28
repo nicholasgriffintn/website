@@ -76,7 +76,7 @@ export const metadata = {
 };
 
 async function getData(): Promise<Benchmark[]> {
-	return benchmarkData;
+	return benchmarkData as Benchmark[];
 }
 
 // Helper function to render multi-modal content
