@@ -38,17 +38,20 @@ export default async function TagsHome() {
           </div>
         </div>
         {tags && (
-          <div className="flex justify-center flex-wrap w-full align-center gap-2 leading-8">
+          <div className="flex flex-wrap justify-center items-center w-full gap-4 py-8">
             {Object.keys(tags).map((tag) => {
               if (!tags[tag]) return null;
 
-              const fontSize = Math.min(3, 1 + tags[tag] / 5);
+              const fontSize = Math.max(1, Math.min(2.5, 1 + tags[tag] / 8));
               return (
-                <div key={tag} style={{ fontSize: `${fontSize}em` }}>
-                  <Link href={`/tags/${tag}`}>
-                    {tag} ({tags[tag]})
-                  </Link>
-                </div>
+                <Link
+                  key={tag}
+                  href={`/tags/${tag}`}
+                  className="inline-block px-4 py-2 rounded-lg bg-muted text-primary-foreground shadow transition-all duration-200 hover:bg-primary hover:scale-105 border border-border no-underline hover:underline"
+                  style={{ fontSize: `${fontSize}em`, fontWeight: 'bold' }}
+                >
+                  {tag} ({tags[tag]})
+                </Link>
               );
             })}
           </div>
