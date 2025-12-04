@@ -30,7 +30,7 @@
 		"better-sqlite3": "^11.7.0",
 		"drizzle-kit": "^0.31.0",
 		"typescript": "^5.7.2",
-		"wrangler": "^3.96.0"
+		"wrangler": "^4.0.0"
 	},
 	"peerDependencies": {
 		"drizzle-orm": "0.44.6"
