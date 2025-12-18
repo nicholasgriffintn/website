@@ -44,7 +44,7 @@ importers:
     dependencies:
       drizzle-orm:
         specifier: 0.44.6
-        version: 0.44.6(@cloudflare/workers-types@4.20241224.0)(better-sqlite3@11.7.0)
+        version: 0.44.6(@cloudflare/workers-types@4.20251107.0)(better-sqlite3@11.7.0)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241218.0
@@ -178,8 +178,8 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0
       lucide-react:
-        specifier: ^0.509.0
-        version: 0.509.0(react@19.0.0)
+        specifier: ^0.562.0
+        version: 0.562.0(react@19.0.0)
       mermaid:
         specifier: ^11.6.0
         version: 11.10.0
@@ -386,9 +386,6 @@ packages:
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
-
-  '@cloudflare/workers-types@4.20241224.0':
-    resolution: {integrity: sha512-1ZmFc8qqM7S/HUGmLplc4P8n8DoMqiJmc47r9Lr7VbuaotoqCXVljz09w1V1mc4K3pbFPgvqSy4XYStZ08HrlQ==}
 
   '@cloudflare/workers-types@4.20251107.0':
     resolution: {integrity: sha512-4y3U2kDxzAMKthjx6iIlxY2oA3l5FVP1WR2Zkz1j0Cx0RI5P1DZknSV5WP86i2anE5eal+pmtzvCO4oZWgcgtA==}
@@ -2602,8 +2599,8 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
-  lucide-react@0.509.0:
-    resolution: {integrity: sha512-xCJHn6Uh5qF6PGml25vveCTrHJZcqS1G1MVzWZK54ZQsOiCVJk4fwY3oyo5EXS2S+aqvTpWYIfJN+PesJ0quxg==}
+  lucide-react@0.562.0:
+    resolution: {integrity: sha512-82hOAu7y0dbVuFfmO4bYF1XEwYk/mEbM5E+b1jgci/udUBEE/R7LF5Ip0CCEmXe8AybRM8L+04eP+LGZeDvkiw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -2855,6 +2852,7 @@ packages:
   next@15.5.6:
     resolution: {integrity: sha512-zTxsnI3LQo3c9HSdSf91O1jMNsEzIXDShXd4wVdg9y5shwLqBXi4ZtUUJyB86KGVSJLZx0PFONvO54aheGX8QQ==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -3678,9 +3676,6 @@ snapshots:
     optional: true
 
   '@cloudflare/workerd-windows-64@1.20241218.0':
-    optional: true
-
-  '@cloudflare/workers-types@4.20241224.0':
     optional: true
 
   '@cloudflare/workers-types@4.20251107.0': {}
@@ -5297,11 +5292,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.6(@cloudflare/workers-types@4.20241224.0)(better-sqlite3@11.7.0):
-    optionalDependencies:
-      '@cloudflare/workers-types': 4.20241224.0
-      better-sqlite3: 11.7.0
-
   drizzle-orm@0.44.6(@cloudflare/workers-types@4.20251107.0)(better-sqlite3@11.7.0):
     optionalDependencies:
       '@cloudflare/workers-types': 4.20251107.0
@@ -5716,7 +5706,7 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
-  lucide-react@0.509.0(react@19.0.0):
+  lucide-react@0.562.0(react@19.0.0):
     dependencies:
       react: 19.0.0
 
