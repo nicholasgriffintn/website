@@ -84,19 +84,6 @@ importers:
         specifier: ^4.0.0
         version: 4.54.0(@cloudflare/workers-types@4.20251231.0)
 
-  apps/multiplayer:
-    dependencies:
-      hono:
-        specifier: ^4.6.12
-        version: 4.11.3
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241127.0
-        version: 4.20251231.0
-      wrangler:
-        specifier: ^4.0.0
-        version: 4.54.0(@cloudflare/workers-types@4.20251231.0)
-
   apps/web:
     dependencies:
       '@mdx-js/loader':
@@ -2570,10 +2557,6 @@ packages:
 
   hast-util-whitespace@3.0.0:
     resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
-
-  hono@4.11.3:
-    resolution: {integrity: sha512-PmQi306+M/ct/m5s66Hrg+adPnkD5jiO6IjA7WhWw0gSBSo1EcRegwuI1deZ+wd5pzCGynCcn2DprnE4/yEV4w==}
-    engines: {node: '>=16.9.0'}
 
   html-dom-parser@5.1.2:
     resolution: {integrity: sha512-9nD3Rj3/FuQt83AgIa1Y3ruzspwFFA54AJbQnohXN+K6fL1/bhcDQJJY5Ne4L4A163ADQFVESd/0TLyNoV0mfg==}
@@ -5597,8 +5580,6 @@ snapshots:
   hast-util-whitespace@3.0.0:
     dependencies:
       '@types/hast': 3.0.4
-
-  hono@4.11.3: {}
 
   html-dom-parser@5.1.2:
     dependencies:
