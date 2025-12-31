@@ -83,7 +83,7 @@ export default async function Home() {
             </div>
           </div>
         </div>
-        <div className="lg:mx-break-out pt-5 lg:mt-20 relative">
+        <div className="mx-break-out pt-5 lg:mt-20 relative">
           <div className="lg:bg-[#171923] w-full lg:min-h-[240px] lg:absolute top-0 left-0" />
           <div className="lg:container relative">
             <div className="text-left pb-5">
