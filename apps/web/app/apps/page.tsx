@@ -1,16 +1,16 @@
-import { Brush, Spade, Lock } from "lucide-react";
+import { Brush, Spade, Lock, Calendar } from 'lucide-react';
 
-import { PageLayout } from "@/components/PageLayout";
-import { InnerPage } from "@/components/InnerPage";
-import { LinkCard } from "@/components/LinkCard";
+import { PageLayout } from '@/components/PageLayout';
+import { InnerPage } from '@/components/InnerPage';
+import { LinkCard } from '@/components/LinkCard';
 
 export const metadata = {
-	title: "Apps",
-	description: "A collection of apps that I am working on.",
+  title: 'Apps',
+  description: 'A collection of apps that I am working on.',
 };
 
 export default async function Home() {
-	return (
+  return (
     <PageLayout>
       <InnerPage>
         <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
@@ -36,10 +36,11 @@ export default async function Home() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <LinkCard
-            icon={<Brush className="w-6 h-6" />}
-            title="Anyone Can Draw"
-            description="A game where you play against others and AI to get the highest score guessing what others drew."
-            href="/apps/anyone-can-draw"
+            icon={<Calendar className="w-6 h-6" />}
+            title="FOSDEM PWA"
+            description="FOSDEM is a great event that I attend often. This app makes it easier to plan my schedule and catch up after the event."
+            href="https://fosdempwa.com"
+            external
           />
           <LinkCard
             icon={<Spade className="w-6 h-6" />}
@@ -47,6 +48,12 @@ export default async function Home() {
             description="An app for running sprint poker sessions during your team's refinement sessions."
             href="https://sprintjam.co.uk"
             external
+          />
+          <LinkCard
+            icon={<Brush className="w-6 h-6" />}
+            title="Anyone Can Draw"
+            description="A game where you play against others and AI to get the highest score guessing what others drew."
+            href="/apps/anyone-can-draw"
           />
           <LinkCard
             icon={<Lock className="w-6 h-6" />}
