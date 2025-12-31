@@ -83,7 +83,6 @@ export default async function Home({ params }) {
         <script
           type="application/ld+json"
           suppressHydrationWarning
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: It's on purpose
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',

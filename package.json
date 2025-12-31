@@ -4,11 +4,9 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "turbo dev --filter=web",
-		"lint": "turbo lint",
-		"format": "pnpm biome format --write"
+		"lint": "turbo lint"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
 		"turbo": "^2.2.3",
 		"typescript": "^5.6.3"
 	},

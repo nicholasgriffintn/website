@@ -86,7 +86,6 @@ export async function getAllTags() {
   const posts = await getBlogPosts();
   const tagCounts = posts.reduce((acc, post) => {
     if (Array.isArray(post.tags)) {
-      // biome-ignore lint/complexity/noForEach: It works.
       post.tags.forEach((tag) => {
         acc[tag] = (acc[tag] || 0) + 1;
       });

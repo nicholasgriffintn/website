@@ -193,7 +193,7 @@ export function CustomMDX(props) {
   return (
     <MDXRemote
       {...props}
-      components={{ ...components, ...(props.components || {}) }}
+      components={{ ...components, ...props.components }}
       options={{
         mdxOptions: {
           remarkPlugins: [gfm],

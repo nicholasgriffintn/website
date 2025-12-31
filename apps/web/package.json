@@ -6,8 +6,9 @@
 		"dev": "ENVIRONMENT=development next dev --turbo",
 		"build": "next build",
 		"start": "next start",
-		"lint": "biome lint",
-		"format": "biome format --write",
+		"typecheck": "tsc --noEmit",
+		"lint": "oxlint",
+		"lint:fix": "oxlint --fix",
 		"preview": "npm run pages:build && npx wrangler pages dev",
 		"deploy": "npm run pages:build && npx wrangler pages deploy",
 		"cf-typegen": "npx wrangler types --env-interface CloudflareEnv env.d.ts"
@@ -51,7 +52,6 @@
 		"tailwindcss-animate": "^1.0.7"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.10",
 		"@tailwindcss/postcss": "^4.1.18",
 		"@tailwindcss/typography": "^0.5.19",
 		"@types/mdx": "^2.0.13",
@@ -60,9 +60,11 @@
 		"@types/react-dom": "^19",
 		"@types/react-scroll": "^1.8.10",
 		"autoprefixer": "^10.4.23",
+		"baseline-browser-mapping": "^2.9.11",
 		"better-sqlite3": "^12.5.0",
 		"cross-env": "^10.1.0",
 		"drizzle-kit": "^0.31.8",
+		"oxlint": "^1.36.0",
 		"postcss": "^8.5.6",
 		"tailwindcss": "^4.1.18",
 		"typescript": "^5.9.3"
