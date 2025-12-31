@@ -22,10 +22,10 @@ importers:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241127.0
-        version: 4.20251107.0
+        version: 4.20251231.0
       wrangler:
         specifier: ^3.91.0
-        version: 3.99.0(@cloudflare/workers-types@4.20251107.0)
+        version: 3.99.0(@cloudflare/workers-types@4.20251231.0)
 
   apps/blog-text-to-speech:
     dependencies:
@@ -35,10 +35,10 @@ importers:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241127.0
-        version: 4.20251107.0
+        version: 4.20251231.0
       wrangler:
         specifier: ^3.91.0
-        version: 3.99.0(@cloudflare/workers-types@4.20251107.0)
+        version: 3.99.0(@cloudflare/workers-types@4.20251231.0)
 
   apps/database:
     dependencies:
@@ -48,7 +48,7 @@ importers:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241218.0
-        version: 4.20251107.0
+        version: 4.20251231.0
       better-sqlite3:
         specifier: ^11.7.0
         version: 11.7.0
@@ -60,7 +60,7 @@ importers:
         version: 5.7.2
       wrangler:
         specifier: ^3.96.0
-        version: 3.99.0(@cloudflare/workers-types@4.20251107.0)
+        version: 3.99.0(@cloudflare/workers-types@4.20251231.0)
 
   apps/email:
     dependencies:
@@ -73,19 +73,19 @@ importers:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241127.0
-        version: 4.20251107.0
+        version: 4.20251231.0
       wrangler:
         specifier: ^3.91.0
-        version: 3.99.0(@cloudflare/workers-types@4.20251107.0)
+        version: 3.99.0(@cloudflare/workers-types@4.20251231.0)
 
   apps/image-resizing:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241127.0
-        version: 4.20251107.0
+        version: 4.20251231.0
       wrangler:
         specifier: ^3.91.0
-        version: 3.99.0(@cloudflare/workers-types@4.20251107.0)
+        version: 3.99.0(@cloudflare/workers-types@4.20251231.0)
 
   apps/multiplayer:
     dependencies:
@@ -95,10 +95,10 @@ importers:
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241127.0
-        version: 4.20251107.0
+        version: 4.20251231.0
       wrangler:
         specifier: ^3.91.0
-        version: 3.99.0(@cloudflare/workers-types@4.20251107.0)
+        version: 3.99.0(@cloudflare/workers-types@4.20251231.0)
 
   apps/web:
     dependencies:
@@ -170,7 +170,7 @@ importers:
         version: 2.1.1
       drizzle-orm:
         specifier: 0.45.1
-        version: 0.45.1(@cloudflare/workers-types@4.20251107.0)(better-sqlite3@12.5.0)
+        version: 0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@12.5.0)
       html-react-parser:
         specifier: ^5.2.11
         version: 5.2.11(@types/react@19.0.4)(react@19.2.3)
@@ -439,6 +439,9 @@ packages:
 
   '@cloudflare/workers-types@4.20251107.0':
     resolution: {integrity: sha512-4y3U2kDxzAMKthjx6iIlxY2oA3l5FVP1WR2Zkz1j0Cx0RI5P1DZknSV5WP86i2anE5eal+pmtzvCO4oZWgcgtA==}
+
+  '@cloudflare/workers-types@4.20251231.0':
+    resolution: {integrity: sha512-XOP7h2y9Nu3ECuZM9S7w3g4GSliTgj6SEEkYj6G6d3TEQtOiV/cHXuI/fKiLj8Z9+qJK/RLLcKkX14NxajrXCw==}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -3765,7 +3768,10 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20241218.0':
     optional: true
 
-  '@cloudflare/workers-types@4.20251107.0': {}
+  '@cloudflare/workers-types@4.20251107.0':
+    optional: true
+
+  '@cloudflare/workers-types@4.20251231.0': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -5420,9 +5426,9 @@ snapshots:
       '@cloudflare/workers-types': 4.20251107.0
       better-sqlite3: 11.7.0
 
-  drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251107.0)(better-sqlite3@12.5.0):
+  drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@12.5.0):
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20251107.0
+      '@cloudflare/workers-types': 4.20251231.0
       better-sqlite3: 12.5.0
 
   electron-to-chromium@1.5.267: {}
@@ -6974,7 +6980,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20241218.0
       '@cloudflare/workerd-windows-64': 1.20241218.0
 
-  wrangler@3.99.0(@cloudflare/workers-types@4.20251107.0):
+  wrangler@3.99.0(@cloudflare/workers-types@4.20251231.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.3.4
       '@esbuild-plugins/node-globals-polyfill': 0.2.3(esbuild@0.17.19)
@@ -6994,7 +7000,7 @@ snapshots:
       workerd: 1.20241218.0
       xxhash-wasm: 1.1.0
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20251107.0
+      '@cloudflare/workers-types': 4.20251231.0
       fsevents: 2.3.3
     transitivePeerDependencies:
       - bufferutil
