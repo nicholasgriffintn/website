@@ -53,7 +53,8 @@ export default async function Home() {
             icon={<Brush className="w-6 h-6" />}
             title="Anyone Can Draw"
             description="A game where you play against others and AI to get the highest score guessing what others drew."
-            href="/apps/anyone-can-draw"
+            href="https://anyonecandraw.app"
+            external
           />
           <LinkCard
             icon={<Lock className="w-6 h-6" />}
