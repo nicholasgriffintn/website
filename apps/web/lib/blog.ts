@@ -5,6 +5,16 @@ import { slugify } from "./slugs";
 const BASE_API_URL = 'https://content.s3rve.co.uk';
 const cacheManager = new CacheManager<any>();
 
+function normalizeVoidElements(content?: string | null) {
+  if (typeof content !== 'string') {
+    return content ?? '';
+  }
+
+  return content
+    .replace(/<br(?!\s*\/)\s*>/gi, '<br />')
+    .replace(/<hr(?!\s*\/)\s*>/gi, '<hr />');
+}
+
 async function getApiData(path: string, params: Record<string, string> = {}) {
   const queryString = new URLSearchParams(params).toString();
   const fullPath = queryString ? `${path}?${queryString}` : path;
@@ -51,6 +61,9 @@ export async function getBlogPostBySlug(slug: string) {
     };
 
     const post = await getApiData(`content/${slug}`, params);
+    if (post?.content) {
+      post.content = normalizeVoidElements(post.content);
+    }
     return post;
   } catch (error) {
     console.error('Failed to get blog post:', error);
@@ -73,7 +86,6 @@ export async function getAllTags() {
   const posts = await getBlogPosts();
   const tagCounts = posts.reduce((acc, post) => {
     if (Array.isArray(post.tags)) {
-      // biome-ignore lint/complexity/noForEach: It works.
       post.tags.forEach((tag) => {
         acc[tag] = (acc[tag] || 0) + 1;
       });

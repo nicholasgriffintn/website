@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@config "../tailwind.config.js";
 
 @layer base {
 	:root {
@@ -77,6 +77,13 @@
 }
 
 @layer utilities {
+	@media (min-width: 1024px) {
+		.mx-break-out {
+			width: 100vw;
+			margin-left: calc(50% - 50vw);
+			margin-right: calc(50% - 50vw);
+		}
+	}
 }
 
 @media (max-width: 640px) {

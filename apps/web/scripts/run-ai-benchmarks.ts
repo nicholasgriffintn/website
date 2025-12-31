@@ -57,57 +57,72 @@ const benchmarks = [
 ];
 
 const textModels = [
-	"gemini-2.0-flash",
-	"gemini-experimental-1206",
-	"gemini-1.5-flash",
-	"gemini-1.5-pro",
-	"gemini-1.5-flash-8b",
-	"o1-preview",
-	"o1-mini",
-	"gpt-4o",
-	"gpt-4o-mini",
-	"gpt-4-turbo",
-	"gpt-4",
-	"gpt-3.5-turbo",
-	"mistral-large",
-	"mistral-small",
-	"nova-lite",
-	"nova-micro",
-	"nova-pro",
-	"claude-3.5-sonnet",
-	"claude-3.5-haiku",
-	"claude-3-opus",
-	"grok",
-	"llama-3.1-70b-instruct",
-	"llama-3.2-1b-instruct",
-	"llama-3.2-3b-instruct",
-	"llama-3.3-70b-instruct",
-	"mistral-nemo",
-	"llama-3.1-sonar-small-128k-online",
-	"codestral",
-	"openchat",
-	"una-cybertron-7b-v2",
-	"tinyllama",
-	"Phi-3.5-MoE-instruct",
-	"Phi-3.5-mini-instruct",
-	"mythomax-l2-13b",
-	"deepseek-v3",
-	"deepseek-chat",
-	"deepseek-reasoner",
-	"claude-3.7-sonnet",
-	"llama-4-scout-17b",
-	"llama-4-maverick-instruct",
+  'gemini-flash-lite-latest',
+  'gemini-flash-latest',
+  'gemini-3-pro-preview',
+  'o1-preview',
+  'o1-mini',
+  'gpt-4o',
+  'gpt-4o-mini',
+  'gpt-4-turbo',
+  'gpt-4',
+  'gpt-5',
+  'gpt-5.1',
+  'gpt-3.5-turbo',
+  'mistral-tiny',
+  'mistral-large',
+  'mistral-medium',
+  'mistral-small',
+  'nova-lite',
+  'nova-micro',
+  'nova-pro',
+  'claude-3.5-sonnet',
+  'claude-3.5-haiku',
+  'claude-4-sonnet',
+  'claude-4.5-sonnet',
+  'claude-3-opus',
+  'claude-4-opus',
+  'claude-4.5-opus',
+  'grok',
+  'grok--3',
+  'grok--3-mini',
+  'grok--4',
+  'llama-3.1-70b-instruct',
+  'llama-3.2-1b-instruct',
+  'llama-3.2-3b-instruct',
+  'llama-3.3-70b-instruct',
+  'mistral-nemo',
+  'llama-3.1-sonar-small-128k-online',
+  'codestral',
+  'openchat',
+  'una-cybertron-7b-v2',
+  'tinyllama',
+  'Phi-3.5-MoE-instruct',
+  'Phi-3.5-mini-instruct',
+  'mythomax-l2-13b',
+  'deepseek-v3',
+  'deepseek-chat',
+  'deepseek-reasoner',
+  'claude-3.7-sonnet',
+  'llama-4-scout-17b',
+  'llama-4-maverick-instruct',
+  'kimi-k2',
 ];
 
 const imageToTextModels = [
-	"Phi-3.5-vision-instruct",
-	"gemini-2.0-flash",
-	"gpt-4o",
-	"claude-3.5-sonnet",
-	"claude-3-opus",
-	"llava",
-	"pixtral-large",
-	"claude-3.7-sonnet"
+  'Phi-3.5-vision-instruct',
+  'gemini-2.0-flash',
+  'gpt-4o',
+  'claude-3.5-sonnet',
+  'claude-3.5-haiku',
+  'claude-4-sonnet',
+  'claude-4.5-sonnet',
+  'claude-3-opus',
+  'claude-4-opus',
+  'claude-4.5-opus',
+  'llava',
+  'pixtral-large',
+  'claude-3.7-sonnet',
 ];
 
 const RATE_LIMIT = 50;
@@ -117,102 +132,117 @@ const DELAY_BETWEEN_REQUESTS = Math.ceil(TIME_WINDOW / RATE_LIMIT);
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function validateBenchmarkResponse(benchmark: any, response: any) {
-	if (!response) return { status: "failed", reason: "No response received" };
+  if (!response) return { status: 'failed', reason: 'No response received' };
 
-	if (benchmark.id === "hamster-svg") {
-		const messages = Array.isArray(response)
-			? response
-			: response.response || [];
+  if (benchmark.id === 'hamster-svg') {
+    const messages = Array.isArray(response)
+      ? response
+      : response.response || [];
 
-		const hasSvgTags = messages.some((message) => {
-			const content = message.content || "";
-			return content.includes("<svg") && content.includes("</svg>");
-		});
+    const hasSvgTags = messages.some((message) => {
+      const content = message.content || '';
+      return content.includes('<svg') && content.includes('</svg>');
+    });
 
-		return {
-			status: hasSvgTags ? "success" : "failed",
-			reason: hasSvgTags ? null : "No valid SVG tags found in response",
-		};
-	}
+    return {
+      status: hasSvgTags ? 'success' : 'failed',
+      reason: hasSvgTags ? null : 'No valid SVG tags found in response',
+    };
+  }
 
-	return { status: "success", reason: null };
+  return { status: 'success', reason: null };
 }
 
 async function fetchModelResponse(model: string, benchmark: any) {
-	const request = {
-		chatId: `benchmark-v1.2-${benchmark.id}-${model}`,
-		message: benchmark.prompt,
-		model,
-		mode: "no_system",
-		role: "user",
-		max_tokens: 4096,
-		timestamp: new Date().toISOString(),
-	};
+  const request = {
+    chatId: `benchmark-v1.2-${benchmark.id}-${model}`,
+    message: benchmark.prompt,
+    model,
+    mode: 'no_system',
+    role: 'user',
+    max_tokens: 4096,
+    timestamp: new Date().toISOString(),
+  };
 
-	const baseUrl = "https://api.polychat.app";
-	const token = process.env.ASSISTANT_AUTH_TOKEN;
+  const baseUrl = 'https://api.polychat.app';
+  const token = process.env.ASSISTANT_AUTH_TOKEN;
 
-	console.log(`Fetching data for ${request.chatId}`);
+  console.log(`Fetching data for ${request.chatId}`);
 
-	try {
-		const response = await fetch(`${baseUrl}/chat/completions`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				"User-Agent": "NGWeb",
-				Authorization: `Bearer ${token}`,
-				"x-user-email": "automation@undefined.computer",
-			},
-			body: JSON.stringify({
-				completion_id: request.chatId,
-				messages: [	
-					{
-						role: "user",
-						content: request.message,
-					},
-				],
-				model: model,
-				mode: request.mode,
-				max_tokens: request.max_tokens,
-				role: request.role,
-				store: false,
-				stream: false,
-			}),
-		});
+  try {
+    const response = await fetch(`${baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'NGWeb',
+        Authorization: `Bearer ${token}`,
+        'x-user-email': 'automation@undefined.computer',
+      },
+      body: JSON.stringify({
+        completion_id: request.chatId,
+        messages: [
+          {
+            role: 'user',
+            content: request.message,
+          },
+        ],
+        model: model,
+        mode: request.mode,
+        max_tokens: request.max_tokens,
+        role: request.role,
+        store: false,
+        stream: false,
+      }),
+    });
 
-		if (!response.ok) {
-			console.error(
-				`Error fetching data for ${request.chatId}:`,
-				response.statusText,
-			);
-			console.log(JSON.stringify(await response.json(), null, 2));
-			return {
-				model,
-				request,
-				response: null,
-				status: "failed",
-				reason: `HTTP ${response.status}: ${response.statusText}`,
-			};
-		}
+    if (!response.ok) {
+      console.error(
+        `Error fetching data for ${request.chatId}:`,
+        response.statusText
+      );
+      console.log(JSON.stringify(await response.json(), null, 2));
+      return {
+        model,
+        request,
+        response: null,
+        status: 'failed',
+        reason: `HTTP ${response.status}: ${response.statusText}`,
+      };
+    }
 
-		const responseData = await response.json();
-		const validation = validateBenchmarkResponse(benchmark, responseData);
+    const responseData = await response.json();
 
-		return {
-			model,
-			request,
-			response: responseData,
-			...validation,
-		};
-	} catch (error) {
-		return {
-			model,
-			request,
-			response: null,
-			status: "failed",
-			reason: `Error: ${error.message}`,
-		};
-	}
+    if (!responseData?.data) {
+      console.error(
+        `No data in response for ${request.chatId}:`,
+        JSON.stringify(responseData, null, 2)
+      );
+      return {
+        model,
+        request,
+        response: null,
+        status: 'failed',
+        reason: `HTTP ${response.status}: ${response.statusText}`,
+      };
+    }
+
+    const validation = validateBenchmarkResponse(benchmark, responseData.data);
+
+    return {
+      model,
+      request,
+      response: responseData.data,
+      ...validation,
+    };
+  } catch (error) {
+    return {
+      model,
+      request,
+      response: null,
+      status: 'failed',
+      reason: `Error: ${error.message}`,
+    };
+  }
 }
 
 async function processBatchWithRateLimit(models: string[], benchmark: any) {
