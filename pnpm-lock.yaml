@@ -41,14 +41,14 @@ importers:
     dependencies:
       drizzle-orm:
         specifier: 0.45.1
-        version: 0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@11.7.0)
+        version: 0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@12.5.0)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241218.0
         version: 4.20251231.0
       better-sqlite3:
-        specifier: ^11.7.0
-        version: 11.7.0
+        specifier: ^12.0.0
+        version: 12.5.0
       drizzle-kit:
         specifier: ^0.31.0
         version: 0.31.8
@@ -76,19 +76,6 @@ importers:
         version: 4.54.0(@cloudflare/workers-types@4.20251231.0)
 
   apps/image-resizing:
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241127.0
-        version: 4.20251231.0
-      wrangler:
-        specifier: ^4.0.0
-        version: 4.54.0(@cloudflare/workers-types@4.20251231.0)
-
-  apps/multiplayer:
-    dependencies:
-      hono:
-        specifier: ^4.6.12
-        version: 4.11.3
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241127.0
@@ -2004,9 +1991,6 @@ packages:
     resolution: {integrity: sha512-Sg0xJUNDU1sJNGdfGWhVHX0kkZ+HWcvmVymJbj6NSgZZmW/8S9Y2HQ5euytnIgakgxN6papOAWiwDo1ctFDcoQ==}
     hasBin: true
 
-  better-sqlite3@11.7.0:
-    resolution: {integrity: sha512-mXpa5jnIKKHeoGzBrUJrc65cXFKcILGZpU3FXR0pradUEm9MA7UZz02qfEejaMcm9iXrSOCenwwYMJ/tZ1y5Ig==}
-
   better-sqlite3@12.5.0:
     resolution: {integrity: sha512-WwCZ/5Diz7rsF29o27o0Gcc1Du+l7Zsv7SYtVPG0X3G/uUI1LqdxrQI7c9Hs2FWpqXXERjW9hp6g3/tH7DlVKg==}
     engines: {node: 20.x || 22.x || 23.x || 24.x || 25.x}
@@ -2570,10 +2554,6 @@ packages:
 
   hast-util-whitespace@3.0.0:
     resolution: {integrity: sha512-88JUN06ipLwsnv+dVn+OIYOvAuvBMy/Qoi6O7mQHxdPXpjy+Cd6xRkWwux7DKO+4sYILtLBRIKgsdpS2gQc7qw==}
-
-  hono@4.11.3:
-    resolution: {integrity: sha512-PmQi306+M/ct/m5s66Hrg+adPnkD5jiO6IjA7WhWw0gSBSo1EcRegwuI1deZ+wd5pzCGynCcn2DprnE4/yEV4w==}
-    engines: {node: '>=16.9.0'}
 
   html-dom-parser@5.1.2:
     resolution: {integrity: sha512-9nD3Rj3/FuQt83AgIa1Y3ruzspwFFA54AJbQnohXN+K6fL1/bhcDQJJY5Ne4L4A163ADQFVESd/0TLyNoV0mfg==}
@@ -4983,11 +4963,6 @@ snapshots:
 
   baseline-browser-mapping@2.9.11: {}
 
-  better-sqlite3@11.7.0:
-    dependencies:
-      bindings: 1.5.0
-      prebuild-install: 7.1.2
-
   better-sqlite3@12.5.0:
     dependencies:
       bindings: 1.5.0
@@ -5356,11 +5331,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@11.7.0):
-    optionalDependencies:
-      '@cloudflare/workers-types': 4.20251231.0
-      better-sqlite3: 11.7.0
-
   drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@12.5.0):
     optionalDependencies:
       '@cloudflare/workers-types': 4.20251231.0
@@ -5597,8 +5567,6 @@ snapshots:
   hast-util-whitespace@3.0.0:
     dependencies:
       '@types/hast': 3.0.4
-
-  hono@4.11.3: {}
 
   html-dom-parser@5.1.2:
     dependencies:
