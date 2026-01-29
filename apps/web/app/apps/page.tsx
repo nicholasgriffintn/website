@@ -1,4 +1,4 @@
-import { Brush, Spade, Lock, Calendar } from 'lucide-react';
+import { Brush, Spade, Lock, Calendar, Bug } from 'lucide-react';
 
 import { PageLayout } from '@/components/PageLayout';
 import { InnerPage } from '@/components/InnerPage';
@@ -48,6 +48,13 @@ export default async function Home() {
             description="An app for running sprint poker sessions during your team's refinement sessions."
             href="https://sprintjam.co.uk"
             external
+          />
+          <LinkCard
+            title="BitWobbly (WIP)"
+            description="An app for monitoring applications with status pages and issue tracking, hosted on CloudFlare"
+            href="https://bitwobbly.com/"
+            external
+            icon={<Bug className="w-6 h-6" />}
           />
           <LinkCard
             icon={<Brush className="w-6 h-6" />}
