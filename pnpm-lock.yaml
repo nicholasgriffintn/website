@@ -41,14 +41,14 @@ importers:
     dependencies:
       drizzle-orm:
         specifier: 0.45.1
-        version: 0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@11.7.0)
+        version: 0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@12.6.2)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241218.0
         version: 4.20251231.0
       better-sqlite3:
-        specifier: ^11.7.0
-        version: 11.7.0
+        specifier: ^12.0.0
+        version: 12.6.2
       drizzle-kit:
         specifier: ^0.31.0
         version: 0.31.8
@@ -1990,9 +1990,6 @@ packages:
   baseline-browser-mapping@2.9.11:
     resolution: {integrity: sha512-Sg0xJUNDU1sJNGdfGWhVHX0kkZ+HWcvmVymJbj6NSgZZmW/8S9Y2HQ5euytnIgakgxN6papOAWiwDo1ctFDcoQ==}
     hasBin: true
-
-  better-sqlite3@11.7.0:
-    resolution: {integrity: sha512-mXpa5jnIKKHeoGzBrUJrc65cXFKcILGZpU3FXR0pradUEm9MA7UZz02qfEejaMcm9iXrSOCenwwYMJ/tZ1y5Ig==}
 
   better-sqlite3@12.6.2:
     resolution: {integrity: sha512-8VYKM3MjCa9WcaSAI3hzwhmyHVlH8tiGFwf0RlTsZPWJ1I5MkzjiudCo4KC4DxOaL/53A5B1sI/IbldNFDbsKA==}
@@ -4945,11 +4942,6 @@ snapshots:
 
   baseline-browser-mapping@2.9.11: {}
 
-  better-sqlite3@11.7.0:
-    dependencies:
-      bindings: 1.5.0
-      prebuild-install: 7.1.2
-
   better-sqlite3@12.6.2:
     dependencies:
       bindings: 1.5.0
@@ -5315,11 +5307,6 @@ snapshots:
       esbuild-register: 3.6.0(esbuild@0.25.12)
     transitivePeerDependencies:
       - supports-color
-
-  drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@11.7.0):
-    optionalDependencies:
-      '@cloudflare/workers-types': 4.20251231.0
-      better-sqlite3: 11.7.0
 
   drizzle-orm@0.45.1(@cloudflare/workers-types@4.20251231.0)(better-sqlite3@12.6.2):
     optionalDependencies:
