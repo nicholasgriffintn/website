@@ -1,4 +1,12 @@
-import { Brush, Spade, Lock, Calendar, Bug, QrCode } from 'lucide-react';
+import {
+  Brush,
+  Spade,
+  Lock,
+  Calendar,
+  Bug,
+  QrCode,
+  ChartBar,
+} from 'lucide-react';
 
 import { PageLayout } from '@/components/PageLayout';
 import { InnerPage } from '@/components/InnerPage';
@@ -55,6 +63,13 @@ export default async function Home() {
             href="https://bitwobbly.com/"
             external
             icon={<Bug className="w-6 h-6" />}
+          />
+          <LinkCard
+            title="Beacon"
+            description="An analytics and experimentation platform built using Cloudflare's edge services and pipelines capabilities."
+            href="https://beacon.polychat.app/"
+            external
+            icon={<ChartBar className="w-6 h-6" />}
           />
           <LinkCard
             icon={<Brush className="w-6 h-6" />}
