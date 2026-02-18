@@ -66,7 +66,7 @@ importers:
         version: 3.0.27
       postal-mime:
         specifier: ^2.4.1
-        version: 2.4.1
+        version: 2.7.3
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20241127.0
@@ -3027,8 +3027,8 @@ packages:
   points-on-path@0.2.1:
     resolution: {integrity: sha512-25ClnWWuw7JbWZcgqY/gJ4FQWadKxGWk+3kR/7kD0tCaDtPPMj7oHu2ToLaVhfpnHrZzYby2w6tUA0eOIuUg8g==}
 
-  postal-mime@2.4.1:
-    resolution: {integrity: sha512-q1rHP0f7u0PNvnF/M7YFdkoV1T+q8lNm5hkviHHGEnycYvae7PSFuw7KTDe6PkEjkcjCVs/mPx0rMimncgxT0w==}
+  postal-mime@2.7.3:
+    resolution: {integrity: sha512-MjhXadAJaWgYzevi46+3kLak8y6gbg0ku14O1gO/LNOuay8dO+1PtcSGvAdgDR0DoIsSaiIA8y/Ddw6MnrO0Tw==}
 
   postcss-selector-parser@6.0.10:
     resolution: {integrity: sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==}
@@ -6309,7 +6309,7 @@ snapshots:
       path-data-parser: 0.1.0
       points-on-curve: 0.2.0
 
-  postal-mime@2.4.1: {}
+  postal-mime@2.7.3: {}
 
   postcss-selector-parser@6.0.10:
     dependencies:
