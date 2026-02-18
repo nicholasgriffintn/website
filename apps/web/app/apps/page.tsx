@@ -1,4 +1,4 @@
-import { Brush, Spade, Lock, Calendar, Bug } from 'lucide-react';
+import { Brush, Spade, Lock, Calendar, Bug, QrCode } from 'lucide-react';
 
 import { PageLayout } from '@/components/PageLayout';
 import { InnerPage } from '@/components/InnerPage';
@@ -61,6 +61,13 @@ export default async function Home() {
             title="Anyone Can Draw"
             description="A game where you play against others and AI to get the highest score guessing what others drew."
             href="https://anyonecandraw.app"
+            external
+          />
+          <LinkCard
+            icon={<QrCode className="w-6 h-6" />}
+            title="QR Decoder"
+            description="A simple HTML application that decodes QR codes locally, preferring the native BarcodeDetector API."
+            href="https://qr-decoder.app/"
             external
           />
           <LinkCard
