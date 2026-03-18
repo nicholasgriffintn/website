@@ -3,6 +3,7 @@ import type { LinksFunction, MetaFunction } from "react-router";
 
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { PageLayout } from "@/components/PageLayout";
 
 export const meta: MetaFunction = () => [
   { title: "Nicholas Griffin" },
@@ -64,14 +65,18 @@ export function ErrorBoundary() {
         <Links />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
-            Sorry, this page could not be found.
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            Please check the URL in the address bar and try again.
-          </p>
-        </div>
+        <PageLayout>
+          <section className="w-full min-h-screen flex flex-col items-center justify-center bg-contain bg-center">
+            <div className="container px-4 md:px-6 text-center space-y-6 flex flex-col items-center justify-center">
+              <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
+                Sorry, this page could not be found.
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-[700px]">
+                Please check the URL in the address bar and try again. Or go back to the home page.
+              </p>
+            </div>
+          </section>
+        </PageLayout>
         <Scripts />
       </body>
     </html>
