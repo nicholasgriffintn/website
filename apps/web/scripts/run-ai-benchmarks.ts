@@ -176,7 +176,7 @@ async function fetchModelResponse(model: string, benchmark: any) {
         'Content-Type': 'application/json',
         'User-Agent': 'NGWeb',
         Authorization: `Bearer ${token}`,
-        'x-user-email': 'automation@undefined.computer',
+        'x-user-email': 'automation@absent.computer',
       },
       body: JSON.stringify({
         completion_id: request.chatId,
