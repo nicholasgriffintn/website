@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - apps/web/**
+      - apps/infra/**
   workflow_dispatch:
 
 jobs:
@@ -40,13 +41,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
-      - name: Build Next.js app
+      - name: Build web app
         run: pnpm --filter web build
         env:
           NODE_ENV: production
-
-      - name: Package for Lambda (open-next)
-        run: pnpm --filter web build:lambda
 
       - name: Deploy CDK stacks
         id: deploy

@@ -1,6 +1,10 @@
+import { reactRouter } from "@react-router/dev/vite";
+import tailwindcss from "@tailwindcss/vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vite-plus";
 
 export default defineConfig({
+  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   lint: {
     plugins: ["unicorn", "typescript", "oxc"],
     categories: {},

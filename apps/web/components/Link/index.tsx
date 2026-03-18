@@ -1,4 +1,4 @@
-import NextLink from "next/link";
+import { Link as RouterLink } from "react-router";
 import { clsx } from "clsx";
 import { ExternalLink } from "lucide-react";
 
@@ -22,9 +22,9 @@ export function Link({
   [key: string]: unknown;
 }) {
   return (
-    <NextLink
+    <RouterLink
       {...props}
-      href={href}
+      to={href}
       target={target}
       className={clsx(
         className,
@@ -34,12 +34,11 @@ export function Link({
         },
         muted ? "text-muted-foreground" : "text-primary-foreground",
       )}
-      prefetch={false}
     >
       {children}
       {showExternalIcon && target === "_blank" && (
         <ExternalLink className="inline ml-1" size={12} />
       )}
-    </NextLink>
+    </RouterLink>
   );
 }

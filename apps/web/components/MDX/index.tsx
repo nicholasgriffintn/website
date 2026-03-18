@@ -1,14 +1,13 @@
-import gfm from "remark-gfm";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import { highlight } from "sugar-high";
-import { createElement, Children } from "react";
+import { lazy, Suspense, createElement, Children } from "react";
 import React from "react";
-import dynamic from "next/dynamic";
+import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
+import { highlight } from "sugar-high";
 
 import { Link } from "@/components/Link";
 import { Image } from "@/components/Image";
 import { slugify } from "@/lib/slugs";
-const Mermaid = dynamic(() => import("./Mermaid"));
+
+const Mermaid = lazy(() => import("./Mermaid"));
 
 function Table({ children, ...props }) {
   return (
@@ -41,23 +40,24 @@ function CustomLink(props) {
 function RoundedImage(props) {
   return (
     <div className="relative w-full">
-      <Image alt={props.alt} className="rounded-lg" fill {...props} />
+      <Image alt={props.alt} className="rounded-lg" {...props} />
     </div>
   );
 }
 
 function Code({ children, className, ...props }) {
-  // Check if this is a code block (has language) or inline code
   const isCodeBlock = /language-(\w+)/.exec(className || "");
 
-  // Render Mermaid diagrams for mermaid code blocks client-side
   if (isCodeBlock && isCodeBlock[1] === "mermaid") {
     const chart = Children.toArray(children).join("");
-    return <Mermaid chart={chart} />;
+    return (
+      <Suspense fallback={null}>
+        <Mermaid chart={chart} />
+      </Suspense>
+    );
   }
 
   if (!isCodeBlock) {
-    // Inline code styling
     return (
       <code
         className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm"
@@ -68,7 +68,6 @@ function Code({ children, className, ...props }) {
     );
   }
 
-  // Code block styling
   const language = isCodeBlock[1];
   const codeHTML = highlight(children);
 
@@ -93,9 +92,7 @@ function createHeading(level) {
         if (typeof child === "string") return child;
         if (React.isValidElement(child)) {
           const props = child.props as { children?: React.ReactNode };
-          if (props.children !== undefined) {
-            return props.children;
-          }
+          if (props.children !== undefined) return props.children;
         }
         return "";
       })
@@ -104,32 +101,14 @@ function createHeading(level) {
     const slug = slugify(text);
 
     return createElement(`h${level}`, { id: slug }, [
-      createElement(
-        "a",
-        {
-          href: `#${slug}`,
-          key: `link-${slug}`,
-          className: "anchor",
-        },
-        [
-          createElement(
-            "span",
-            {
-              className: "sr-only",
-              key: `hidden-text-${slug}`,
-            },
-            `Link to ${text}`,
-          ),
-          createElement(
-            "span",
-            {
-              key: `visible-text-${slug}`,
-              role: "presentation",
-            },
-            "#",
-          ),
-        ],
-      ),
+      createElement("a", { href: `#${slug}`, key: `link-${slug}`, className: "anchor" }, [
+        createElement(
+          "span",
+          { className: "sr-only", key: `hidden-text-${slug}` },
+          `Link to ${text}`,
+        ),
+        createElement("span", { key: `visible-text-${slug}`, role: "presentation" }, "#"),
+      ]),
       children,
     ]);
   };
@@ -141,29 +120,21 @@ function createHeading(level) {
 function Wrapper({ children }) {
   const hasImageComponent = (child) => {
     if (!child || typeof child !== "object") return false;
-
     if (child.type === RoundedImage || child.type === Image) return true;
-
     if (child.type?.displayName === "RoundedImage" || child.type?.name === "RoundedImage")
       return true;
     if (child.type?.displayName === "Image" || child.type?.name === "Image") return true;
-
     if (child.type === "img") return true;
-
     return false;
   };
 
   if (children && typeof children === "object" && !Array.isArray(children)) {
-    if (hasImageComponent(children)) {
-      return children;
-    }
+    if (hasImageComponent(children)) return children;
   }
 
   if (Array.isArray(children)) {
     const hasImages = children.some(hasImageComponent);
-    if (hasImages) {
-      return <>{children}</>;
-    }
+    if (hasImages) return <>{children}</>;
   }
 
   return <p>{children}</p>;
@@ -185,16 +156,12 @@ const components = {
   p: Wrapper,
 };
 
-export function CustomMDX(props) {
-  return (
-    <MDXRemote
-      {...props}
-      components={{ ...components, ...props.components }}
-      options={{
-        mdxOptions: {
-          remarkPlugins: [gfm],
-        },
-      }}
-    />
-  );
+export function CustomMDX({
+  source,
+  components: extraComponents,
+}: {
+  source: MDXRemoteSerializeResult;
+  components?: Record<string, React.ComponentType>;
+}) {
+  return <MDXRemote {...source} components={{ ...components, ...extraComponents }} />;
 }
