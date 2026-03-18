@@ -28,15 +28,10 @@ export function FeaturedImage({ src, alt }: { src: string; alt: string }) {
         <DialogContent className="max-w-3xl w-[90vw] max-h-[90vh] p-6">
           <DialogTitle className="text-lg font-semibold mb-4">{alt}</DialogTitle>
           <div className="relative w-full h-full max-h-[calc(90vh-6rem)] overflow-hidden rounded-lg">
-            <Image
-              src={src}
-              alt={alt}
-              className="w-full h-full object-contain"
-            />
+            <Image src={src} alt={alt} className="w-full h-full object-contain" />
           </div>
         </DialogContent>
       </Dialog>
     </>
   );
 }
-

@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm';
+import { sql } from "drizzle-orm";
 import { integer, sqliteTable, primaryKey, text } from "drizzle-orm/sqlite-core";
 
 export const user = sqliteTable("user", {
@@ -13,7 +13,8 @@ export const user = sqliteTable("user", {
   bio: text(),
   twitter_username: text(),
   created_at: text()
-    .default(sql`(CURRENT_TIMESTAMP)`).notNull(),
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
   updated_at: text()
     .default(sql`(CURRENT_TIMESTAMP)`)
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
@@ -46,24 +47,25 @@ export const session = sqliteTable("session", {
 export type Session = typeof session.$inferSelect;
 
 export const document = sqliteTable("document", {
-    id: text().primaryKey(),
-    metadata: text(),
-    title: text(),
-    description: text(),
-    slug: text(),
-    content: text(),
-    type: text(),
-    storage_key: text(),
-    archived: integer().default(0),
-    draft: integer().default(0),
-    image_url: text(),
-    image_alt: text(),
-    tags: text(),
-    audio_url: text(),
-    embedding_id: text(),
-    created_at: text()
-    .default(sql`(CURRENT_TIMESTAMP)`).notNull(),
-    updated_at: text()
+  id: text().primaryKey(),
+  metadata: text(),
+  title: text(),
+  description: text(),
+  slug: text(),
+  content: text(),
+  type: text(),
+  storage_key: text(),
+  archived: integer().default(0),
+  draft: integer().default(0),
+  image_url: text(),
+  image_alt: text(),
+  tags: text(),
+  audio_url: text(),
+  embedding_id: text(),
+  created_at: text()
+    .default(sql`(CURRENT_TIMESTAMP)`)
+    .notNull(),
+  updated_at: text()
     .default(sql`(CURRENT_TIMESTAMP)`)
     .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`),
 });

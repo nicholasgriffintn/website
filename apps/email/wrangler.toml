@@ -1,11 +1,9 @@
 name = "nicholasgriffin-emails"
 main = "src/index.ts"
 compatibility_date = "2024-10-22"
-compatibility_flags = ["nodejs_compat" ]
+compatibility_flags = ["nodejs_compat"]
 
-routes = [
-  { pattern = "email.nickgriffin.uk", custom_domain = true }
-]
+routes = [{ pattern = "email.nickgriffin.uk", custom_domain = true }]
 
 [dev]
 port = 8786

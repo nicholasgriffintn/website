@@ -1,8 +1,8 @@
-import { Bookmark } from 'lucide-react';
+import { Bookmark } from "lucide-react";
 
-import { formatDate } from '@/lib/blog';
-import { Metadata } from '@/types/blog';
-import { Link } from '@/components/Link';
+import { formatDate } from "@/lib/blog";
+import { Metadata } from "@/types/blog";
+import { Link } from "@/components/Link";
 
 export function PostHeader({
   isBookmark,
@@ -20,9 +20,7 @@ export function PostHeader({
           <Bookmark className="h-5 w-5 text-white fill-white" />
         </div>
       )}
-      <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
-        {post.title}
-      </h1>
+      <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">{post.title}</h1>
       <div className="mt-8">
         {Array.isArray(post.tags) && post.tags.length > 0 && (
           <div className="text-sm text-muted-foreground flex flex-wrap items-center space-x-2 mb-2">

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Play } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Play } from "lucide-react";
 
-import { Image } from '@/components/Image';
+import { Image } from "@/components/Image";
 
 export function VideoCardPlayer({ videoId, slug, title }) {
   const [videoActive, setVideoActive] = useState(false);

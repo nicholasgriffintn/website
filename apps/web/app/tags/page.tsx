@@ -4,35 +4,33 @@ import { getAllTags } from "@/lib/blog";
 import { Link } from "@/components/Link";
 
 export const metadata = {
-	title: "Tags",
-	description: "My tags collection.",
+  title: "Tags",
+  description: "My tags collection.",
 };
 
 async function getData() {
-	const tags = await getAllTags();
+  const tags = await getAllTags();
 
-	return {
-		tags,
-	};
+  return {
+    tags,
+  };
 }
 
 export default async function TagsHome() {
-	const data = await getData();
+  const data = await getData();
 
-	const tags = data.tags;
+  const tags = data.tags;
 
-	return (
+  return (
     <PageLayout>
       <InnerPage>
-        <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
-          Tags
-        </h1>
+        <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">Tags</h1>
         <div className="grid grid-cols-5 gap-4">
           <div className="col-span-5 md:col-span-3 lg:col-span-4 pt-5">
             <div className="text-primary-foreground lg:max-w-[75%]">
               <p>
-                A collection of the tags that I have written about. Click on one
-                to see the posts that are associated with it.
+                A collection of the tags that I have written about. Click on one to see the posts
+                that are associated with it.
               </p>
             </div>
           </div>
@@ -48,7 +46,7 @@ export default async function TagsHome() {
                   key={tag}
                   href={`/tags/${tag}`}
                   className="inline-block px-4 py-2 rounded-lg bg-muted text-primary-foreground shadow transition-all duration-200 hover:bg-primary hover:scale-105 border border-border no-underline hover:underline"
-                  style={{ fontSize: `${fontSize}em`, fontWeight: 'bold' }}
+                  style={{ fontSize: `${fontSize}em`, fontWeight: "bold" }}
                 >
                   {tag} ({tags[tag]})
                 </Link>

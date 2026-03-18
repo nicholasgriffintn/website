@@ -1,38 +1,38 @@
 {
-	"name": "website-database",
-	"version": "0.0.1",
-	"description": "A micro app for managing the database",
-	"scripts": {
-		"test:types": "tsc --noEmit",
-		"generate": "drizzle-kit generate",
-		"up": "drizzle-kit up:sqlite",
-		"db:migrate:local": "wrangler d1 migrations apply personal-web --local",
-		"db:migrate:preview": "wrangler d1 migrations apply personal-web-preview --remote",
-		"db:migrate:prod": "wrangler d1 migrations apply personal-web --remote",
-		"db:studio:local": "DB_LOCAL_PATH=$(find .wrangler/state/v3/d1/miniflare-D1DatabaseObject -type f -name '*.sqlite' -print -quit) drizzle-kit studio",
-		"db:studio:preview": "NODE_ENV='preview' drizzle-kit studio",
-		"db:studio:prod": "drizzle-kit studio"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "Apache-2.0",
-	"private": true,
-	"exports": {
-		".": {
-			"import": "./src/index.ts"
-		},
-		"./schema": {
-			"import": "./src/schema.ts"
-		}
-	},
-	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20241218.0",
-		"better-sqlite3": "^12.0.0",
-		"drizzle-kit": "^0.31.0",
-		"typescript": "^5.7.2",
-		"wrangler": "^4.0.0"
-	},
-	"peerDependencies": {
-		"drizzle-orm": "0.45.1"
-	}
+  "name": "website-database",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A micro app for managing the database",
+  "keywords": [],
+  "license": "Apache-2.0",
+  "author": "",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts"
+    },
+    "./schema": {
+      "import": "./src/schema.ts"
+    }
+  },
+  "scripts": {
+    "test:types": "tsc --noEmit",
+    "generate": "drizzle-kit generate",
+    "up": "drizzle-kit up:sqlite",
+    "db:migrate:local": "wrangler d1 migrations apply personal-web --local",
+    "db:migrate:preview": "wrangler d1 migrations apply personal-web-preview --remote",
+    "db:migrate:prod": "wrangler d1 migrations apply personal-web --remote",
+    "db:studio:local": "DB_LOCAL_PATH=$(find .wrangler/state/v3/d1/miniflare-D1DatabaseObject -type f -name '*.sqlite' -print -quit) drizzle-kit studio",
+    "db:studio:preview": "NODE_ENV='preview' drizzle-kit studio",
+    "db:studio:prod": "drizzle-kit studio"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "better-sqlite3": "^12.0.0",
+    "drizzle-kit": "^0.31.0",
+    "typescript": "^5.7.2",
+    "wrangler": "^4.0.0"
+  },
+  "peerDependencies": {
+    "drizzle-orm": "0.45.1"
+  }
 }

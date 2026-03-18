@@ -7,8 +7,8 @@
   color: var(--am-text-primary, #fff);
   --tw-shadow: 0 1px 2px 0 #0000000d;
   --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .applemusic-widget-latest,
@@ -107,9 +107,7 @@
 .trackLinkPlay:hover {
   svg {
     transform: scale(1.1);
-    filter: drop-shadow(
-      0 0 8px var(--am-text-accent, rgba(255, 255, 255, 0.6))
-    );
+    filter: drop-shadow(0 0 8px var(--am-text-accent, rgba(255, 255, 255, 0.6)));
   }
 }
 
@@ -120,7 +118,7 @@
   transition: transform 0.2s ease-in-out;
 }
 
-.trackLinkPlay[data-playing='true'] svg {
+.trackLinkPlay[data-playing="true"] svg {
   transform: scale(1.05);
   filter: drop-shadow(0 0 8px var(--am-text-accent, rgba(255, 255, 255, 0.6)));
 }
@@ -279,8 +277,11 @@
   cursor: pointer;
   opacity: 0;
   transform: scale(0.9);
-  transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out,
-    background 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  transition:
+    opacity 0.2s ease-in-out,
+    transform 0.2s ease-in-out,
+    background 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
   color: inherit;
   padding: 0;
   pointer-events: none;
@@ -299,13 +300,13 @@
 
 .applemusic-widget-track-item:hover .applemusic-widget-track-item-play,
 .applemusic-widget-track-item:focus-within .applemusic-widget-track-item-play,
-.applemusic-widget-track-item-play[data-playing='true'] {
+.applemusic-widget-track-item-play[data-playing="true"] {
   opacity: 1;
   transform: scale(1);
   pointer-events: auto;
 }
 
-.applemusic-widget-track-item-play[data-playing='true'] {
+.applemusic-widget-track-item-play[data-playing="true"] {
   background: rgba(0, 0, 0, 0.75);
   border-color: rgba(255, 255, 255, 0.85);
 }

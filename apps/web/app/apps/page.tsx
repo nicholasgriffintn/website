@@ -1,40 +1,27 @@
-import {
-  Brush,
-  Spade,
-  Lock,
-  Calendar,
-  Bug,
-  QrCode,
-  ChartBar,
-} from 'lucide-react';
+import { Brush, Spade, Lock, Calendar, Bug, QrCode, ChartBar } from "lucide-react";
 
-import { PageLayout } from '@/components/PageLayout';
-import { InnerPage } from '@/components/InnerPage';
-import { LinkCard } from '@/components/LinkCard';
+import { PageLayout } from "@/components/PageLayout";
+import { InnerPage } from "@/components/InnerPage";
+import { LinkCard } from "@/components/LinkCard";
 
 export const metadata = {
-  title: 'Apps',
-  description: 'A collection of apps that I am working on.',
+  title: "Apps",
+  description: "A collection of apps that I am working on.",
 };
 
 export default async function Home() {
   return (
     <PageLayout>
       <InnerPage>
-        <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">
-          Apps
-        </h1>
+        <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">Apps</h1>
         <div className="grid grid-cols-5 gap-4">
           <div className="col-span-5 md:col-span-3 lg:col-span-3 pt-5">
             <div className="text-primary-foreground lg:max-w-[100%] prose dark:prose-invert">
               <p>
-                Sometimes I make apps, they're not super amazing, but I thought
-                I'd share a few here anyway, you can check them out below.
+                Sometimes I make apps, they're not super amazing, but I thought I'd share a few here
+                anyway, you can check them out below.
               </p>
-              <p>
-                Note: I've only just started doing this, so there's not many
-                apps yet.
-              </p>
+              <p>Note: I've only just started doing this, so there's not many apps yet.</p>
             </div>
           </div>
         </div>

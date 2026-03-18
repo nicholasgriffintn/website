@@ -1,14 +1,14 @@
-import gfm from 'remark-gfm';
-import { MDXRemote } from 'next-mdx-remote/rsc';
-import { highlight } from 'sugar-high';
-import { createElement, Children } from 'react';
-import React from 'react';
-import dynamic from 'next/dynamic';
+import gfm from "remark-gfm";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import { highlight } from "sugar-high";
+import { createElement, Children } from "react";
+import React from "react";
+import dynamic from "next/dynamic";
 
-import { Link } from '@/components/Link';
-import { Image } from '@/components/Image';
-import { slugify } from '@/lib/slugs';
-const Mermaid = dynamic(() => import('./Mermaid'));
+import { Link } from "@/components/Link";
+import { Image } from "@/components/Image";
+import { slugify } from "@/lib/slugs";
+const Mermaid = dynamic(() => import("./Mermaid"));
 
 function Table({ children, ...props }) {
   return (
@@ -23,7 +23,7 @@ function Table({ children, ...props }) {
 function CustomLink(props) {
   const href = props.href;
 
-  if (href.startsWith('/')) {
+  if (href.startsWith("/")) {
     return (
       <Link href={href} {...props}>
         {props.children}
@@ -31,7 +31,7 @@ function CustomLink(props) {
     );
   }
 
-  if (href.startsWith('#')) {
+  if (href.startsWith("#")) {
     return <a {...props} />;
   }
 
@@ -48,11 +48,11 @@ function RoundedImage(props) {
 
 function Code({ children, className, ...props }) {
   // Check if this is a code block (has language) or inline code
-  const isCodeBlock = /language-(\w+)/.exec(className || '');
+  const isCodeBlock = /language-(\w+)/.exec(className || "");
 
   // Render Mermaid diagrams for mermaid code blocks client-side
-  if (isCodeBlock && isCodeBlock[1] === 'mermaid') {
-    const chart = Children.toArray(children).join('');
+  if (isCodeBlock && isCodeBlock[1] === "mermaid") {
+    const chart = Children.toArray(children).join("");
     return <Mermaid chart={chart} />;
   }
 
@@ -80,11 +80,7 @@ function Code({ children, className, ...props }) {
         </div>
       )}
       <pre className="overflow-x-auto rounded-lg border bg-muted my-2">
-        <code
-          className={className}
-          dangerouslySetInnerHTML={{ __html: codeHTML }}
-          {...props}
-        />
+        <code className={className} dangerouslySetInnerHTML={{ __html: codeHTML }} {...props} />
       </pre>
     </div>
   );
@@ -93,46 +89,46 @@ function Code({ children, className, ...props }) {
 function createHeading(level) {
   const Heading = ({ children }) => {
     const text = Children.toArray(children)
-      .map(child => {
-        if (typeof child === 'string') return child;
+      .map((child) => {
+        if (typeof child === "string") return child;
         if (React.isValidElement(child)) {
           const props = child.props as { children?: React.ReactNode };
           if (props.children !== undefined) {
             return props.children;
           }
         }
-        return '';
+        return "";
       })
-      .join('');
+      .join("");
 
     const slug = slugify(text);
 
     return createElement(`h${level}`, { id: slug }, [
       createElement(
-        'a',
+        "a",
         {
           href: `#${slug}`,
           key: `link-${slug}`,
-          className: 'anchor',
+          className: "anchor",
         },
         [
           createElement(
-            'span',
+            "span",
             {
-              className: 'sr-only',
+              className: "sr-only",
               key: `hidden-text-${slug}`,
             },
-            `Link to ${text}`
+            `Link to ${text}`,
           ),
           createElement(
-            'span',
+            "span",
             {
               key: `visible-text-${slug}`,
-              role: 'presentation',
+              role: "presentation",
             },
-            '#'
+            "#",
           ),
-        ]
+        ],
       ),
       children,
     ]);
@@ -143,21 +139,21 @@ function createHeading(level) {
 }
 
 function Wrapper({ children }) {
-
   const hasImageComponent = (child) => {
-    if (!child || typeof child !== 'object') return false;
+    if (!child || typeof child !== "object") return false;
 
     if (child.type === RoundedImage || child.type === Image) return true;
 
-    if (child.type?.displayName === 'RoundedImage' || child.type?.name === 'RoundedImage') return true;
-    if (child.type?.displayName === 'Image' || child.type?.name === 'Image') return true;
+    if (child.type?.displayName === "RoundedImage" || child.type?.name === "RoundedImage")
+      return true;
+    if (child.type?.displayName === "Image" || child.type?.name === "Image") return true;
 
-    if (child.type === 'img') return true;
+    if (child.type === "img") return true;
 
     return false;
   };
 
-  if (children && typeof children === 'object' && !Array.isArray(children)) {
+  if (children && typeof children === "object" && !Array.isArray(children)) {
     if (hasImageComponent(children)) {
       return children;
     }

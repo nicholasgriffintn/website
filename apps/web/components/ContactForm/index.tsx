@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Turnstile from 'react-turnstile';
+import { useState } from "react";
+import Turnstile from "react-turnstile";
 
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 export function ContactForm() {
   const [loading, setLoading] = useState(true);
-	const [submitting, setSubmitting] = useState(false);
-	const [success, setSuccess] = useState(false);
-	const [error, setError] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleVerify = () => {
     setLoading(false);
@@ -23,34 +23,34 @@ export function ContactForm() {
     setSuccess(false);
     setError(false);
     setSubmitting(true);
-		
+
     const formData = new FormData(e.currentTarget as HTMLFormElement);
 
     try {
-      const response = await fetch('https://email.nickgriffin.uk', {
-        method: 'POST',
+      const response = await fetch("https://email.nickgriffin.uk", {
+        method: "POST",
         body: formData,
       });
 
       const { ok } = await response.json();
 
       setSubmitting(false);
-      
+
       if (ok) {
-				setSuccess(true);
+        setSuccess(true);
         (e.target as HTMLFormElement).reset();
       } else {
         setError(true);
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
       setError(true);
     }
   };
 
-	if (success) {
-		return <div>Message sent successfully!</div>;
-	}
+  if (success) {
+    return <div>Message sent successfully!</div>;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
@@ -88,13 +88,13 @@ export function ContactForm() {
       </div>
 
       <Turnstile
-        sitekey={process.env.NEXT_PUBLIC_EMAIL_TURNSTILE_SITE_KEY || ''}
+        sitekey={process.env.NEXT_PUBLIC_EMAIL_TURNSTILE_SITE_KEY || ""}
         onVerify={handleVerify}
       />
 
-			{error && <div>Failed to send message. Please try again.</div>}
-			
-			{submitting && <div>Submitting...</div>}
+      {error && <div>Failed to send message. Please try again.</div>}
+
+      {submitting && <div>Submitting...</div>}
 
       <Button type="submit" disabled={loading || submitting}>
         Send Message

@@ -2,17 +2,15 @@ import { CacheManager } from "./cache";
 import type { Heading } from "@/types/blog";
 import { slugify } from "./slugs";
 
-const BASE_API_URL = 'https://content.s3rve.co.uk';
+const BASE_API_URL = "https://content.s3rve.co.uk";
 const cacheManager = new CacheManager<any>();
 
 function normalizeVoidElements(content?: string | null) {
-  if (typeof content !== 'string') {
-    return content ?? '';
+  if (typeof content !== "string") {
+    return content ?? "";
   }
 
-  return content
-    .replace(/<br(?!\s*\/)\s*>/gi, '<br />')
-    .replace(/<hr(?!\s*\/)\s*>/gi, '<hr />');
+  return content.replace(/<br(?!\s*\/)\s*>/gi, "<br />").replace(/<hr(?!\s*\/)\s*>/gi, "<hr />");
 }
 
 async function getApiData(path: string, params: Record<string, string> = {}) {
@@ -39,17 +37,17 @@ export async function getBlogPosts(showArchived = false) {
   const params: Record<string, string> = {
     cacheBust: Math.random().toString(36).substring(2, 15),
   };
-  if (showArchived) params.archived = 'true';
+  if (showArchived) params.archived = "true";
 
-  if (process.env.ENVIRONMENT === 'development') {
-    params.drafts = 'true';
+  if (process.env.ENVIRONMENT === "development") {
+    params.drafts = "true";
   }
 
   try {
-    const posts = await getApiData('content', params);
+    const posts = await getApiData("content", params);
     return posts;
   } catch (error) {
-    console.error('Failed to get blog posts:', error);
+    console.error("Failed to get blog posts:", error);
     return [];
   }
 }
@@ -66,16 +64,12 @@ export async function getBlogPostBySlug(slug: string) {
     }
     return post;
   } catch (error) {
-    console.error('Failed to get blog post:', error);
+    console.error("Failed to get blog post:", error);
     return null;
   }
 }
 
-export async function getPaginatedBlogPosts({
-  showArchived = false,
-  page = 1,
-  limit = 10,
-}) {
+export async function getPaginatedBlogPosts({ showArchived = false, page = 1, limit = 10 }) {
   const posts = await getBlogPosts(showArchived);
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
@@ -84,73 +78,76 @@ export async function getPaginatedBlogPosts({
 
 export async function getAllTags() {
   const posts = await getBlogPosts();
-  const tagCounts = posts.reduce((acc, post) => {
-    if (Array.isArray(post.tags)) {
-      post.tags.forEach((tag) => {
-        acc[tag] = (acc[tag] || 0) + 1;
-      });
-    }
-    return acc;
-  }, {} as Record<string, number>);
+  const tagCounts = posts.reduce(
+    (acc, post) => {
+      if (Array.isArray(post.tags)) {
+        post.tags.forEach((tag) => {
+          acc[tag] = (acc[tag] || 0) + 1;
+        });
+      }
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   return tagCounts;
 }
 
 export async function getBlogPostsByTag(tag: string) {
-	const posts = await getBlogPosts();
-	return posts.filter((post) => post.tags?.includes(tag));
+  const posts = await getBlogPosts();
+  return posts.filter((post) => post.tags?.includes(tag));
 }
 
 export function formatDate(date: string, includeRelative = false) {
-	const currentDate = new Date();
-	const targetDate = new Date(date.includes("T") ? date : `${date}T00:00:00`);
-	const diffTime = currentDate.getTime() - targetDate.getTime();
-	const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-	const diffMonths =
-		currentDate.getMonth() -
-		targetDate.getMonth() +
-		12 * (currentDate.getFullYear() - targetDate.getFullYear());
-	const diffYears = currentDate.getFullYear() - targetDate.getFullYear();
+  const currentDate = new Date();
+  const targetDate = new Date(date.includes("T") ? date : `${date}T00:00:00`);
+  const diffTime = currentDate.getTime() - targetDate.getTime();
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const diffMonths =
+    currentDate.getMonth() -
+    targetDate.getMonth() +
+    12 * (currentDate.getFullYear() - targetDate.getFullYear());
+  const diffYears = currentDate.getFullYear() - targetDate.getFullYear();
 
-	let formattedDate = "";
-	if (diffYears > 0) {
-		formattedDate = `${diffYears}y ago`;
-	} else if (diffMonths > 0) {
-		formattedDate = `${diffMonths}mo ago`;
-	} else if (diffDays > 0) {
-		formattedDate = `${diffDays}d ago`;
-	} else {
-		formattedDate = "Today";
-	}
+  let formattedDate = "";
+  if (diffYears > 0) {
+    formattedDate = `${diffYears}y ago`;
+  } else if (diffMonths > 0) {
+    formattedDate = `${diffMonths}mo ago`;
+  } else if (diffDays > 0) {
+    formattedDate = `${diffDays}d ago`;
+  } else {
+    formattedDate = "Today";
+  }
 
-	const fullDate = targetDate.toLocaleString("en-gb", {
-		month: "long",
-		day: "numeric",
-		year: "numeric",
-	});
+  const fullDate = targetDate.toLocaleString("en-gb", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
-	return includeRelative ? `${fullDate} (${formattedDate})` : fullDate;
+  return includeRelative ? `${fullDate} (${formattedDate})` : fullDate;
 }
 
 export function extractHeadings(content: string) {
-	const headingRegex = /^(#{2,6})\s+(.+)$/gm;
-	const headings: Heading[] = [];
-	let match;
+  const headingRegex = /^(#{2,6})\s+(.+)$/gm;
+  const headings: Heading[] = [];
+  let match;
 
-	while ((match = headingRegex.exec(content)) !== null) {
-		const level = match[1].length;
-		let text = match[2];
-        
-		text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
-		
-		const slug = slugify(text);
+  while ((match = headingRegex.exec(content)) !== null) {
+    const level = match[1].length;
+    let text = match[2];
 
-			headings.push({
-				text,
-				level,
-				slug,
-			});
-	}
+    text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
 
-	return headings;
+    const slug = slugify(text);
+
+    headings.push({
+      text,
+      level,
+      slug,
+    });
+  }
+
+  return headings;
 }

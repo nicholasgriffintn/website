@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { X, Menu } from 'lucide-react';
+import { useState } from "react";
+import { X, Menu } from "lucide-react";
 
-import { Link } from '@/components/Link';
-import { MobileNav } from '@/components/Header/MobileNav';
-import { Logo } from '@/components/Logo';
+import { Link } from "@/components/Link";
+import { MobileNav } from "@/components/Header/MobileNav";
+import { Logo } from "@/components/Logo";
 
 export function MainNav({
   items,
@@ -30,11 +30,7 @@ export function MainNav({
       {items?.length ? (
         <nav className="flex items-center space-x-6 hidden lg:flex">
           {items?.map((item, index) => (
-            <Link
-              key={index}
-              href={item.disabled ? '#' : item.href}
-              underline={false}
-            >
+            <Link key={index} href={item.disabled ? "#" : item.href} underline={false}>
               {item.icon}
               {item.title}
             </Link>

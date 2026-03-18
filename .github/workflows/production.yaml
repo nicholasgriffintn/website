@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
@@ -51,4 +51,3 @@ jobs:
       - id: seturl
         name: Set production url
         run: echo "url=$(tail -1 deploy.log)">> $GITHUB_OUTPUT
-  

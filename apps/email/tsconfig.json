@@ -1,12 +1,12 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "node",
-		"esModuleInterop": true,
-		"strict": true,
-		"lib": ["esnext", "dom"],
-		"types": ["@cloudflare/workers-types"],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "lib": ["esnext", "dom"],
+    "types": ["@cloudflare/workers-types"],
     "jsx": "react-jsx"
-	}
+  }
 }

@@ -1,14 +1,14 @@
-import { PageLayout } from '@/components/PageLayout';
-import { InnerPage } from '@/components/InnerPage';
-import { getBlogPosts, getBlogPostBySlug, extractHeadings } from '@/lib/blog';
-import { CustomMDX } from '@/components/MDX';
-import { parseMarkdown } from '@/lib/markdown';
-import { AlertMessage } from '@/components/Alert';
-import { Link } from '@/components/Link';
-import { PostHeader } from '@/components/PostHeader';
-import { PostSidebar } from '@/components/PostSidebar';
-import { getYoutubeVideoId } from '@/lib/youtube';
-import { VideoCardPlayer } from '../../../components/VideoCardPlayer';
+import { PageLayout } from "@/components/PageLayout";
+import { InnerPage } from "@/components/InnerPage";
+import { getBlogPosts, getBlogPostBySlug, extractHeadings } from "@/lib/blog";
+import { CustomMDX } from "@/components/MDX";
+import { parseMarkdown } from "@/lib/markdown";
+import { AlertMessage } from "@/components/Alert";
+import { Link } from "@/components/Link";
+import { PostHeader } from "@/components/PostHeader";
+import { PostSidebar } from "@/components/PostSidebar";
+import { getYoutubeVideoId } from "@/lib/youtube";
+import { VideoCardPlayer } from "../../../components/VideoCardPlayer";
 
 export const dynamicParams = false;
 
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title,
       description,
-      type: 'article',
+      type: "article",
       publishedTime,
       url: `https://nicholasgriffin.dev/blog/${post.slug}`,
       images: [
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }) {
       ],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: "summary_large_image",
       title,
       description,
       images: [ogImage],
@@ -66,9 +66,7 @@ export default async function Home({ params }) {
   }
 
   const isBookmark = post.metadata.isBookmark;
-  const youtubeVideoId = isBookmark
-    ? getYoutubeVideoId(post.metadata.link)
-    : null;
+  const youtubeVideoId = isBookmark ? getYoutubeVideoId(post.metadata.link) : null;
 
   const dates = {
     created: post.created_at,
@@ -85,8 +83,8 @@ export default async function Home({ params }) {
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'BlogPosting',
+              "@context": "https://schema.org",
+              "@type": "BlogPosting",
               headline: post.title,
               datePublished: post.created_at,
               dateModified: post.updated_at,
@@ -96,8 +94,8 @@ export default async function Home({ params }) {
                 : `/og?title=${encodeURIComponent(post.title)}`,
               url: `https://nicholasgriffin.dev/blog/${post.slug}`,
               author: {
-                '@type': 'Person',
-                name: 'Nicholas Griffin',
+                "@type": "Person",
+                name: "Nicholas Griffin",
               },
             }),
           }}
@@ -109,11 +107,7 @@ export default async function Home({ params }) {
           <div className="col-span-1 order-2 md:order-1 md:col-span-2 lg:col-span-3">
             {youtubeVideoId && (
               <div className="mb-4 w-full h-[400px] md:h-[500px] lg:h-[600px]">
-                <VideoCardPlayer
-                  videoId={youtubeVideoId}
-                  slug={post.slug}
-                  title={post.title}
-                />
+                <VideoCardPlayer videoId={youtubeVideoId} slug={post.slug} title={post.title} />
               </div>
             )}
             <article className="prose dark:prose-invert pt-2 w-full max-w-none">
@@ -131,13 +125,10 @@ export default async function Home({ params }) {
                   description="This post has been archived due to it being from a previous version of my site, or a bit too old. Some things might be broken and it may not be up to date."
                 />
               ) : null}
-              <div>{parseMarkdown(post.description || '')}</div>
+              <div>{parseMarkdown(post.description || "")}</div>
               <CustomMDX source={post.content} />
               {post.metadata.link && (
-                <Link
-                  href={post.metadata.link}
-                  className="text-primary-foreground"
-                >
+                <Link href={post.metadata.link} className="text-primary-foreground">
                   You can find the original post here.
                 </Link>
               )}

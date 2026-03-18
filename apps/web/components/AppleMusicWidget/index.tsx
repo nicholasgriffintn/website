@@ -1,14 +1,16 @@
-'use client';
+"use client";
 
-import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
-import { Image } from '@/components/Image';
-import './styles.css';
-import { createWidgetStyles } from '@/lib/apple-music/artwork';
-import ReturnImageFormattingUrl from '@/lib/returnImageFormattingUrl';
-import type { RecentTracks } from '@/types/apple-music';
-import { PauseIcon } from '@/components/Icons/PauseIcon';
-import { PlayIcon } from '@/components/Icons/PlayIcon';
+// @ts-expect-error - no types available
+import "./styles.css";
+
+import { Image } from "@/components/Image";
+import { createWidgetStyles } from "@/lib/apple-music/artwork";
+import ReturnImageFormattingUrl from "@/lib/returnImageFormattingUrl";
+import type { RecentTracks } from "@/types/apple-music";
+import { PauseIcon } from "@/components/Icons/PauseIcon";
+import { PlayIcon } from "@/components/Icons/PlayIcon";
 
 export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
   if (!data) {
@@ -19,9 +21,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
 
   const firstTrack = tracksList?.length > 0 ? tracksList[0] : null;
   const firstTrackImage = firstTrack?.attributes.artwork.url
-    ? firstTrack.attributes.artwork.url
-        .replace('{w}', '700')
-        .replace('{h}', '245')
+    ? firstTrack.attributes.artwork.url.replace("{w}", "700").replace("{h}", "245")
     : null;
   const widgetStyle = createWidgetStyles(firstTrack?.attributes.artwork);
 
@@ -32,7 +32,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
   const ensureAudio = useCallback(() => {
     if (!audioRef.current) {
       const audio = new Audio();
-      audio.preload = 'none';
+      audio.preload = "none";
       audioRef.current = audio;
     }
 
@@ -53,14 +53,14 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
       setCurrentTrackId(null);
     };
 
-    audio.addEventListener('play', handlePlay);
-    audio.addEventListener('pause', handlePause);
-    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+    audio.addEventListener("ended", handleEnded);
 
     return () => {
-      audio.removeEventListener('play', handlePlay);
-      audio.removeEventListener('pause', handlePause);
-      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("ended", handleEnded);
     };
   }, [ensureAudio]);
 
@@ -68,7 +68,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
-        audioRef.current.src = '';
+        audioRef.current.src = "";
       }
     };
   }, []);
@@ -79,7 +79,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
 
       if (!previewUrl) {
         if (track?.attributes?.url) {
-          window.open(track.attributes.url, '_blank', 'noopener,noreferrer');
+          window.open(track.attributes.url, "_blank", "noopener,noreferrer");
         }
         return;
       }
@@ -95,7 +95,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
           try {
             await audio.play();
           } catch (error) {
-            console.error('Unable to play preview', error);
+            console.error("Unable to play preview", error);
           }
         } else {
           audio.pause();
@@ -112,16 +112,16 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
         await audio.play();
         setCurrentTrackId(track.id);
       } catch (error) {
-        console.error('Unable to play preview', error);
+        console.error("Unable to play preview", error);
         setCurrentTrackId(null);
       }
     },
-    [currentTrackId, ensureAudio]
+    [currentTrackId, ensureAudio],
   );
 
   const isTrackPlaying = useCallback(
     (trackId: string | null) => isPlaying && trackId === currentTrackId,
-    [currentTrackId, isPlaying]
+    [currentTrackId, isPlaying],
   );
 
   return (
@@ -134,7 +134,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                 <div
                   className="applemusic-widget-latest-background"
                   style={{
-                    position: 'relative',
+                    position: "relative",
                   }}
                 >
                   <Image
@@ -142,7 +142,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                     src={ReturnImageFormattingUrl(firstTrackImage)}
                     fill
                     style={{
-                      objectFit: 'cover',
+                      objectFit: "cover",
                     }}
                     unoptimized
                     width={700}
@@ -161,21 +161,13 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                   <button
                     type="button"
                     aria-label={`${
-                      isTrackPlaying(firstTrack.id)
-                        ? 'Pause'
-                        : 'Play preview of'
+                      isTrackPlaying(firstTrack.id) ? "Pause" : "Play preview of"
                     } ${firstTrack.attributes.name}`}
                     className="trackLinkPlay"
                     onClick={() => handleToggleTrack(firstTrack)}
-                    data-playing={
-                      isTrackPlaying(firstTrack.id) ? 'true' : 'false'
-                    }
+                    data-playing={isTrackPlaying(firstTrack.id) ? "true" : "false"}
                   >
-                    {isTrackPlaying(firstTrack.id) ? (
-                      <PauseIcon />
-                    ) : (
-                      <PlayIcon />
-                    )}
+                    {isTrackPlaying(firstTrack.id) ? <PauseIcon /> : <PlayIcon />}
                   </button>
                   {/* <a
                     className="trackLinkExternal"
@@ -192,9 +184,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
               {tracksList?.map((track, index) => {
                 if (index !== 0) {
                   const trackImage = track.attributes.artwork.url
-                    ? track.attributes.artwork.url
-                        .replace('{w}', '700')
-                        .replace('{h}', '245')
+                    ? track.attributes.artwork.url.replace("{w}", "700").replace("{h}", "245")
                     : null;
 
                   const isPlayingTrack = isTrackPlaying(track.id);
@@ -214,7 +204,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                               alt={track.attributes.albumName}
                               src={ReturnImageFormattingUrl(trackImage)}
                               style={{
-                                objectFit: 'cover',
+                                objectFit: "cover",
                               }}
                               unoptimized
                             />
@@ -229,9 +219,9 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                             className="applemusic-widget-track-item-play"
                             onClick={() => handleToggleTrack(track)}
                             aria-label={`${
-                              isPlayingTrack ? 'Pause' : 'Play preview of'
+                              isPlayingTrack ? "Pause" : "Play preview of"
                             } ${track.attributes.name}`}
-                            data-playing={isPlayingTrack ? 'true' : 'false'}
+                            data-playing={isPlayingTrack ? "true" : "false"}
                           >
                             {isPlayingTrack ? <PauseIcon /> : <PlayIcon />}
                           </button>

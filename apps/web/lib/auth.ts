@@ -1,20 +1,13 @@
 import { cookies } from "next/headers";
-import { sha256 } from '@oslojs/crypto/sha2';
-import {
-  encodeBase32LowerCaseNoPadding,
-  encodeHexLowerCase,
-} from '@oslojs/encoding';
-import { GitHub } from 'arctic';
-import { eq } from 'drizzle-orm';
+import { sha256 } from "@oslojs/crypto/sha2";
+import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
+import { GitHub } from "arctic";
+import { eq } from "drizzle-orm";
 
-import { db } from '@/lib/data/db';
-import {
-  session as sessionTable,
-  user as userTable,
-  type Session,
-} from '@/lib/data/db/schema';
+import { db } from "@/lib/data/db";
+import { session as sessionTable, user as userTable, type Session } from "@/lib/data/db/schema";
 
-export const SESSION_COOKIE_NAME = 'session';
+export const SESSION_COOKIE_NAME = "session";
 
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20);
@@ -22,10 +15,7 @@ export function generateSessionToken(): string {
   return encodeBase32LowerCaseNoPadding(bytes);
 }
 
-export async function createSession(
-  token: string,
-  userId: number
-): Promise<Session> {
+export async function createSession(token: string, userId: number): Promise<Session> {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   const session: Session = {
     id: sessionId,
@@ -83,25 +73,19 @@ export async function validateSessionToken(token: string) {
   return { session, user };
 }
 
-export type SessionUser = NonNullable<
-  Awaited<ReturnType<typeof validateSessionToken>>['user']
->;
+export type SessionUser = NonNullable<Awaited<ReturnType<typeof validateSessionToken>>["user"]>;
 
 export async function invalidateSession(sessionId: string): Promise<void> {
   await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
 }
 
-export function setSessionTokenCookie(
-  cookieStore,
-  token: string,
-  expiresAt: Date
-) {
+export function setSessionTokenCookie(cookieStore, token: string, expiresAt: Date) {
   cookieStore.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
     expires: expiresAt,
-    path: '/',
+    path: "/",
   });
 }
 
@@ -109,16 +93,14 @@ export function setSessionTokenCookie(
 export const github = new GitHub(
   process.env.GITHUB_CLIENT_ID as string,
   process.env.GITHUB_CLIENT_SECRET as string,
-  process.env.GITHUB_REDIRECT_URI || null
+  process.env.GITHUB_REDIRECT_URI || null,
 );
 
 /**
  * Retrieves the session and user data if valid.
  * Can be used in API routes and server functions.
  */
-export async function getAuthSession(
-  { refreshCookie } = { refreshCookie: true }
-) {
+export async function getAuthSession({ refreshCookie } = { refreshCookie: true }) {
   const cookieStore = await cookies();
 
   const token = cookieStore.get(SESSION_COOKIE_NAME);
@@ -135,11 +117,7 @@ export async function getAuthSession(
       return { session: null, user: null };
     }
 
-    setSessionTokenCookie(
-      cookieStore,
-      tokenValue,
-      new Date(session.expires_at)
-    );
+    setSessionTokenCookie(cookieStore, tokenValue, new Date(session.expires_at));
   }
 
   return { session, user };
@@ -153,10 +131,7 @@ export async function getFullAuthSession() {
   }
 
   if (user && user.email) {
-    const userData = await db
-      .select()
-      .from(userTable)
-      .where(eq(userTable.email, user.email));
+    const userData = await db.select().from(userTable).where(eq(userTable.email, user.email));
     return { session, user: userData[0] };
   }
 

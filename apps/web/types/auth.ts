@@ -16,4 +16,4 @@ export type User = {
   name: string | null;
   avatar_url: string | null;
   username: string | null;
-}
+};

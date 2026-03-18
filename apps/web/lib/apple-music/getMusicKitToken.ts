@@ -1,18 +1,18 @@
-import { SignJWT, importPKCS8 } from 'jose';
+import { SignJWT, importPKCS8 } from "jose";
 
 const privateKey = process.env.APPLE_MUSIC_PRIVATE_KEY as string;
 const keyId = process.env.APPLE_MUSIC_KEY_ID as string;
 const teamId = process.env.APPLE_MUSIC_TEAM_ID as string;
 const tokenDuration = 15777000; // 6 months in seconds
 
-const origins = ['https://nicholasgriffin.dev', 'http://localhost:3000'];
+const origins = ["https://nicholasgriffin.dev", "http://localhost:3000"];
 
 let cachedToken: string | null = null;
 let tokenExpiry: number | null = null;
 
 export async function getMusicKitToken() {
   if (!privateKey || !keyId || !teamId) {
-    console.error('Missing Apple Music API credentials');
+    console.error("Missing Apple Music API credentials");
     return null;
   }
 
@@ -22,10 +22,10 @@ export async function getMusicKitToken() {
     return cachedToken;
   }
 
-  const privateKeyImported = await importPKCS8(privateKey, 'ES256');
+  const privateKeyImported = await importPKCS8(privateKey, "ES256");
 
   const jwt = await new SignJWT({ origin: origins })
-    .setProtectedHeader({ alg: 'ES256', kid: keyId })
+    .setProtectedHeader({ alg: "ES256", kid: keyId })
     .setIssuer(teamId)
     .setIssuedAt(now)
     .setExpirationTime(now + tokenDuration)

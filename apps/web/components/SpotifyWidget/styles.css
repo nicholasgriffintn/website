@@ -1,133 +1,133 @@
 #spotify-widget {
-	background-color: rgba(0, 0, 0, 0.2);
-	backdrop-filter: blur(10px);
-	border-radius: 20px;
-	border-width: 1px;
-	overflow: hidden;
-	color: #fff;
-	--tw-shadow: 0 1px 2px 0 #0000000d;
-	--tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
-	box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-		var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border-width: 1px;
+  overflow: hidden;
+  color: #fff;
+  --tw-shadow: 0 1px 2px 0 #0000000d;
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow:
+    var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
 .spotify-widget-latest,
 .spotify-widget-tracks {
-	position: relative;
-	width: 100%;
-	display: inline-block;
+  position: relative;
+  width: 100%;
+  display: inline-block;
 }
 
 .spotify-widget-latest-background {
-	width: 100%;
-	min-height: 244px;
-	height: 244px;
-	overflow: hidden;
-	background-size: cover;
-	background-position: top center;
+  width: 100%;
+  min-height: 244px;
+  height: 244px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: top center;
 }
 
 .spotify-widget-latest-background img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .spotify-widget-latest-overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	background: #545353e8;
-	width: 100%;
-	height: 100%;
-	text-align: center;
-	padding-top: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: #545353e8;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding-top: 50px;
 }
 
 .spotify-widget-latest-overlay h3,
 .spotify-widget-latest-overlay span {
-	color: #fff;
-	width: 100%;
-	display: inline-block;
+  color: #fff;
+  width: 100%;
+  display: inline-block;
 }
 
 .trackLinkPlay svg {
-	fill: #fff;
-	width: 45px;
-	height: 45px;
+  fill: #fff;
+  width: 45px;
+  height: 45px;
 }
 
 .spotify-widget-latest-overlay .trackLinkPlay {
-	margin-top: 10px;
-	display: inline-block;
-	cursor: pointer;
+  margin-top: 10px;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .spotify-widget-tracks {
-	max-height: 95px;
-	overflow-y: scroll;
-	overflow-x: hidden;
+  max-height: 95px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .spotify-widget-track-item {
-	width: 100%;
-	display: flex;
-	border-bottom: 1px solid #27272a;
-	padding: 5px;
+  width: 100%;
+  display: flex;
+  border-bottom: 1px solid #27272a;
+  padding: 5px;
 }
 
 .spotify-widget-track-item:last-child {
-	border: 0px;
+  border: 0px;
 }
 
 .spotify-widget-track-item-image {
-	width: 80px;
-	text-align: center;
-	padding: 5px;
+  width: 80px;
+  text-align: center;
+  padding: 5px;
 }
 
 .spotify-widget-track-item-image img {
-	object-fit: cover;
-	border-radius: 4px;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
 .spotify-widget-track-item-content {
-	width: 100%;
-	padding: 5px;
+  width: 100%;
+  padding: 5px;
 }
 
 .spotify-widget-track-item-content h3 {
-	color: #fff;
-	width: 100%;
-	font-size: 0.8rem;
-	font-weight: bold;
-	display: inline-block;
-	margin: 0px;
+  color: #fff;
+  width: 100%;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: inline-block;
+  margin: 0px;
 }
 
 .spotify-widget-track-item-content span,
 .spotify-widget-track-item-content a {
-	color: #fff;
-	text-decoration: none;
-	margin-right: 5px;
-	width: auto;
-	display: block;
-	font-size: 0.8rem;
+  color: #fff;
+  text-decoration: none;
+  margin-right: 5px;
+  width: auto;
+  display: block;
+  font-size: 0.8rem;
 }
 
 span#MusicOpeningWrapperTitle {
-	text-align: center;
+  text-align: center;
 }
 span#MusicOpeningWrapperTitle {
-	display: inline-block;
-	width: 100%;
-	margin-top: 20px;
+  display: inline-block;
+  width: 100%;
+  margin-top: 20px;
 }
 
 #MusicOpeningWrapperTitle svg {
-	width: 14px;
-	display: inline-block;
-	-webkit-transform: rotate(180deg);
-	transform: rotate(180deg);
+  width: 14px;
+  display: inline-block;
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
 }

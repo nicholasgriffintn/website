@@ -1,6 +1,6 @@
 export type RecentTracks = {
   id: string;
-  type: 'songs';
+  type: "songs";
   href: string;
   attributes: {
     albumName: string;
@@ -26,7 +26,7 @@ export type RecentTracks = {
     name: string;
     playParams: {
       id: string;
-      kind: 'song';
+      kind: "song";
     };
     previews: {
       url: string;

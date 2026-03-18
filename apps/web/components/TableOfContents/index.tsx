@@ -1,16 +1,15 @@
-import { cn } from "@/lib/utils"
-import { Link } from "@/components/Link"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Heading } from "@/types/blog"
-import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils";
+import { Link } from "@/components/Link";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Heading } from "@/types/blog";
+import { Separator } from "@/components/ui/separator";
 
 interface TableOfContentsProps {
-  headings: Heading[]
+  headings: Heading[];
 }
 
 export function TableOfContents({ headings }: TableOfContentsProps) {
-
-  if (!headings.length) return null
+  if (!headings.length) return null;
 
   return (
     <div className="rounded-lg border bg-background/50 text-foreground md:max-h-[450px] overflow-y-auto">
@@ -22,14 +21,11 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
         <nav>
           <ul className="space-y-1 text-sm">
             {headings.map((heading) => (
-              <li
-                key={heading.slug}
-                style={{ paddingLeft: `${(heading.level - 2) * 1}rem` }}
-              >
+              <li key={heading.slug} style={{ paddingLeft: `${(heading.level - 2) * 1}rem` }}>
                 <Link
                   href={`#${heading.slug}`}
                   className={cn(
-                    'group flex items-center gap-2 py-1 pl-4 pr-4 text-muted-foreground no-underline transition-colors hover:text-foreground'
+                    "group flex items-center gap-2 py-1 pl-4 pr-4 text-muted-foreground no-underline transition-colors hover:text-foreground",
                   )}
                   underline={false}
                 >
@@ -43,4 +39,3 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     </div>
   );
 }
-

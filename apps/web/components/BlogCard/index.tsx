@@ -1,33 +1,27 @@
-'use client';
+"use client";
 
-import { Bookmark } from 'lucide-react';
+import { Bookmark } from "lucide-react";
 
-import { formatDate } from '@/lib/blog';
-import { Link } from '@/components/Link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { parseMarkdown } from '@/lib/markdown';
-import { Image } from '@/components/Image';
-import { getYoutubeVideoId } from '@/lib/youtube';
-import { VideoCardPlayer } from '@/components/VideoCardPlayer';
+import { formatDate } from "@/lib/blog";
+import { Link } from "@/components/Link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { parseMarkdown } from "@/lib/markdown";
+import { Image } from "@/components/Image";
+import { getYoutubeVideoId } from "@/lib/youtube";
+import { VideoCardPlayer } from "@/components/VideoCardPlayer";
 
 export function BlogCard({ post }) {
   const postLink = post.metadata.link || `/blog/${post.slug}`;
   const isBookmark = post.metadata.isBookmark;
   const postContent = parseMarkdown(post.description, false);
-  const youtubeVideoId = isBookmark
-    ? getYoutubeVideoId(post.metadata.link)
-    : null;
+  const youtubeVideoId = isBookmark ? getYoutubeVideoId(post.metadata.link) : null;
 
   return (
     <Card className="overflow-hidden relative">
       {youtubeVideoId ? (
         <div className="max-h-[190px] min-h-[190px] overflow-hidden h-full">
-          <VideoCardPlayer
-            videoId={youtubeVideoId}
-            slug={post.slug}
-            title={post.title}
-          />
+          <VideoCardPlayer videoId={youtubeVideoId} slug={post.slug} title={post.title} />
         </div>
       ) : (
         post.image_url && (
@@ -58,7 +52,7 @@ export function BlogCard({ post }) {
             <Link
               className="text-2xl font-semibold leading-none tracking-tight space-x-2 leading-7"
               href={postLink}
-              target={post.metadata.link ? '_blank' : undefined}
+              target={post.metadata.link ? "_blank" : undefined}
               underline={false}
             >
               {post.title}
@@ -73,10 +67,7 @@ export function BlogCard({ post }) {
           {postContent}
           {!isBookmark && !post.metadata.link && (
             <span>
-              <Link
-                href={postLink}
-                target={post.metadata.link ? '_blank' : undefined}
-              >
+              <Link href={postLink} target={post.metadata.link ? "_blank" : undefined}>
                 Read more
                 <span className="sr-only"> about {post.title}</span>
               </Link>
@@ -87,18 +78,13 @@ export function BlogCard({ post }) {
           {post.created_at && (
             <span>
               Published: {formatDate(post.created_at)}
-              {post.updated_at && ' (Updated)'}
+              {post.updated_at && " (Updated)"}
             </span>
           )}
           {Array.isArray(post.tags) && post.tags.length > 0 && (
             <div className="flex flex-wrap items-center gap-2">
               {post.tags.map((tag) => (
-                <Link
-                  key={tag}
-                  href={`/tags/${tag}`}
-                  muted
-                  className="p-1 hover:underline"
-                >
+                <Link key={tag} href={`/tags/${tag}`} muted className="p-1 hover:underline">
                   #{tag}
                 </Link>
               ))}

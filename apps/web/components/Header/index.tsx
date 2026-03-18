@@ -1,26 +1,26 @@
-import { MainNav } from '@/components/Header/MainNav';
+import { MainNav } from "@/components/Header/MainNav";
 
 export function Header() {
   const navItems = [
     {
-      title: 'Blog',
-      href: '/blog',
+      title: "Blog",
+      href: "/blog",
     },
     {
-      title: 'Projects',
-      href: '/projects',
+      title: "Projects",
+      href: "/projects",
     },
     {
-      title: 'AI',
-      href: '/ai',
+      title: "AI",
+      href: "/ai",
     },
     {
-      title: 'Apps',
-      href: '/apps',
+      title: "Apps",
+      href: "/apps",
     },
     {
-      title: 'Contact',
-      href: '/contact',
+      title: "Contact",
+      href: "/contact",
     },
   ];
 

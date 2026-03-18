@@ -1,23 +1,23 @@
 import { ChevronUp } from "lucide-react";
 
-import { getRecentlyPlayed } from '@/lib/apple-music/getRecentlyPlayed';
-import { getProjects } from '@/lib/data/projects';
-import { getGitHubRepos } from '@/lib/data/github';
-import { PageLayout } from '@/components/PageLayout';
-import { AppleMusicWidget } from '@/components/AppleMusicWidget';
-import { ContactLinks } from '@/components/ContactLinks';
-import { InnerPage } from '@/components/InnerPage';
-import { ProjectsList } from '@/components/ProjectsList';
-import { buttonVariants } from '@/components/ui/button';
-import { Link } from '@/components/Link';
-import { getPaginatedBlogPosts } from '@/lib/blog';
-import { BlogCard } from '@/components/BlogCard';
+import { getRecentlyPlayed } from "@/lib/apple-music/getRecentlyPlayed";
+import { getProjects } from "@/lib/data/projects";
+import { getGitHubRepos } from "@/lib/data/github";
+import { PageLayout } from "@/components/PageLayout";
+import { AppleMusicWidget } from "@/components/AppleMusicWidget";
+import { ContactLinks } from "@/components/ContactLinks";
+import { InnerPage } from "@/components/InnerPage";
+import { ProjectsList } from "@/components/ProjectsList";
+import { buttonVariants } from "@/components/ui/button";
+import { Link } from "@/components/Link";
+import { getPaginatedBlogPosts } from "@/lib/blog";
+import { BlogCard } from "@/components/BlogCard";
 
 export const revalidate = 60;
 
 export const metadata = {
-  title: 'Nicholas Griffin',
-  description: 'The personal website of Nicholas Griffin',
+  title: "Nicholas Griffin",
+  description: "The personal website of Nicholas Griffin",
 };
 
 async function getData() {
@@ -53,21 +53,17 @@ export default async function Home() {
               </h1>
               <p>Thanks for visiting my site!</p>
               <p>
-                I'm Nicholas Griffin, a Senior Software Engineer from the UK,
-                currently with the BBC.
+                I'm Nicholas Griffin, a Senior Software Engineer from the UK, currently with the
+                BBC.
               </p>
-              <h2 className="text-1xl md:text-2xl font-bold text-primary-foreground">
-                About me
-              </h2>
+              <h2 className="text-1xl md:text-2xl font-bold text-primary-foreground">About me</h2>
               <p>
-                I'm a Full Stack Developer, leaning a bit more towards frontend
-                work. My time outside of my main role is spent on various
-                personal projects across the web.
+                I'm a Full Stack Developer, leaning a bit more towards frontend work. My time
+                outside of my main role is spent on various personal projects across the web.
               </p>
               <p>
-                Beyond development, I enjoy reading now and then and have a
-                passion for discovering new music — mainly trying to outsmart
-                the algorithms.
+                Beyond development, I enjoy reading now and then and have a passion for discovering
+                new music — mainly trying to outsmart the algorithms.
               </p>
               <p>Feel free to explore more about me and my projects below.</p>
               <ContactLinks />
@@ -91,11 +87,10 @@ export default async function Home() {
                 What's going on?
               </h2>
               <p>
-                Below you will find some of the blog posts that I have wrote
-                (and just a few thoughts and links), I used to write a lot and
-                I'm looking to write blog posts more about the projects that I
-                am working on. There might not be a lot here but I hope that it
-                will at least be interesting, at least to me.
+                Below you will find some of the blog posts that I have wrote (and just a few
+                thoughts and links), I used to write a lot and I'm looking to write blog posts more
+                about the projects that I am working on. There might not be a lot here but I hope
+                that it will at least be interesting, at least to me.
               </p>
             </div>
             <section>
@@ -109,7 +104,7 @@ export default async function Home() {
               <div className="w-full flex justify-left pt-5">
                 <Link
                   href="/blog"
-                  className={buttonVariants({ variant: 'default', size: 'lg' })}
+                  className={buttonVariants({ variant: "default", size: "lg" })}
                   underline={false}
                 >
                   View all of my blog posts
@@ -121,8 +116,8 @@ export default async function Home() {
                 So what is it that you do? 🤔
               </h2>
               <p>
-                Well quite a few things, here are some of my favourite projects
-                alongside my most recently updated GitHub repos:
+                Well quite a few things, here are some of my favourite projects alongside my most
+                recently updated GitHub repos:
               </p>
             </div>
             <ProjectsList

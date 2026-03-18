@@ -1,12 +1,12 @@
 import { Link } from "@/components/Link";
 
 export function Footer() {
-	return (
+  return (
     <footer className="w-full">
       <div className="container md:flex items-left justify-left py-4 gap-4">
         <div>
           <span>
-            © {new Date().getFullYear()} Nicholas Griffin.{' '}
+            © {new Date().getFullYear()} Nicholas Griffin.{" "}
             <Link
               href="https://creativecommons.org/licenses/by-sa/4.0/"
               target="_blank"

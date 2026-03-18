@@ -1,15 +1,15 @@
 {
-	"name": "website-blog-text-to-speech",
-	"version": "0.0.1",
-	"scripts": {
-		"dev": "wrangler dev src/index.ts",
-		"deploy": "wrangler deploy src/index.ts"
-	},
-	"dependencies": {
-		"aws4fetch": "^1.0.20"
-	},
-	"devDependencies": {
-		"@cloudflare/workers-types": "^4.20241127.0",
-		"wrangler": "^4.0.0"
-	}
+  "name": "website-blog-text-to-speech",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy src/index.ts"
+  },
+  "dependencies": {
+    "aws4fetch": "^1.0.20"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "wrangler": "^4.0.0"
+  }
 }
