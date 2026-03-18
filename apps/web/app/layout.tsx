@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-// @ts-expect-error - no types available
 import "./globals.css";
 
 import { cn } from "@/lib/utils";

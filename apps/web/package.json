@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "ENVIRONMENT=development next dev --turbo",
     "build": "next build",
+    "build:lambda": "open-next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "lint": "vp lint",
@@ -49,6 +50,7 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@opennextjs/aws": "^3.9.16",
     "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/typography": "^0.5.19",
     "@types/mdx": "^2.0.13",
