@@ -6,11 +6,11 @@
     "deploy": "wrangler deploy src/index.ts"
   },
   "dependencies": {
-    "mimetext": "^3.0.27",
-    "postal-mime": "^2.4.1"
+    "mimetext": "^3.0.28",
+    "postal-mime": "^2.7.4"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241127.0",
-    "wrangler": "^4.0.0"
+    "@cloudflare/workers-types": "^4.20260317.1",
+    "wrangler": "^4.75.0"
   }
 }
