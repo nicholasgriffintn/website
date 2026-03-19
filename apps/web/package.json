@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "react-router dev",
     "build": "react-router build",
+    "build:preview": "cross-env CLOUDFLARE_ENV=preview react-router build",
     "deploy": "pnpm run build && wrangler deploy",
+    "deploy:preview": "pnpm run build:preview && cross-env CLOUDFLARE_ENV=preview wrangler deploy",
     "start": "wrangler dev",
     "typecheck": "tsc --noEmit",
     "lint": "vp lint",

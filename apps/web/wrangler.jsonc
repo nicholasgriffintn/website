@@ -4,4 +4,24 @@
   "compatibility_date": "2026-02-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./workers/app.ts",
+  "preview_urls": false,
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "nicholasgriffin.dev",
+      "custom_domain": true,
+    },
+  ],
+  "env": {
+    "development": {},
+    "preview": {
+      "name": "website-preview",
+      "routes": [
+        {
+          "pattern": "preview.nicholasgriffin.dev",
+          "custom_domain": true,
+        },
+      ],
+    },
+  },
 }

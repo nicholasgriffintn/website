@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - apps/web/**
-      - apps/infra/**
+      - .github/workflows/production.yaml
   workflow_dispatch:
 
 jobs:
@@ -34,26 +34,20 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
-
       - name: Build web app
         run: pnpm --filter web build
         env:
           NODE_ENV: production
-
-      - name: Deploy CDK stacks
+      - name: Deploy production Worker
         id: deploy
         run: |
-          pnpm --filter infra exec cdk deploy CertStack CoUkRedirectStack WebStack-Production \
-            --require-approval never \
-            --outputs-file cdk-outputs.json
-          URL=$(jq -r '."WebStack-Production".DistributionUrl' cdk-outputs.json)
-          echo "url=$URL" >> $GITHUB_OUTPUT
-        working-directory: apps/infra
+          set -euo pipefail
+          DEPLOY_LOG="$(mktemp)"
+          pnpm --filter web deploy 2>&1 | tee "${DEPLOY_LOG}"
+          URL="$(grep -Eo 'https://[^ ]+\\.workers\\.dev' "${DEPLOY_LOG}" | head -n 1 || true)"
+          if [ -n "${URL}" ]; then
+            echo "url=${URL}" >> "${GITHUB_OUTPUT}"
+          fi
         env:
-          CDK_DEFAULT_REGION: eu-west-1
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
