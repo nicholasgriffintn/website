@@ -73,7 +73,7 @@ export default {
     const msg = createMimeMessage();
     msg.setSender({
       name: "Contact Form Submission",
-      addr: "contact@nickgriffin.uk",
+      addr: "website@nicholasgriffin.dev",
     });
     msg.setRecipient(env.FORWARD_TO);
     msg.setSubject(subject);
@@ -89,7 +89,7 @@ ${body}
     });
 
     try {
-      const message = new EmailMessage("contact@nickgriffin.uk", env.FORWARD_TO, msg.asRaw());
+      const message = new EmailMessage("website@nicholasgriffin.dev", env.FORWARD_TO, msg.asRaw());
 
       await env.EMAIL.send(message);
 

@@ -5,8 +5,6 @@ compatibility_flags = ["nodejs_compat"]
 workers_dev = false
 preview_urls = false
 
-routes = [{ pattern = "email.nickgriffin.uk", custom_domain = true }]
-
 [dev]
 port = 8786
 
@@ -17,3 +15,8 @@ name = "EMAIL"
 binding = "R2_BUCKET"
 bucket_name = "emails"
 preview_bucket_name = "emails"
+
+[observability]
+[observability.logs]
+enabled = true
+invocation_logs = false

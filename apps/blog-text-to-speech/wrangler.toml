@@ -20,3 +20,8 @@ max_batch_timeout = 5
 binding = "DB"
 database_name = "personal-web"
 database_id = "cabaa840-522a-42e0-86f4-6309cfdacc79"
+
+[observability]
+[observability.logs]
+enabled = true
+invocation_logs = true

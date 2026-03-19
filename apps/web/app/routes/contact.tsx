@@ -41,7 +41,7 @@ export default function Contact() {
         <hr className="my-4" />
         <small>
           If you prefer email clients over forms you can send me a message at{" "}
-          <Link href="mailto:me@nickgriffin.uk">me@nickgriffin.uk</Link>.
+          <Link href="mailto:me@nicholasgriffin.dev">me@nicholasgriffin.dev</Link>.
         </small>
         <hr className="my-4" />
         <Suspense fallback={null}>

@@ -27,7 +27,7 @@ export function ContactForm() {
     const formData = new FormData(e.currentTarget as HTMLFormElement);
 
     try {
-      const response = await fetch("https://email.nickgriffin.uk", {
+      const response = await fetch("https://email.nicholasgriffin.dev", {
         method: "POST",
         body: formData,
       });

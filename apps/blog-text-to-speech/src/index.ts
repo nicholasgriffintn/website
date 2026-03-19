@@ -1,14 +1,13 @@
 import { QueueMessage } from "./types";
 import { StorageService } from "./services/storage";
 import { parseFrontmatter, formatContentForSpeech } from "./utils";
-import { PollyService } from "./services/polly";
+import { SpeechService } from "./services/speech";
 
 const handler: ExportedHandler<
   {
     DB: D1Database;
     BUCKET: R2Bucket;
-    AWS_ACCESS_KEY_ID: string;
-    AWS_SECRET_ACCESS_KEY: string;
+    ASSISTANT_API_KEY: string;
   },
   QueueMessage
 > = {
@@ -17,8 +16,7 @@ const handler: ExportedHandler<
     env: {
       BUCKET: R2Bucket;
       DB: D1Database;
-      AWS_ACCESS_KEY_ID: string;
-      AWS_SECRET_ACCESS_KEY: string;
+      ASSISTANT_API_KEY: string;
     },
   ): Promise<void> {
     if (batch.messages.length === 0) {
@@ -26,11 +24,7 @@ const handler: ExportedHandler<
     }
 
     const storageService = new StorageService(env.BUCKET);
-    const pollyService = new PollyService({
-      accessKeyId: env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
-      region: "us-east-1",
-    });
+    const speechService = new SpeechService({ apiKey: env.ASSISTANT_API_KEY });
 
     const results = await Promise.allSettled(
       batch.messages.map(async (message) => {
@@ -62,7 +56,7 @@ const handler: ExportedHandler<
         const fullBlogContent = `# ${metadata.title}\n${metadata.description}\n${blogContent}`;
         const formattedContent = formatContentForSpeech(fullBlogContent);
 
-        const audioKey = await pollyService.uploadObject(formattedContent, storageService, slug);
+        const audioKey = await speechService.uploadObject(formattedContent, storageService, slug);
 
         if (!audioKey) {
           console.log(`Failed to generate audio for ${message.body.object.key}`);
