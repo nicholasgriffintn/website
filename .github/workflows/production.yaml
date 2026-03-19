@@ -43,7 +43,7 @@ jobs:
         run: |
           set -euo pipefail
           DEPLOY_LOG="$(mktemp)"
-          pnpm --filter web deploy 2>&1 | tee "${DEPLOY_LOG}"
+          pnpm --filter web deploy:prod 2>&1 | tee "${DEPLOY_LOG}"
           URL="$(grep -Eo 'https://[^ ]+\\.workers\\.dev' "${DEPLOY_LOG}" | head -n 1 || true)"
           if [ -n "${URL}" ]; then
             echo "url=${URL}" >> "${GITHUB_OUTPUT}"

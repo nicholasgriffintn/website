@@ -11,6 +11,11 @@
       "pattern": "nicholasgriffin.dev",
       "custom_domain": true,
     },
+    {
+      "pattern": "www.nicholasgriffin.dev",
+      "zone_name": "nicholasgriffin.dev",
+      "custom_domain": true,
+    },
   ],
   "env": {
     "development": {},
