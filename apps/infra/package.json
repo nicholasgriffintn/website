@@ -1,0 +1,22 @@
+{
+  "name": "infra",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "bootstrap": "cdk bootstrap aws://$(aws sts get-caller-identity --query Account --output text)/us-east-1",
+    "synth": "cdk synth",
+    "deploy:production": "cdk deploy WebStack-Production --require-approval never",
+    "deploy:preview": "cdk deploy WebStack-Preview --require-approval never"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.243.0",
+    "constructs": "^10.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25",
+    "aws-cdk": "^2.112.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.9.3"
+  }
+}

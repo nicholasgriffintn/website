@@ -75,6 +75,7 @@ export interface QueueMessage {
 export interface Env {
   DB: D1Database;
   BUCKET: R2Bucket;
-  VERCEL_DEPLOY_HOOK_URL: string;
+  GITHUB_DEPLOY_TOKEN: string;
+  GITHUB_REPO: string;
   ASSISTANT_API_KEY: string;
 }

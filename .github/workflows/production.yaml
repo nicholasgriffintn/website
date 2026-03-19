@@ -1,7 +1,4 @@
 name: Deploy to Production
-env:
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
   push:
@@ -9,6 +6,7 @@ on:
       - main
     paths:
       - apps/web/**
+      - apps/infra/**
   workflow_dispatch:
 
 jobs:
@@ -16,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: ${{ steps.seturl.outputs.url }}
+      url: ${{ steps.deploy.outputs.url }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
         with:
           run_install: false
 
@@ -36,18 +34,26 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Install Vercel CLI
-        run: pnpm install --global vercel@latest
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
 
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build web app
+        run: pnpm --filter web build
+        env:
+          NODE_ENV: production
 
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      - id: seturl
-        name: Set production url
-        run: echo "url=$(tail -1 deploy.log)">> $GITHUB_OUTPUT
+      - name: Deploy CDK stacks
+        id: deploy
+        run: |
+          pnpm --filter infra exec cdk deploy CertStack CoUkRedirectStack WebStack-Production \
+            --require-approval never \
+            --outputs-file cdk-outputs.json
+          URL=$(jq -r '."WebStack-Production".DistributionUrl' cdk-outputs.json)
+          echo "url=$URL" >> $GITHUB_OUTPUT
+        working-directory: apps/infra
+        env:
+          CDK_DEFAULT_REGION: eu-west-1

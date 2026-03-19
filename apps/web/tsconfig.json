@@ -6,17 +6,13 @@
     "incremental": false,
     "isolatedModules": true,
     "lib": ["es2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
     "moduleDetection": "force",
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "allowJs": true,
@@ -27,13 +23,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": [
-    "next-env.d.ts",
-    "next.config.mjs",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
   "exclude": ["node_modules"]
 }

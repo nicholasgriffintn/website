@@ -1,0 +1,36 @@
+import { type RouteConfig, index, route } from "@react-router/dev/routes";
+
+export default [
+  index("routes/_index.tsx"),
+  route("blog", "routes/blog/_index.tsx"),
+  route("blog/archived", "routes/blog/archived.tsx"),
+  route("blog/:slug", "routes/blog/$slug.tsx"),
+  route("tags", "routes/tags/_index.tsx"),
+  route("tags/:slug", "routes/tags/$slug.tsx"),
+  route("projects", "routes/projects.tsx"),
+  route("contact", "routes/contact.tsx"),
+  route("apps", "routes/apps.tsx"),
+  route("setup", "routes/setup.tsx"),
+  route("snippets", "routes/snippets.tsx"),
+  route("notebooks", "routes/notebooks.tsx"),
+  route("ai", "routes/ai/_index.tsx"),
+  route("ai/benchmarks", "routes/ai/benchmarks.tsx"),
+  route("shite", "routes/shite.tsx"),
+  route("technutty", "routes/technutty.tsx"),
+  route("offline", "routes/offline.tsx"),
+  // Redirects
+  route("ai-benchmarks", "routes/redirect/ai-benchmarks.tsx"),
+  route("ai-metrics", "routes/redirect/ai-metrics.tsx"),
+  route("chat", "routes/redirect/chat.tsx"),
+  route("anyone-can-draw", "routes/redirect/anyone-can-draw.tsx"),
+  // Resource routes
+  route("api/spotify", "routes/api/spotify.tsx"),
+  route("api/apple-music", "routes/api/apple-music.tsx"),
+  route("api/github", "routes/api/github.tsx"),
+  route("api/projects", "routes/api/projects.tsx"),
+  route("api/gists", "routes/api/gists.tsx"),
+  route("api/status", "routes/api/status.tsx"),
+  route("rss", "routes/rss[.xml].tsx"),
+  route("sitemap.xml", "routes/sitemap[.xml].tsx"),
+  route("robots.txt", "routes/robots[.txt].tsx"),
+] satisfies RouteConfig;

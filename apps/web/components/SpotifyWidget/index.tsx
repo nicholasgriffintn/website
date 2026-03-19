@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 
-import { Image } from "@/components/Image";
-// @ts-expect-error - no types available
 import "./styles.css";
 
+import { Image } from "@/components/Image";
 import ReturnImageFormattingUrl from "@/lib/returnImageFormattingUrl";
 import type { RecentTracks } from "@/types/spotify";
 

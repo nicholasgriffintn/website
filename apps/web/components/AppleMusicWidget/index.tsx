@@ -2,7 +2,6 @@
 
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
-// @ts-expect-error - no types available
 import "./styles.css";
 
 import { Image } from "@/components/Image";

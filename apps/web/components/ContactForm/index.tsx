@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Turnstile from "react-turnstile";
+import { Turnstile } from "react-turnstile";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -88,7 +88,7 @@ export function ContactForm() {
       </div>
 
       <Turnstile
-        sitekey={process.env.NEXT_PUBLIC_EMAIL_TURNSTILE_SITE_KEY || ""}
+        sitekey={import.meta.env.VITE_EMAIL_TURNSTILE_SITE_KEY || ""}
         onVerify={handleVerify}
       />
 

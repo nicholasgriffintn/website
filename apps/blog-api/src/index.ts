@@ -100,23 +100,33 @@ const handler: ExportedHandler<Env, QueueMessage> = {
       }
     });
 
-    if (hasSuccessfulProcessing && env.VERCEL_DEPLOY_HOOK_URL) {
+    if (hasSuccessfulProcessing && env.GITHUB_DEPLOY_TOKEN && env.GITHUB_REPO) {
       try {
-        console.log("Waiting 60 seconds before triggering Vercel deployment...");
-        await new Promise((resolve) => setTimeout(resolve, 60000)); // 60 second delay
+        console.log("Waiting 60 seconds before triggering deployment...");
+        await new Promise((resolve) => setTimeout(resolve, 60000));
 
-        console.log("Triggering Vercel deployment...");
-        const response = await fetch(env.VERCEL_DEPLOY_HOOK_URL, {
-          method: "POST",
-        });
+        console.log("Triggering GitHub Actions deployment...");
+        const response = await fetch(
+          `https://api.github.com/repos/${env.GITHUB_REPO}/actions/workflows/production.yaml/dispatches`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${env.GITHUB_DEPLOY_TOKEN}`,
+              Accept: "application/vnd.github.v3+json",
+              "Content-Type": "application/json",
+              "User-Agent": "website-blog-api",
+            },
+            body: JSON.stringify({ ref: "main" }),
+          },
+        );
 
         if (!response.ok) {
-          throw new Error(`Deploy hook failed with status: ${response.status}`);
+          throw new Error(`GitHub dispatch failed with status: ${response.status}`);
         }
 
-        console.log("Vercel deployment triggered successfully");
+        console.log("GitHub Actions deployment triggered successfully");
       } catch (error) {
-        console.error("Failed to trigger Vercel deployment:", error);
+        console.error("Failed to trigger GitHub Actions deployment:", error);
       }
     }
 

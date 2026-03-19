@@ -1,7 +1,15 @@
 import createMDX from "@next/mdx";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
+  experimental: {
+    outputFileTracingRoot: path.join(__dirname, "../../"),
+  },
   transpilePackages: ["next-mdx-remote"],
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   images: {

@@ -38,3 +38,7 @@ yarn-error.log*
 next-env.d.ts
 
 wrangler.toml
+
+.open-next
+
+.react-router
