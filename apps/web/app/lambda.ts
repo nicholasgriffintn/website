@@ -5,12 +5,10 @@ import type {
   Context,
 } from "aws-lambda";
 
-// Loaded once at cold start
-const requestHandler = createRequestHandler({
-  // @ts-expect-error - virtual module resolved at build time
-  build: () => import("virtual:react-router/server-build"),
-  mode: process.env.NODE_ENV ?? "production",
-});
+// @ts-expect-error - build output resolved at build time
+import * as build from "./index.js";
+
+const requestHandler = createRequestHandler(build, process.env.NODE_ENV ?? "production");
 
 function lambdaEventToRequest(event: APIGatewayProxyEventV2): Request {
   const { requestContext, rawPath, rawQueryString, headers, body, isBase64Encoded } = event;

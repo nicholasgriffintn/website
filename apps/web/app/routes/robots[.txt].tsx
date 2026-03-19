@@ -1,12 +1,12 @@
 const BASE_URL = "https://nicholasgriffin.dev";
 
 const disallowedBots = [
+  "Amazonbot",
   "magpie-crawler",
   "CCBot",
   "omgili",
   "omgilibot",
   "GPTBot",
-  "ChatGPT-User",
   "ClaudeBot",
   "Claude-Web",
   "anthropic-ai",
@@ -17,15 +17,23 @@ const disallowedBots = [
   "Scrapy",
   "Applebot-Extended",
   "Google-Extended",
+  "Google-CloudVertexBot",
+  "meta-externalagent",
+  "OAI-SearchBot",
+  "YandexAdditional",
+  "YandexAdditionalBot",
+  "TurnitinBot",
+  "Amzn-SearchBot",
+  "ProRataInc",
 ];
 
-export function loader() {
-  // TODO: Make this work
-  /* if (domainName !== 'nicholasgriffin.dev') {
-    return new Response('User-agent: *\nDisallow: /', {
-      headers: { 'Content-Type': 'text/plain' },
+export function loader({ request }: { request: Request }) {
+  const hostname = new URL(request.url).hostname;
+  if (hostname !== "nicholasgriffin.dev") {
+    return new Response("User-agent: *\nDisallow: /", {
+      headers: { "Content-Type": "text/plain" },
     });
-  } */
+  }
 
   const rules = [
     "User-agent: *\nAllow: /",
