@@ -30,11 +30,11 @@ const productionStack = new WebStack(app, "WebStack-Production", {
   environment: "production",
   env: { account, region },
   crossRegionReferences: true,
+  certificate: certStack.devCert,
 });
 productionStack.addDependency(certStack);
 
 new WebStack(app, "WebStack-Preview", {
   environment: "preview",
   env: { account, region },
-  certificate: certStack.devCert,
 });
