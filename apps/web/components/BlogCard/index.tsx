@@ -33,6 +33,7 @@ export function BlogCard({ post }) {
               loading="lazy"
               width={700}
               height={190}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           </div>
         )
