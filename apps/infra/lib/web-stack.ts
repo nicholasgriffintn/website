@@ -25,6 +25,28 @@ export class WebStack extends cdk.Stack {
 
     const webBuildDir = path.join(__dirname, "../../web/build");
 
+    const requiredRuntimeEnv = [
+      "GITHUB_TOKEN",
+      "LAST_FM_TOKEN",
+      "APPLE_MUSIC_USER_TOKEN",
+      "APPLE_MUSIC_MUSICKIT_TOKEN",
+      "APPLE_MUSIC_PRIVATE_KEY",
+      "APPLE_MUSIC_KEY_ID",
+      "APPLE_MUSIC_TEAM_ID",
+    ] as const;
+
+    const missingRuntimeEnv = requiredRuntimeEnv.filter((key) => !process.env[key]);
+
+    if (isProduction && missingRuntimeEnv.length > 0) {
+      throw new Error(
+        `Missing required runtime environment variables for production deploy: ${missingRuntimeEnv.join(", ")}`,
+      );
+    }
+
+    const runtimeEnv = Object.fromEntries(
+      requiredRuntimeEnv.map((key) => [key, process.env[key] ?? ""]),
+    ) as Record<(typeof requiredRuntimeEnv)[number], string>;
+
     // ---------- S3 bucket (static assets) ----------
     const assetsBucket = new s3.Bucket(this, "AssetsBucket", {
       bucketName: `${prefix}-assets`,
@@ -43,6 +65,8 @@ export class WebStack extends cdk.Stack {
       timeout: cdk.Duration.seconds(30),
       environment: {
         NODE_ENV: "production",
+        ENVIRONMENT: environment,
+        ...runtimeEnv,
       },
     });
 

@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
+import * as path from "node:path";
 import { WebStack } from "../lib/web-stack";
 import { CertificateStack } from "../lib/certificate-stack";
 import { CoUkRedirectStack } from "../lib/redirect-stack";
+
+import { loadEnvFile } from "../utils/env";
+
+loadEnvFile(path.resolve(process.cwd(), "../web/.env"));
 
 const app = new cdk.App();
 
