@@ -103,9 +103,18 @@ export function Image({
       }
     : style;
 
+  const wrapperStyle = fill
+    ? {
+        position: "relative" as const,
+        width: "100%",
+        height: "100%",
+        ...containerStyle,
+      }
+    : containerStyle;
+
   return (
-    <div className={classes} style={containerStyle}>
-      <picture>
+    <div className={classes} style={wrapperStyle}>
+      <picture style={fill ? { display: "block", width: "100%", height: "100%" } : undefined}>
         {useResponsive && (
           <>
             <source type="image/avif" srcSet={buildSrcSet(src, "avif")} sizes={sizes} />
