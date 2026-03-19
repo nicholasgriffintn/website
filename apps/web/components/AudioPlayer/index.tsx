@@ -61,13 +61,22 @@ export function AudioPlayer({ src }: { src: string }) {
   }, []);
 
   const togglePlay = () => {
-    if (!audioRef.current) return;
+    const audio = audioRef.current;
+    if (!audio) return;
+
     if (isPlaying) {
-      audioRef.current.pause();
+      audio.pause();
+      setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      void audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          setIsPlaying(false);
+        });
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleTimeChange = (newValue: number[]) => {

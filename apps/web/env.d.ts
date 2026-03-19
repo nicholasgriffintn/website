@@ -4,3 +4,12 @@
 interface CloudflareEnv {
   LAST_FM_TOKEN: string;
 }
+
+interface ExecutionContext {
+  waitUntil(promise: Promise<unknown>): void;
+  passThroughOnException(): void;
+}
+
+interface ExportedHandler<Env = unknown> {
+  fetch?(request: Request, env: Env, ctx: ExecutionContext): Response | Promise<Response>;
+}

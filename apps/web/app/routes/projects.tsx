@@ -5,7 +5,6 @@ import { ChevronUp } from "lucide-react";
 import { PageLayout } from "@/components/PageLayout";
 import { Link } from "@/components/Link";
 import { InnerPage } from "@/components/InnerPage";
-import { getRecentlyPlayed } from "@/lib/data/spotify";
 import { getProjects } from "@/lib/data/projects";
 import { getGitHubRepos } from "@/lib/data/github";
 import { ProjectsList } from "@/components/ProjectsList";

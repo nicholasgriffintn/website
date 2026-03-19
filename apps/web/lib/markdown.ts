@@ -1,4 +1,4 @@
-import parse from "html-react-parser";
+import { createElement } from "react";
 
 export function parseMarkdown(input: string, muted = false, classNames: { p?: string } = {}) {
   if (!input) return input;
@@ -155,5 +155,7 @@ export function parseMarkdown(input: string, muted = false, classNames: { p?: st
     return `<code>${escapeHTML(code)}</code>`;
   });
 
-  return parse(html);
+  return createElement("div", {
+    dangerouslySetInnerHTML: { __html: html },
+  });
 }

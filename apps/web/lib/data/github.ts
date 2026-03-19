@@ -66,10 +66,6 @@ export async function getGitHubRepos({
       query,
       variables: { cursor },
     }),
-    cache: "force-cache",
-    next: {
-      revalidate: 3600,
-    },
   });
 
   if (!res.ok) {
@@ -98,10 +94,6 @@ export async function getGitHubGists(): Promise<GitHubGists | undefined> {
     headers: {
       "Content-Type": "application/json",
       "User-Agent": "NGWeb",
-    },
-    cache: "force-cache",
-    next: {
-      revalidate: 3600,
     },
   });
 

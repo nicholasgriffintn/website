@@ -1,9 +1,10 @@
 const ReturnImageFormattingUrl = (url: string) => {
-  const baseUrl = {
+  const baseUrls = {
     development: "https://images.nicholasgriffin.dev",
     production: "https://images.nicholasgriffin.dev",
     test: "https://images.nicholasgriffin.dev",
-  }[process.env.NODE_ENV];
+  } as const;
+  const baseUrl = baseUrls[process.env.NODE_ENV as keyof typeof baseUrls] ?? baseUrls.production;
 
   if (url.includes("https://cdn.nicholasgriffin.dev/")) {
     const noCDNURL = url.replace("https://cdn.nicholasgriffin.dev/", "");

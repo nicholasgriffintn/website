@@ -1,4 +1,4 @@
-import { lazy, Suspense, createElement, Children } from "react";
+import { lazy, Suspense, createElement, useEffect, useState } from "react";
 import React from "react";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
 import { highlight } from "sugar-high";
@@ -8,6 +8,23 @@ import { Image } from "@/components/Image";
 import { slugify } from "@/lib/slugs";
 
 const Mermaid = lazy(() => import("./Mermaid"));
+
+const getTextFromNode = (node: React.ReactNode): string => {
+  if (typeof node === "string" || typeof node === "number") {
+    return String(node);
+  }
+
+  if (Array.isArray(node)) {
+    return node.map((child) => getTextFromNode(child)).join("");
+  }
+
+  if (React.isValidElement(node)) {
+    const props = node.props as { children?: React.ReactNode };
+    return getTextFromNode(props.children);
+  }
+
+  return "";
+};
 
 function Table({ children, ...props }) {
   return (
@@ -49,7 +66,7 @@ function Code({ children, className, ...props }) {
   const isCodeBlock = /language-(\w+)/.exec(className || "");
 
   if (isCodeBlock && isCodeBlock[1] === "mermaid") {
-    const chart = Children.toArray(children).join("");
+    const chart = getTextFromNode(children);
     return (
       <Suspense fallback={null}>
         <Mermaid chart={chart} />
@@ -87,16 +104,7 @@ function Code({ children, className, ...props }) {
 
 function createHeading(level) {
   const Heading = ({ children }) => {
-    const text = Children.toArray(children)
-      .map((child) => {
-        if (typeof child === "string") return child;
-        if (React.isValidElement(child)) {
-          const props = child.props as { children?: React.ReactNode };
-          if (props.children !== undefined) return props.children;
-        }
-        return "";
-      })
-      .join("");
+    const text = getTextFromNode(children);
 
     const slug = slugify(text);
 
@@ -163,5 +171,15 @@ export function CustomMDX({
   source: MDXRemoteSerializeResult;
   components?: Record<string, React.ComponentType>;
 }) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return <MDXRemote {...source} components={{ ...components, ...extraComponents }} />;
 }

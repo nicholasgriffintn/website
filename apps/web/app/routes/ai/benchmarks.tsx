@@ -51,7 +51,7 @@ type ModelResponse = {
 };
 type Benchmark = {
   id: string;
-  prompt: string | { type?: string; text: string } | any;
+  prompt: unknown;
   description: string;
   models: ModelResponse[];
 };
@@ -84,17 +84,6 @@ const renderMultiModalContent = (content: any): React.ReactNode => {
   } catch {
     return "[Object cannot be displayed]";
   }
-};
-
-const extractSvg = (content: string | MultiModalContent[] | undefined | null): string => {
-  if (!content || typeof content !== "string") return "";
-  const match = content.match(/<svg[\s\S]*?<\/svg>/);
-  return (
-    match?.[0]?.replace(
-      /<svg/,
-      '<svg width="100%" height="100%" preserveAspectRatio="xMidYMid meet"',
-    ) ?? ""
-  );
 };
 
 export default function AIBenchmarks() {

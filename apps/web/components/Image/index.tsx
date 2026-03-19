@@ -15,21 +15,26 @@ type ImageProps = {
   alt: string;
   width?: number | string;
   height?: number | string;
+  fill?: boolean;
+  unoptimized?: boolean;
   className?: string;
   imgClassName?: string;
   style?: React.CSSProperties;
-  [key: string]: unknown;
-};
+  containerStyle?: React.CSSProperties;
+} & Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src" | "alt" | "width" | "height">;
 
 export function Image({
   src,
   alt,
   width,
   height,
+  fill,
+  unoptimized: _unoptimized,
   className,
   imgClassName,
   style,
-  ...props
+  containerStyle,
+  ...imgProps
 }: ImageProps) {
   const [imageDimensions, setImageDimensions] = useState<{
     width?: number;
@@ -64,15 +69,26 @@ export function Image({
   );
 
   return (
-    <div className={classes} style={style}>
+    <div className={classes} style={containerStyle}>
       <picture>
         <img
-          {...props}
+          {...imgProps}
           src={buildSrc(src as string, imageDimensions?.width)}
           alt={alt}
-          width={imageDimensions?.width}
-          height={imageDimensions?.height}
+          width={fill ? undefined : imageDimensions?.width}
+          height={fill ? undefined : imageDimensions?.height}
           className={clsx("image__img", imgClassName)}
+          style={
+            fill
+              ? {
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  ...style,
+                }
+              : style
+          }
           onError={() => {
             setImageError(true);
             setLoadingComplete(true);
