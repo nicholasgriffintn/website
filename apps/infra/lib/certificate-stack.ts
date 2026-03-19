@@ -4,7 +4,7 @@ import * as route53 from "aws-cdk-lib/aws-route53";
 import { Construct } from "constructs";
 
 export class CertificateStack extends cdk.Stack {
-  // public readonly devCert: acm.ICertificate;
+  public readonly devCert: acm.ICertificate;
   public readonly coUkCert: acm.ICertificate;
 
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
@@ -15,11 +15,11 @@ export class CertificateStack extends cdk.Stack {
       zoneName: "nicholasgriffin.dev",
     });
 
-    /* this.devCert = new acm.Certificate(this, "DevCert", {
+    this.devCert = new acm.Certificate(this, "DevCert", {
       domainName: "nicholasgriffin.dev",
       subjectAlternativeNames: ["www.nicholasgriffin.dev"],
       validation: acm.CertificateValidation.fromDns(devZone),
-    }); */
+    });
 
     const coUkZone = route53.HostedZone.fromHostedZoneAttributes(this, "CoUkZone", {
       hostedZoneId: "Z10048483MV9GSRT6BH0U",

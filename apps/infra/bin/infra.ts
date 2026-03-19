@@ -36,4 +36,5 @@ productionStack.addDependency(certStack);
 new WebStack(app, "WebStack-Preview", {
   environment: "preview",
   env: { account, region },
+  certificate: certStack.devCert,
 });
