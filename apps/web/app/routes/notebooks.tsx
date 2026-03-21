@@ -18,6 +18,8 @@ export default function Notebooks() {
         <iframe
           className="w-full h-screen max-h-[80vh]"
           src="https://ng-jupyter.dev/lab/index.html"
+          title="Jupyter Notebooks"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         />
       </InnerPage>
     </PageLayout>

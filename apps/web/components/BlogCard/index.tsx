@@ -10,11 +10,12 @@ import { parseMarkdown } from "@/lib/markdown";
 import { Image } from "@/components/Image";
 import { getYoutubeVideoId } from "@/lib/youtube";
 import { VideoCardPlayer } from "@/components/VideoCardPlayer";
+import type { BlogPost } from "@/types/blog";
 
-export function BlogCard({ post }) {
+export function BlogCard({ post }: { post: BlogPost }) {
   const postLink = post.metadata.link || `/blog/${post.slug}`;
   const isBookmark = post.metadata.isBookmark;
-  const postContent = parseMarkdown(post.description, false);
+  const postContent = parseMarkdown(post.description ?? "", false);
   const youtubeVideoId = isBookmark ? getYoutubeVideoId(post.metadata.link) : null;
 
   return (
@@ -46,12 +47,12 @@ export function BlogCard({ post }) {
             </div>
           )}
           {isBookmark && !post.metadata.link ? (
-            <div className="text-2xl font-semibold leading-none tracking-tight space-x-2 leading-7">
+            <div className="text-2xl font-semibold leading-7 tracking-tight space-x-2">
               {post.title}
             </div>
           ) : (
             <Link
-              className="text-2xl font-semibold leading-none tracking-tight space-x-2 leading-7"
+              className="text-2xl font-semibold leading-7 tracking-tight space-x-2"
               href={postLink}
               target={post.metadata.link ? "_blank" : undefined}
               underline={false}

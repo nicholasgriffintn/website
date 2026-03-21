@@ -1,3 +1,30 @@
+export interface BlogPostMetadata {
+  link?: string;
+  hideFeaturedImage?: boolean;
+  hideAudio?: boolean;
+  isBookmark?: boolean;
+}
+
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  type: string;
+  content: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string | null;
+  draft: boolean;
+  archived: boolean;
+  image_url: string | null;
+  image_alt: string | null;
+  metadata: BlogPostMetadata;
+  tags: string[];
+  audio_url: string | null;
+  embedding_id?: string | null;
+}
+
+/** @deprecated Use BlogPost instead */
 export type Metadata = {
   title: string;
   date: string;
@@ -8,11 +35,7 @@ export type Metadata = {
   draft?: boolean;
   archived?: boolean;
   audio_url?: string;
-  metadata: {
-    link?: string;
-    hideFeaturedImage?: boolean;
-    hideAudio?: boolean;
-  };
+  metadata: BlogPostMetadata;
 };
 
 export interface Heading {

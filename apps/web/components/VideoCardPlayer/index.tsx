@@ -5,7 +5,15 @@ import { Play } from "lucide-react";
 
 import { Image } from "@/components/Image";
 
-export function VideoCardPlayer({ videoId, slug, title }) {
+export function VideoCardPlayer({
+  videoId,
+  slug,
+  title,
+}: {
+  videoId: string;
+  slug: string;
+  title: string;
+}) {
   const [videoActive, setVideoActive] = useState(false);
 
   useEffect(() => {

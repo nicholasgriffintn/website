@@ -29,8 +29,8 @@ export function MainNav({
       </div>
       {items?.length ? (
         <nav className="flex items-center space-x-6 hidden lg:flex">
-          {items?.map((item, index) => (
-            <Link key={index} href={item.disabled ? "#" : item.href} underline={false}>
+          {items?.map((item) => (
+            <Link key={item.href} href={item.disabled ? "#" : item.href} underline={false}>
               {item.icon}
               {item.title}
             </Link>

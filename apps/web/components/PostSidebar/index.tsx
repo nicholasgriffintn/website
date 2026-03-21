@@ -1,18 +1,17 @@
 import { Suspense } from "react";
 
-import { Metadata } from "@/types/blog";
+import type { BlogPost, Heading } from "@/types/blog";
 import { FeaturedImage } from "@/components/FeaturedImage";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { TableOfContents } from "@/components/TableOfContents";
-import { Heading } from "@/types/blog";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface PostSidebarProps {
-  post: Metadata;
+  post: BlogPost;
   headings: Heading[];
 }
 
-function FeaturedImageSection({ post }: { post: Metadata }) {
+function FeaturedImageSection({ post }: { post: BlogPost }) {
   if (!post.image_url || post.metadata.hideFeaturedImage) return null;
 
   return (
@@ -22,7 +21,7 @@ function FeaturedImageSection({ post }: { post: Metadata }) {
   );
 }
 
-function AudioSection({ post }: { post: Metadata }) {
+function AudioSection({ post }: { post: BlogPost }) {
   if (!post.audio_url || post.metadata.hideAudio) return null;
 
   return (

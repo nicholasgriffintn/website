@@ -1,4 +1,12 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  isRouteErrorResponse,
+  useRouteError,
+} from "react-router";
 import type { LinksFunction, MetaFunction } from "react-router";
 
 import "./globals.css";
@@ -55,12 +63,21 @@ export default function App() {
 }
 
 export function ErrorBoundary() {
+  const error = useRouteError();
+  const is404 = isRouteErrorResponse(error) && error.status === 404;
+
+  const title = is404 ? "Not found" : "Something went wrong";
+  const heading = is404 ? "Sorry, this page could not be found." : "Something went wrong.";
+  const message = is404
+    ? "Please check the URL in the address bar and try again. Or go back to the home page."
+    : "An unexpected error occurred. Please try again later.";
+
   return (
     <html lang="en" className="dark">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Not found</title>
+        <title>{title}</title>
         <Meta />
         <Links />
       </head>
@@ -68,12 +85,8 @@ export function ErrorBoundary() {
         <PageLayout>
           <section className="w-full min-h-screen flex flex-col items-center justify-center bg-contain bg-center">
             <div className="container px-4 md:px-6 text-center space-y-6 flex flex-col items-center justify-center">
-              <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
-                Sorry, this page could not be found.
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-[700px]">
-                Please check the URL in the address bar and try again. Or go back to the home page.
-              </p>
+              <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">{heading}</h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-[700px]">{message}</p>
             </div>
           </section>
         </PageLayout>

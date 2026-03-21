@@ -168,14 +168,6 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                   >
                     {isTrackPlaying(firstTrack.id) ? <PauseIcon /> : <PlayIcon />}
                   </button>
-                  {/* <a
-                    className="trackLinkExternal"
-                    href={firstTrack.attributes.url}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                  >
-                    Listen on Apple Music
-                  </a> */}
                 </div>
               </div>
             </div>
@@ -232,14 +224,6 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                           <span>{track.attributes.artistName}</span>
                           <span>{track.attributes.albumName}</span>
                         </div>
-                        {/* <a
-                          className="trackLinkExternal"
-                          rel="noopener noreferrer nofollow"
-                          target="_blank"
-                          href={track.attributes.url}
-                        >
-                          Listen on Apple Music
-                        </a> */}
                       </div>
                     </div>
                   );

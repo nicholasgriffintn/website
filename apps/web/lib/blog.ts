@@ -3,7 +3,7 @@ import type { Heading } from "@/types/blog";
 import { slugify } from "./slugs";
 
 const BASE_API_URL = "https://content.s3rve.co.uk";
-const cacheManager = new CacheManager<any>();
+const cacheManager = new CacheManager<unknown>();
 
 function normalizeVoidElements(content?: string | null) {
   if (typeof content !== "string") {
@@ -34,9 +34,7 @@ async function getApiData(path: string, params: Record<string, string> = {}) {
 }
 
 export async function getBlogPosts(showArchived = false) {
-  const params: Record<string, string> = {
-    cacheBust: Math.random().toString(36).substring(2, 15),
-  };
+  const params: Record<string, string> = {};
   if (showArchived) params.archived = "true";
 
   if (process.env.ENVIRONMENT === "development") {
@@ -54,11 +52,7 @@ export async function getBlogPosts(showArchived = false) {
 
 export async function getBlogPostBySlug(slug: string) {
   try {
-    const params: Record<string, string> = {
-      cacheBust: Math.random().toString(36).substring(2, 15),
-    };
-
-    const post = await getApiData(`content/${slug}`, params);
+    const post = await getApiData(`content/${slug}`);
     if (post?.content) {
       post.content = normalizeVoidElements(post.content);
     }

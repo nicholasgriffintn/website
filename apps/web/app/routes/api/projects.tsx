@@ -1,8 +1,9 @@
 import { getProjects } from "@/lib/data/projects";
+import { CDN_CACHE_HEADERS } from "@/lib/constants";
 
 export async function loader() {
   const data = await getProjects();
   return Response.json(data, {
-    headers: { "Cache-Control": "s-maxage=180000" },
+    headers: CDN_CACHE_HEADERS,
   });
 }

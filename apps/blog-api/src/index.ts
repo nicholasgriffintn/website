@@ -102,9 +102,6 @@ const handler: ExportedHandler<Env, QueueMessage> = {
 
     if (hasSuccessfulProcessing && env.GITHUB_DEPLOY_TOKEN && env.GITHUB_REPO) {
       try {
-        console.log("Waiting 60 seconds before triggering deployment...");
-        await new Promise((resolve) => setTimeout(resolve, 60000));
-
         console.log("Triggering GitHub Actions deployment...");
         const response = await fetch(
           `https://api.github.com/repos/${env.GITHUB_REPO}/actions/workflows/production.yaml/dispatches`,

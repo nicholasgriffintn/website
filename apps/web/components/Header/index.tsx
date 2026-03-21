@@ -1,29 +1,29 @@
 import { MainNav } from "@/components/Header/MainNav";
 
-export function Header() {
-  const navItems = [
-    {
-      title: "Blog",
-      href: "/blog",
-    },
-    {
-      title: "Projects",
-      href: "/projects",
-    },
-    {
-      title: "AI",
-      href: "/ai",
-    },
-    {
-      title: "Apps",
-      href: "/apps",
-    },
-    {
-      title: "Contact",
-      href: "/contact",
-    },
-  ];
+const navItems = [
+  {
+    title: "Blog",
+    href: "/blog",
+  },
+  {
+    title: "Projects",
+    href: "/projects",
+  },
+  {
+    title: "AI",
+    href: "/ai",
+  },
+  {
+    title: "Apps",
+    href: "/apps",
+  },
+  {
+    title: "Contact",
+    href: "/contact",
+  },
+];
 
+export function Header() {
   return (
     <header className="fixed w-full z-50">
       <div className="w-full min-h-[3px] bg-gradient-to-r from-[#093054] to-[#061e35]" />

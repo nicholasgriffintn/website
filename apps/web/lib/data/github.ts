@@ -90,11 +90,17 @@ export async function getGitHubRepos({
 }
 
 export async function getGitHubGists(): Promise<GitHubGists | undefined> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "User-Agent": "NGWeb",
+  };
+
+  if (process.env.GITHUB_TOKEN) {
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  }
+
   const res = await fetch("https://api.github.com/users/nicholasgriffintn/gists", {
-    headers: {
-      "Content-Type": "application/json",
-      "User-Agent": "NGWeb",
-    },
+    headers,
   });
 
   if (!res.ok) {

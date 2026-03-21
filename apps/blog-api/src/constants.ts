@@ -1,5 +1,5 @@
 export const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://nicholasgriffin.dev",
   "Access-Control-Allow-Headers": "*",
   "Access-Control-Allow-Methods": "GET, OPTIONS",
 };

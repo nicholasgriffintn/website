@@ -1,7 +1,7 @@
 import { Bookmark } from "lucide-react";
 
 import { formatDate } from "@/lib/blog";
-import { Metadata } from "@/types/blog";
+import type { BlogPost } from "@/types/blog";
 import { Link } from "@/components/Link";
 
 export function PostHeader({
@@ -10,7 +10,7 @@ export function PostHeader({
   dates,
 }: {
   isBookmark: boolean;
-  post: Metadata;
+  post: BlogPost;
   dates: { created: string; updated?: string };
 }) {
   return (
