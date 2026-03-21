@@ -23,7 +23,8 @@ export async function getRecentlyPlayed(limit = 10) {
   );
 
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    console.error(`Apple Music API error: ${response.status}`);
+    return null;
   }
 
   const data = await response.json();

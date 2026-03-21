@@ -21,13 +21,18 @@ export const meta: MetaFunction = () => [
 ];
 
 export async function loader() {
-  const [applemusic, projects, featuredRepos, blogPosts] = await Promise.all([
+  const [applemusic, projects, featuredRepos, blogPosts] = await Promise.allSettled([
     getRecentlyPlayed(),
     getProjects(),
     getGitHubRepos({ limit: 8 }),
     getPaginatedBlogPosts({ limit: 6 }),
   ]);
-  return { applemusic, projects, featuredRepos, blogPosts };
+  return {
+    applemusic: applemusic.status === "fulfilled" ? applemusic.value : null,
+    projects: projects.status === "fulfilled" ? projects.value : [],
+    featuredRepos: featuredRepos.status === "fulfilled" ? featuredRepos.value : null,
+    blogPosts: blogPosts.status === "fulfilled" ? blogPosts.value : [],
+  };
 }
 
 export default function Home() {

@@ -40,3 +40,5 @@ next-env.d.ts
 .open-next
 
 .react-router
+
+.env

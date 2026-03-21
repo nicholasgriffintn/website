@@ -38,7 +38,7 @@ export default function BlogHome() {
               </p>
               <p>
                 Check out my latest posts below, if you prefer RSS, you can find a{" "}
-                <Link href="/rss.xml">feed for that here</Link>.
+                <Link href="/rss">feed for that here</Link>.
               </p>
             </div>
           </div>
