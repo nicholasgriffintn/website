@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import { Link } from "@/components/Link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Heading } from "@/types/blog";
@@ -24,10 +23,10 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
               <li key={heading.slug} style={{ paddingLeft: `${(heading.level - 2) * 1}rem` }}>
                 <Link
                   href={`#${heading.slug}`}
-                  className={cn(
-                    "group flex items-center gap-2 py-1 pl-4 pr-4 text-muted-foreground no-underline transition-colors hover:text-foreground",
-                  )}
+                  className="!block py-1 pl-4 pr-4 text-left leading-snug whitespace-normal break-words no-underline transition-colors hover:text-foreground"
                   underline={false}
+                  muted
+                  showExternalIcon={false}
                 >
                   {heading.text}
                 </Link>
