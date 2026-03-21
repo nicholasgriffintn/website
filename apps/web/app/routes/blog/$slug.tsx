@@ -1,7 +1,5 @@
 import type { MetaFunction, LoaderFunctionArgs } from "react-router";
 import { useLoaderData, data } from "react-router";
-import { serialize } from "next-mdx-remote/serialize";
-import remarkGfm from "remark-gfm";
 
 import { PageLayout } from "@/components/PageLayout";
 import { InnerPage } from "@/components/InnerPage";
@@ -14,15 +12,14 @@ import { PostHeader } from "@/components/PostHeader";
 import { PostSidebar } from "@/components/PostSidebar";
 import { getYoutubeVideoId } from "@/lib/youtube";
 import { VideoCardPlayer } from "@/components/VideoCardPlayer";
+import { compileMdxToHast } from "@/lib/mdx.server";
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const post = await getBlogPostBySlug(params.slug!);
   if (!post) throw data("Not found", { status: 404 });
   const headings = extractHeadings(post.content);
-  const mdxSource = await serialize(post.content, {
-    mdxOptions: { remarkPlugins: [remarkGfm] },
-  });
-  return { post, headings, mdxSource };
+  const mdxTree = await compileMdxToHast(post.content);
+  return { post, headings, mdxTree };
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
@@ -48,7 +45,7 @@ export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
 };
 
 export default function BlogPost() {
-  const { post, headings, mdxSource } = useLoaderData<typeof loader>();
+  const { post, headings, mdxTree } = useLoaderData<typeof loader>();
 
   const isBookmark = post.metadata.isBookmark;
   const youtubeVideoId = isBookmark ? getYoutubeVideoId(post.metadata.link) : null;
@@ -99,7 +96,7 @@ export default function BlogPost() {
                 />
               ) : null}
               <div>{parseMarkdown(post.description || "")}</div>
-              <CustomMDX source={mdxSource} />
+              <CustomMDX source={mdxTree} />
               {post.metadata.link && (
                 <Link href={post.metadata.link} className="text-primary-foreground">
                   You can find the original post here.

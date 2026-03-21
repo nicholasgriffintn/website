@@ -1,11 +1,17 @@
-import { lazy, Suspense, createElement, useEffect, useState } from "react";
+import { lazy, Suspense, createElement } from "react";
 import React from "react";
-import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
+import { toJsxRuntime } from "hast-util-to-jsx-runtime";
 import { highlight } from "sugar-high";
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 
 import { Link } from "@/components/Link";
 import { Image } from "@/components/Image";
 import { slugify } from "@/lib/slugs";
+
+type MdxHastRoot = {
+  type: "root";
+  children: unknown[];
+};
 
 const Mermaid = lazy(() => import("./Mermaid"));
 
@@ -86,7 +92,8 @@ function Code({ children, className, ...props }) {
   }
 
   const language = isCodeBlock[1];
-  const codeHTML = highlight(children);
+  const code = getTextFromNode(children);
+  const codeHTML = highlight(code);
 
   return (
     <div className="relative">
@@ -168,18 +175,16 @@ export function CustomMDX({
   source,
   components: extraComponents,
 }: {
-  source: MDXRemoteSerializeResult;
+  source: MdxHastRoot;
   components?: Record<string, React.ComponentType>;
 }) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return null;
-  }
-
-  return <MDXRemote {...source} components={{ ...components, ...extraComponents }} />;
+  return toJsxRuntime(source as any, {
+    Fragment,
+    jsx,
+    jsxs,
+    components: { ...components, ...extraComponents },
+    elementAttributeNameCase: "react",
+    stylePropertyNameCase: "dom",
+    passNode: true,
+  });
 }
