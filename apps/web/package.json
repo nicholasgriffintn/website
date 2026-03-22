@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "react-router dev",
-    "dev:local": "cross-env BLOG_API_BASE_URL=http://127.0.0.1:8787 VITE_CONTACT_API_URL=http://127.0.0.1:8784 VITE_IMAGE_SERVICE_URL=http://127.0.0.1:8783 react-router dev",
+    "dev": "cross-env BLOG_API_BASE_URL=http://127.0.0.1:8787 VITE_CONTACT_API_URL=http://127.0.0.1:8784 VITE_IMAGE_SERVICE_URL=http://127.0.0.1:8783 react-router dev",
     "build": "react-router build",
     "build:preview": "cross-env CLOUDFLARE_ENV=preview react-router build",
     "deploy:prod": "pnpm run build && wrangler deploy",

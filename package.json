@@ -4,8 +4,6 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm --filter web dev",
-    "dev:services": "pnpm --filter website-blog-api dev:local",
-    "dev:connected": "pnpm --stream --parallel --filter website-blog-api --filter web run dev:local",
     "db:migrate:local": "pnpm --filter website-database db:migrate:local",
     "lint": "vp check",
     "lint:fix": "vp check --fix",

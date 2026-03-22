@@ -32,19 +32,6 @@ Start the worker with Wrangler:
 pnpm --filter website-blog-text-to-speech dev
 ```
 
-Or run the connected local services stack:
-
-```bash
-pnpm dev:services
-```
-
-From this directory:
-
-```bash
-cd apps/blog-text-to-speech
-pnpm dev
-```
-
 `pnpm dev` uses shared local state at `../../.wrangler/state`.
 
 This worker is a queue consumer, so queue messages must be produced by another worker running in the same Wrangler `dev` session.

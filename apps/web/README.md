@@ -16,13 +16,7 @@ Run in app dev mode (production service endpoints):
 pnpm --filter web dev
 ```
 
-Run in app dev mode against local worker services:
-
-```bash
-pnpm --filter web dev:local
-```
-
-`dev:local` sets:
+This sets:
 
 - `BLOG_API_BASE_URL=http://127.0.0.1:8787`
 - `VITE_CONTACT_API_URL=http://127.0.0.1:8784`

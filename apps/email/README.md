@@ -38,12 +38,6 @@ pnpm dev
 
 This runs `wrangler dev` on `http://127.0.0.1:8784` with shared state at `../../.wrangler/state`.
 
-To run this worker together with other local services from the repo root:
-
-```bash
-pnpm dev:services
-```
-
 Example `curl` request:
 
 ```bash

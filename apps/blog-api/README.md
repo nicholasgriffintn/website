@@ -46,13 +46,7 @@ GITHUB_REPO=owner/repo
 ASSISTANT_API_KEY=...
 ```
 
-Start the local services stack (blog-api + blog-text-to-speech + email + image-resizing):
-
-```bash
-pnpm dev:services
-```
-
-Or from this directory only:
+Start the worker with Wrangler:
 
 ```bash
 pnpm dev

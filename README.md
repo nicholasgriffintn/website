@@ -18,17 +18,5 @@ All worker apps use the same persisted state at `.wrangler/state`.
 ```bash
 pnpm install
 pnpm db:migrate:local
-pnpm dev:services
-```
-
-Run the site against local worker services:
-
-```bash
-pnpm --filter web dev:local
-```
-
-Or run both web + services together:
-
-```bash
-pnpm dev:connected
+pnpm dev
 ```

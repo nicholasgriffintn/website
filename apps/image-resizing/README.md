@@ -63,12 +63,6 @@ From the repo root, you can also run:
 pnpm --filter website-image-resizing dev
 ```
 
-To run this worker together with other local services:
-
-```bash
-pnpm dev:services
-```
-
 ## Deploy
 
 ```bash
