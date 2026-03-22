@@ -9,4 +9,4 @@ export const JSON_HEADERS = {
   ...CORS_HEADERS,
 };
 
-export const ASSISTANT_API_URL = "https://chat-api.nickgriffin.uk";
+export const ASSISTANT_API_URL = "https://polychat.app";
