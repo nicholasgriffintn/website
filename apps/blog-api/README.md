@@ -35,7 +35,7 @@ From repo root:
 
 ```bash
 pnpm install
-cd apps/blog-api
+pnpm db:migrate:local
 ```
 
 Optional local secrets in `apps/blog-api/.dev.vars`:
@@ -46,25 +46,25 @@ GITHUB_REPO=owner/repo
 ASSISTANT_API_KEY=...
 ```
 
-If your local D1 state does not have the `document` table yet, run:
+Start the local services stack (blog-api + blog-text-to-speech + email + image-resizing):
 
 ```bash
-pnpm wrangler d1 execute personal-web --local --file ../database/migrations/0000_chubby_nicolaos.sql
+pnpm dev:services
 ```
 
-Start the worker:
+Or from this directory only:
 
 ```bash
 pnpm dev
 ```
 
-The API runs on `http://127.0.0.1:8785` (set in `wrangler.json`).
+The API runs on `http://127.0.0.1:8787` (set in `wrangler.json`).
 
 Quick checks:
 
 ```bash
-curl "http://127.0.0.1:8785/content"
-curl "http://127.0.0.1:8785/content/my-post-slug"
+curl "http://127.0.0.1:8787/content"
+curl "http://127.0.0.1:8787/content/my-post-slug"
 ```
 
 ## Deploy

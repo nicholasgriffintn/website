@@ -3,7 +3,7 @@
 import { use, useState } from "react";
 import clsx from "clsx";
 
-const IMAGE_SERVICE = "https://images.s3rve.co.uk";
+const IMAGE_SERVICE = import.meta.env.VITE_IMAGE_SERVICE_URL || "https://images.s3rve.co.uk";
 
 const RESPONSIVE_WIDTHS = [640, 750, 828, 1080, 1200, 1920, 2048];
 

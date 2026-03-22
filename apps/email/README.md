@@ -26,6 +26,8 @@ Create `apps/email/.dev.vars`:
 ```dotenv
 FORWARD_TO=you@example.com
 TURNSTILE_SECRET_KEY=your-turnstile-secret
+# Optional: comma-separated CORS allowlist for local origins
+# ALLOWED_ORIGINS=https://nicholasgriffin.dev,http://localhost:5173,http://127.0.0.1:5173
 ```
 
 Start the worker locally:
@@ -34,7 +36,13 @@ Start the worker locally:
 pnpm dev
 ```
 
-This runs `wrangler dev` on `http://127.0.0.1:8784`.
+This runs `wrangler dev` on `http://127.0.0.1:8784` with shared state at `../../.wrangler/state`.
+
+To run this worker together with other local services from the repo root:
+
+```bash
+pnpm dev:services
+```
 
 Example `curl` request:
 

@@ -6,14 +6,32 @@ import PostalMime from "postal-mime";
 import type { Env, SiteVerify } from "./types";
 
 const blockList: string[] = [];
+const defaultAllowedOrigins = [
+  "https://nicholasgriffin.dev",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+];
+
+function getCorsHeaders(request: Request, env: Env) {
+  const configuredOrigins =
+    env.ALLOWED_ORIGINS?.split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean) || defaultAllowedOrigins;
+  const origin = request.headers.get("Origin");
+  const allowOrigin = origin && configuredOrigins.includes(origin) ? origin : configuredOrigins[0];
+
+  return {
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Max-Age": "86400",
+    Vary: "Origin",
+  };
+}
 
 export default {
   async fetch(request: Request, env: Env) {
-    const corsHeaders = {
-      "Access-Control-Allow-Origin": "https://nicholasgriffin.dev",
-      "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
-      "Access-Control-Max-Age": "86400",
-    };
+    const corsHeaders = getCorsHeaders(request, env);
     const method = request.method;
 
     if (method === "OPTIONS") {

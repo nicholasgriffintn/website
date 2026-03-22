@@ -45,10 +45,11 @@ pnpm dev
 `pnpm dev` runs:
 
 ```bash
-wrangler dev src/index.ts
+wrangler dev --persist-to ../../.wrangler/state
 ```
 
 The worker runs on `http://localhost:8783` (set in `wrangler.json`).
+It uses shared local state at `../../.wrangler/state`.
 
 Example local call:
 
@@ -60,6 +61,12 @@ From the repo root, you can also run:
 
 ```bash
 pnpm --filter website-image-resizing dev
+```
+
+To run this worker together with other local services:
+
+```bash
+pnpm dev:services
 ```
 
 ## Deploy

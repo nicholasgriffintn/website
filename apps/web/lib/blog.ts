@@ -2,7 +2,10 @@ import { CacheManager } from "./cache";
 import type { Heading } from "@/types/blog";
 import { slugify } from "./slugs";
 
-const BASE_API_URL = "https://content.s3rve.co.uk";
+const BASE_API_URL = (process.env.BLOG_API_BASE_URL || "https://content.s3rve.co.uk").replace(
+  /\/$/,
+  "",
+);
 const cacheManager = new CacheManager<unknown>();
 
 function normalizeVoidElements(content?: string | null) {

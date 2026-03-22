@@ -18,7 +18,6 @@ From the repo root:
 
 ```bash
 pnpm install
-cd apps/blog-text-to-speech
 ```
 
 Set local secrets in `apps/blog-text-to-speech/.dev.vars`:
@@ -30,10 +29,25 @@ ASSISTANT_API_KEY=your_polychat_api_key
 Start the worker with Wrangler:
 
 ```bash
+pnpm --filter website-blog-text-to-speech dev
+```
+
+Or run the connected local services stack:
+
+```bash
+pnpm dev:services
+```
+
+From this directory:
+
+```bash
+cd apps/blog-text-to-speech
 pnpm dev
 ```
 
-This will start the worker in development, as it uses a queue consumer, it will need to be started alongside a producer that sends messages to the queue.
+`pnpm dev` uses shared local state at `../../.wrangler/state`.
+
+This worker is a queue consumer, so queue messages must be produced by another worker running in the same Wrangler `dev` session.
 
 ## Deploy
 

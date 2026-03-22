@@ -2,7 +2,8 @@
   "name": "website-blog-api",
   "version": "0.0.1",
   "scripts": {
-    "dev": "wrangler dev src/index.ts",
+    "dev": "wrangler dev --persist-to ../../.wrangler/state",
+    "dev:local": "wrangler dev -c wrangler.json -c ../blog-text-to-speech/wrangler.json -c ../email/wrangler.json -c ../image-resizing/wrangler.json --persist-to ../../.wrangler/state",
     "deploy": "wrangler deploy src/index.ts"
   },
   "dependencies": {},

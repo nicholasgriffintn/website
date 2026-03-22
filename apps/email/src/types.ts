@@ -7,6 +7,7 @@ export interface Env {
   TURNSTILE_SITE_KEY: string;
   TURNSTILE_SECRET_KEY: string;
   EMAIL: SendEmail;
+  ALLOWED_ORIGINS?: string;
 }
 
 type ErrorCode =

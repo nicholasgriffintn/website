@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
+const CONTACT_API_URL = import.meta.env.VITE_CONTACT_API_URL || "https://email.nicholasgriffin.dev";
+
 export function ContactForm() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -27,7 +29,7 @@ export function ContactForm() {
     const formData = new FormData(e.currentTarget as HTMLFormElement);
 
     try {
-      const response = await fetch("https://email.nicholasgriffin.dev", {
+      const response = await fetch(CONTACT_API_URL, {
         method: "POST",
         body: formData,
       });

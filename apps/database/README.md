@@ -22,19 +22,20 @@ From the repo root:
 
 ```bash
 pnpm install
-cd apps/database
+pnpm db:migrate:local
 ```
 
-Apply migrations to local D1 state:
+Or from this directory:
 
 ```bash
+cd apps/database
 pnpm db:migrate:local
 ```
 
 Run ad-hoc SQL against local D1:
 
 ```bash
-pnpm exec wrangler d1 execute personal-web --local --command "SELECT name FROM sqlite_master WHERE type='table';"
+pnpm exec wrangler d1 execute personal-web --local --persist-to ../../.wrangler/state --command "SELECT name FROM sqlite_master WHERE type='table';"
 ```
 
 Open Drizzle Studio against the local database:
@@ -42,6 +43,8 @@ Open Drizzle Studio against the local database:
 ```bash
 pnpm db:studio:local
 ```
+
+`db:migrate:local` and `db:studio:local` point at shared local state in `../../.wrangler/state`.
 
 ## Schema and migration workflow
 

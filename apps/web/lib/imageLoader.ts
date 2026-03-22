@@ -2,6 +2,8 @@ const normalizeSrc = (src: string) => {
   return src.startsWith("/") ? src : `/${src}`;
 };
 
+const IMAGE_SERVICE_URL = import.meta.env.VITE_IMAGE_SERVICE_URL || "https://images.s3rve.co.uk";
+
 export default function cloudflareLoader({
   src,
   width,
@@ -25,5 +27,5 @@ export default function cloudflareLoader({
     params.set("quality", quality.toString());
   }
 
-  return `https://images.s3rve.co.uk/?${params.toString()}`;
+  return `${IMAGE_SERVICE_URL}/?${params.toString()}`;
 }
