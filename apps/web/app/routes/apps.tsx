@@ -1,5 +1,5 @@
 import type { MetaFunction } from "react-router";
-import { Brush, Spade, Lock, Calendar, Bug, QrCode, ChartBar } from "lucide-react";
+import { Brush, Spade, Lock, Calendar, MessageSquare, Bug, QrCode, ChartBar } from "lucide-react";
 
 import { PageLayout } from "@/components/PageLayout";
 import { InnerPage } from "@/components/InnerPage";
@@ -25,7 +25,6 @@ export default function Apps() {
                 Sometimes I make apps, they're not super amazing, but I thought I'd share a few here
                 anyway, you can check them out below.
               </p>
-              <p>Note: I've only just started doing this, so there's not many apps yet.</p>
             </div>
           </div>
         </div>
@@ -34,17 +33,24 @@ export default function Apps() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <LinkCard
-            icon={<Calendar className="w-6 h-6" />}
-            title="FOSDEM PWA"
-            description="FOSDEM is a great event that I attend often. This app makes it easier to plan my schedule and catch up after the event."
-            href="https://fosdempwa.com"
-            external
-          />
-          <LinkCard
             icon={<Spade className="w-6 h-6" />}
             title="SprintJam"
             description="An app for running sprint poker sessions during your team's refinement sessions."
             href="https://sprintjam.co.uk"
+            external
+          />
+          <LinkCard
+            icon={<MessageSquare className="w-6 h-6" />}
+            title="Polychat"
+            description="Polychat is an e2e ai assistant platform built on top of Cloudflare's edge services and with multiple ai providers supported."
+            href="https://polychat.app"
+            external
+          />
+          <LinkCard
+            icon={<Calendar className="w-6 h-6" />}
+            title="FOSDEM PWA"
+            description="FOSDEM is a great event that I attend often. This app makes it easier to plan my schedule and catch up after the event."
+            href="https://fosdempwa.com"
             external
           />
           <LinkCard

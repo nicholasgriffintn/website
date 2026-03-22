@@ -1,10 +1,12 @@
 import type { MetaFunction } from "react-router";
-import { MessageSquare, Activity, LineChart } from "lucide-react";
+import { Activity, MessageSquare } from "lucide-react";
 
 import { PageLayout } from "@/components/PageLayout";
 import { LinkCard } from "@/components/LinkCard";
+import { PolychatAppCards } from "@/components/PolychatAppCards";
 import { Link } from "@/components/Link";
 import { InnerPage } from "@/components/InnerPage";
+import { polychatApps } from "@/lib/data/polychat-apps";
 
 export const meta: MetaFunction = () => [
   { title: "AI | Nicholas Griffin" },
@@ -41,14 +43,14 @@ export default function AI() {
           </div>
         </div>
         <h2 className="text-xl md:text-2xl font-bold text-primary-foreground mt-8 mb-4">
-          AI Applications
+          Applications
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <LinkCard
             icon={<MessageSquare className="w-6 h-6" />}
             title="Chat"
             description="Interactive chat interface powered by advanced language models, available for signed in only."
-            href="https://polchat.app/"
+            href="https://polychat.app/"
             external
           />
           <LinkCard
@@ -57,14 +59,16 @@ export default function AI() {
             description="Performance comparisons of different AI models and configurations."
             href="/ai/benchmarks"
           />
-          <LinkCard
-            icon={<LineChart className="w-6 h-6" />}
-            title="Metrics"
-            description="Analytics and insights from my AI system usage and performance."
-            href="https://metrics.polchat.app/"
-            external
-          />
         </div>
+        <h3 className="text-lg md:text-xl font-semibold text-primary-foreground mb-4">
+          AI apps on Polychat
+        </h3>
+        <p>
+          These are a selection of apps that I've built with reusable services on my Polychat
+          platform. These are provided alongside a number of other implementations that you can
+          check out.
+        </p>
+        <PolychatAppCards apps={polychatApps} />
       </InnerPage>
     </PageLayout>
   );
