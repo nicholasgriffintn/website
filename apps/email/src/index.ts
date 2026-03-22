@@ -22,7 +22,6 @@ export default {
         request.headers.get("Access-Control-Request-Method") &&
         request.headers.get("Access-Control-Request-Headers")
       ) {
-        // Handle CORS preflight requests.
         return Response.json({ ok: true }, { headers: corsHeaders });
       }
 

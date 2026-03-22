@@ -25,7 +25,7 @@ export class BlogProcessor {
       archived: metadata.archived && metadata.archived !== "false" ? 1 : 0,
       created_at: metadata.date || now,
       updated_at: metadata.updated || null,
-      content: "", // Will be set later
+      content: "",
       type: "blog",
       metadata: JSON.stringify({
         hideFeaturedImage: metadata.hideFeaturedImage || false,

@@ -27,6 +27,10 @@ export class SpeechService {
   ): Promise<string> {
     const input = content;
 
+    if (!input) {
+      throw new Error("No content provided for speech generation");
+    }
+
     const response = await fetch(POLYCHAT_API_URL, {
       method: "POST",
       headers: {
