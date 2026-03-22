@@ -1,9 +1,0 @@
-name = "website-image-resizing"
-compatibility_date = "2026-02-24"
-workers_dev = false
-preview_urls = false
-
-[dev]
-port = 8786
-
-routes = [{ pattern = "images.s3rve.co.uk", custom_domain = true }]

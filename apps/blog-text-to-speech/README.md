@@ -1,3 +1,42 @@
 # Nicholas Griffin - Text to Speech
 
 This app provides automated speech synthesis for blog posts on my website. You can find out more about it [here](https://nicholasgriffin.dev/blog/synthesizing-blog-posts).
+
+This app:
+
+- Consumes message from a Cloudflare Workers Queue.
+- The queue payload will contain a key that corresponds to a markdown file in an R2 bucket.
+- The markdown file will be read and parsed to extract the content and frontmatter.
+- The content will be formatted into plain text and then passed onto the [Polychat](https://polychat.app) speech API to generate speech from the text using the selected ai service.
+- The generated audio will be uploaded to R2 and the corresponding D1 record will be updated with the audio URL.
+
+Cloudflare Worker that turns blog post markdown files into MP3 audio and stores the output in R2.
+
+## Local development
+
+From the repo root:
+
+```bash
+pnpm install
+cd apps/blog-text-to-speech
+```
+
+Set local secrets in `apps/blog-text-to-speech/.dev.vars`:
+
+```dotenv
+ASSISTANT_API_KEY=your_polychat_api_key
+```
+
+Start the worker with Wrangler:
+
+```bash
+pnpm dev
+```
+
+This will start the worker in development, as it uses a queue consumer, it will need to be started alongside a producer that sends messages to the queue.
+
+## Deploy
+
+```bash
+pnpm deploy
+```
