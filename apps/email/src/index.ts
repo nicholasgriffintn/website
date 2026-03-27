@@ -8,31 +8,66 @@ import type { Env, SiteVerify } from "./types";
 const blockList: string[] = [];
 const defaultAllowedOrigins = [
   "https://nicholasgriffin.dev",
+  "https://preview.nicholasgriffin.dev",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
 ];
 
-function getCorsHeaders(request: Request, env: Env) {
+function normaliseOrigin(origin: string): string | null {
+  const trimmedOrigin = origin.trim();
+  if (!trimmedOrigin) {
+    return null;
+  }
+
+  try {
+    return new URL(trimmedOrigin).origin;
+  } catch {
+    return trimmedOrigin.replace(/\/+$/, "");
+  }
+}
+
+function getAllowedOrigins(env: Env): string[] {
   const configuredOrigins =
     env.ALLOWED_ORIGINS?.split(",")
-      .map((origin) => origin.trim())
-      .filter(Boolean) || defaultAllowedOrigins;
-  const origin = request.headers.get("Origin");
-  const allowOrigin = origin && configuredOrigins.includes(origin) ? origin : configuredOrigins[0];
+      .map((origin) => normaliseOrigin(origin))
+      .filter((origin): origin is string => Boolean(origin)) || [];
 
-  return {
-    "Access-Control-Allow-Origin": allowOrigin,
+  return [...new Set([...defaultAllowedOrigins, ...configuredOrigins])];
+}
+
+function getCorsHeaders(origin: string | null) {
+  const headers: Record<string, string> = {
     "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
   };
+
+  if (origin) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
+
+  return headers;
 }
 
 export default {
   async fetch(request: Request, env: Env) {
-    const corsHeaders = getCorsHeaders(request, env);
+    const allowedOrigins = getAllowedOrigins(env);
+    const requestOrigin = request.headers.get("Origin");
+    const normalisedRequestOrigin = requestOrigin ? normaliseOrigin(requestOrigin) : null;
+    const allowOrigin =
+      normalisedRequestOrigin && allowedOrigins.includes(normalisedRequestOrigin)
+        ? normalisedRequestOrigin
+        : null;
+    const corsHeaders = getCorsHeaders(allowOrigin);
     const method = request.method;
+
+    if (requestOrigin && !allowOrigin) {
+      return Response.json(
+        { ok: false, reason: "Origin not allowed" },
+        { status: 403, headers: corsHeaders },
+      );
+    }
 
     if (method === "OPTIONS") {
       if (
@@ -47,7 +82,10 @@ export default {
     }
 
     if (method !== "POST") {
-      return Response.json({ ok: false }, { status: 405, headers: corsHeaders });
+      return Response.json(
+        { ok: false, reason: "Method not allowed" },
+        { status: 405, headers: corsHeaders },
+      );
     }
 
     const ip = request.headers.get("cf-connecting-ip");
@@ -61,18 +99,24 @@ export default {
 
     if (!token || !from || !subject || !body) {
       console.log("Missing required fields");
-      return Response.json({ ok: false }, { status: 400, headers: corsHeaders });
+      return Response.json(
+        { ok: false, error: "missing_required_fields" },
+        { status: 400, headers: corsHeaders },
+      );
     }
 
     if (blockList.includes(from)) {
-      return Response.json({ ok: false }, { status: 400, headers: corsHeaders });
+      return Response.json(
+        { ok: false, error: "blocked_sender" },
+        { status: 400, headers: corsHeaders },
+      );
     }
 
     const validateTokenData = new FormData();
     validateTokenData.set("secret", env.TURNSTILE_SECRET_KEY);
     validateTokenData.set("response", token);
     if (ip !== null && ip !== undefined) {
-      validateTokenData.set("ip", ip);
+      validateTokenData.set("remoteip", ip);
     }
 
     const validateTokenUrl = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
@@ -83,8 +127,15 @@ export default {
 
     const validateTokenOutcome = (await validateTokenResponse.json()) as SiteVerify;
     if (!validateTokenOutcome.success) {
-      console.log("Invalid token");
-      return Response.json({ ok: false }, { status: 400, headers: corsHeaders });
+      console.log("Invalid token", validateTokenOutcome["error-codes"]);
+      return Response.json(
+        {
+          ok: false,
+          error: "invalid_turnstile_token",
+          turnstile_errors: validateTokenOutcome["error-codes"],
+        },
+        { status: 400, headers: corsHeaders },
+      );
     }
 
     const msg = createMimeMessage();
@@ -126,10 +177,16 @@ ${body}
     } catch (e) {
       console.error("Error sending email", e);
       if (e instanceof Error) {
-        return Response.json({ ok: false }, { status: 500, headers: corsHeaders });
+        return Response.json(
+          { ok: false, reason: "Error sending email" },
+          { status: 500, headers: corsHeaders },
+        );
       }
 
-      return Response.json({ ok: false }, { status: 500, headers: corsHeaders });
+      return Response.json(
+        { ok: false, reason: "Unknown error" },
+        { status: 500, headers: corsHeaders },
+      );
     }
 
     return Response.json({ ok: true }, { status: 200, headers: corsHeaders });

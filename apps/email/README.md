@@ -26,8 +26,8 @@ Create `apps/email/.dev.vars`:
 ```dotenv
 FORWARD_TO=you@example.com
 TURNSTILE_SECRET_KEY=your-turnstile-secret
-# Optional: comma-separated CORS allowlist for local origins
-# ALLOWED_ORIGINS=https://nicholasgriffin.dev,http://localhost:5173,http://127.0.0.1:5173
+# Optional: comma-separated extra CORS origins to allow (defaults are always included)
+# ALLOWED_ORIGINS=https://nicholasgriffin.dev,https://preview.nicholasgriffin.dev,http://localhost:5173,http://127.0.0.1:5173
 ```
 
 Start the worker locally:

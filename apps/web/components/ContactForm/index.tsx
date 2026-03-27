@@ -15,18 +15,38 @@ export function ContactForm() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileWidgetKey, setTurnstileWidgetKey] = useState(0);
 
-  const handleVerify = () => {
+  const handleVerify = (token: string) => {
+    setTurnstileToken(token);
     setLoading(false);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleTurnstileExpire = () => {
+    setTurnstileToken(null);
+    setLoading(true);
+  };
+
+  const handleTurnstileError = () => {
+    setTurnstileToken(null);
+    setLoading(true);
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!turnstileToken) {
+      setError(true);
+      return;
+    }
+
     setSuccess(false);
     setError(false);
     setSubmitting(true);
 
-    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const formData = new FormData(event.currentTarget);
+    formData.set("cf-turnstile-response", turnstileToken);
 
     try {
       const response = await fetch(CONTACT_API_URL, {
@@ -40,13 +60,21 @@ export function ContactForm() {
 
       if (ok) {
         setSuccess(true);
-        (e.target as HTMLFormElement).reset();
+        event.currentTarget.reset();
       } else {
         setError(true);
       }
+
+      setTurnstileToken(null);
+      setLoading(true);
+      setTurnstileWidgetKey((current) => current + 1);
     } catch (error) {
       console.error("Error sending message:", error);
+      setSubmitting(false);
       setError(true);
+      setTurnstileToken(null);
+      setLoading(true);
+      setTurnstileWidgetKey((current) => current + 1);
     }
   };
 
@@ -90,8 +118,12 @@ export function ContactForm() {
       </div>
 
       <Turnstile
+        key={turnstileWidgetKey}
         sitekey={import.meta.env.VITE_EMAIL_TURNSTILE_SITE_KEY || ""}
         onVerify={handleVerify}
+        onExpire={handleTurnstileExpire}
+        onError={handleTurnstileError}
+        refreshExpired="auto"
       />
 
       {error && <div>Failed to send message. Please try again.</div>}

@@ -31,8 +31,9 @@ export default function Contact() {
                 message via one of the social networks below.
               </p>
               <p>
-                If you are a recruiter then please head on over to LinkedIn instead where you may be
-                ignored, unless you have a really interesting thing for me 🥸.
+                If we have worked together or just chatted and you'd like to provide some feedback,
+                I have a specific form for that as well, you can find it{" "}
+                <Link href="/feedback">here</Link>.
               </p>
               <ContactLinks hideContactLink />
             </div>
