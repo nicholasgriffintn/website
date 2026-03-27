@@ -27,13 +27,8 @@ export default function Feedback() {
             me and would like to share feedback on our interactions.
           </p>
           <p>
-            It covers three main areas: collaboration, engineering, and mentoring, depending on the
-            nature of our interactions. You can choose which sections to fill out based on what you
-            feel is most relevant.
-          </p>
-          <p>
-            Ratings are 1 to 5, and open prompts are structured to keep feedback concrete and
-            actionable.
+            Choose your relationship to me, then answer a short set of 1-5 rating questions tailored
+            to that context.
           </p>
         </div>
         <hr className="my-4" />

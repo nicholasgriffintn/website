@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
 
-export type Relationship =
-  | "team-member"
-  | "external-collaborator"
-  | "mentee"
-  | "conference-contact";
+export type Relationship = "team-member" | "external-collaborator" | "mentee";
 
 export interface RelationshipOption {
   value: Relationship;
@@ -16,19 +12,8 @@ export interface FeedbackQuestion {
   label: string;
 }
 
-export interface FeedbackQuestionSection {
-  title: string;
-  questions: readonly FeedbackQuestion[];
-}
-
 export interface RelationshipSectionVisibility {
-  showFrequency: boolean;
-  showCore: boolean;
-  showTechnical: boolean;
-  showMentoring: boolean;
-  showCalibration: boolean;
   showOpenFeedback: boolean;
-  showOverallNote: boolean;
 }
 
 export interface RatingQuestionProps {
@@ -37,16 +22,6 @@ export interface RatingQuestionProps {
   label: string;
   required: boolean;
   disabled?: boolean;
-}
-
-export interface OptionLimitCheckboxProps {
-  id: string;
-  name: string;
-  option: string;
-  selectedCount: number;
-  checked: boolean;
-  disabled?: boolean;
-  onToggle: (option: string, checked: boolean) => void;
 }
 
 export interface FormSectionProps {
