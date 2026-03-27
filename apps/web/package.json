@@ -72,7 +72,7 @@
     "typescript": "^5.9.3",
     "vite": "^6.3.2",
     "vite-plus": "catalog:",
-    "vite-tsconfig-paths": "^5.1.4",
+    "vite-tsconfig-paths": "^6.0.0",
     "wrangler": "^4.75.0"
   }
 }
