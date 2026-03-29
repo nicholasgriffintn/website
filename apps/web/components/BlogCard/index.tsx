@@ -10,12 +10,18 @@ import { parseMarkdown } from "@/lib/markdown";
 import { Image } from "@/components/Image";
 import { getYoutubeVideoId } from "@/lib/youtube";
 import { VideoCardPlayer } from "@/components/VideoCardPlayer";
+import { truncateMarkdownPreview } from "@/lib/utils";
 import type { BlogPost } from "@/types/blog";
 
 export function BlogCard({ post }: { post: BlogPost }) {
   const postLink = post.metadata.link || `/blog/${post.slug}`;
   const isBookmark = post.metadata.isBookmark;
-  const postContent = parseMarkdown(post.description ?? "", false);
+  const hasFixedDescription = post.has_fixed_description === true;
+  const description = post.description ?? "";
+  const postDescription = hasFixedDescription
+    ? description
+    : truncateMarkdownPreview(description, 640);
+  const postContent = parseMarkdown(postDescription, false);
   const youtubeVideoId = isBookmark ? getYoutubeVideoId(post.metadata.link) : null;
 
   return (

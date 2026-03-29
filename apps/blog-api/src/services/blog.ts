@@ -4,6 +4,9 @@ export class BlogService {
   constructor(private readonly db: D1Database) {}
 
   private parseDocument(doc: Record<string, any>): BlogPost {
+    const hasFixedDescription =
+      doc.has_fixed_description === 1 || doc.has_fixed_description === true;
+
     return {
       id: doc.id,
       title: doc.title,
@@ -11,6 +14,7 @@ export class BlogService {
       type: doc.type,
       content: doc.content,
       description: doc.description,
+      has_fixed_description: hasFixedDescription,
       created_at: doc.created_at,
       updated_at: doc.updated_at,
       image_url: doc.image_url,
@@ -40,6 +44,7 @@ export class BlogService {
                 id, title, slug, type, created_at, updated_at, 
                 draft, archived, image_url, image_alt,
                 metadata, tags,
+                CASE WHEN NULLIF(description, '') IS NULL THEN 0 ELSE 1 END as has_fixed_description,
                 COALESCE(NULLIF(description, ''), content) as description,
                 audio_url
             FROM document 

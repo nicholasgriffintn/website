@@ -12,6 +12,7 @@ export interface BlogPost {
   type: string;
   content: string;
   description: string | null;
+  has_fixed_description?: boolean;
   created_at: string;
   updated_at: string | null;
   draft: boolean;

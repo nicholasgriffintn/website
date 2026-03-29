@@ -20,6 +20,7 @@ export interface BlogPost extends BlogMetadata {
   type: string;
   content: string;
   description: string | null;
+  has_fixed_description?: boolean;
   created_at: string;
   updated_at: string;
   draft: boolean;
