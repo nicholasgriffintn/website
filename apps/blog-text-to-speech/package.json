@@ -5,9 +5,12 @@
     "dev": "wrangler dev --persist-to ../../.wrangler/state",
     "deploy": "wrangler deploy src/index.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@cartesia/cartesia-js": "^3.0.0",
+    "@elevenlabs/elevenlabs-js": "^2.40.0"
+  },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260317.1",
-    "wrangler": "^4.75.0"
+    "@cloudflare/workers-types": "^4.20260329.1",
+    "wrangler": "^4.78.0"
   }
 }

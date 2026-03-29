@@ -15,7 +15,7 @@ export class StorageService {
   }
 
   async uploadObject(key: string, data: ArrayBuffer | Uint8Array): Promise<string> {
-    const result = await this.bucket.put(key, data);
+    await this.bucket.put(key, data);
     return key;
   }
 }
