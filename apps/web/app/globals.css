@@ -209,3 +209,7 @@ h6:hover .anchor {
 .list-disc {
   margin-left: 1rem;
 }
+
+button {
+  cursor: pointer;
+}

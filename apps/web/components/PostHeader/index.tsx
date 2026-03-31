@@ -21,7 +21,7 @@ export function PostHeader({
         </div>
       )}
       <h1 className="text-2xl md:text-4xl font-bold text-primary-foreground">{post.title}</h1>
-      <div className="mt-8">
+      <div className="mt-8 mb-4">
         {Array.isArray(post.tags) && post.tags.length > 0 && (
           <div className="text-sm text-muted-foreground flex flex-wrap items-center space-x-2 mb-2">
             <span className="text-sm text-muted-foreground">Tags:</span>

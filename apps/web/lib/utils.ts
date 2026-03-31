@@ -22,3 +22,7 @@ export function truncateMarkdownPreview(markdown: string, maxLength = 320) {
 
   return `${trimmed.slice(0, cutoff).trimEnd()}...`;
 }
+
+export function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}

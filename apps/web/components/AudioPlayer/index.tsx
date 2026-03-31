@@ -3,7 +3,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Volume2, Play, Pause, VolumeX, Volume1, Volume } from "lucide-react";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
@@ -130,57 +129,55 @@ export function AudioPlayer({ src }: { src: string }) {
   if (!src) return null;
 
   return (
-    <Card className="w-full max-w-md">
-      <CardContent className="p-4">
-        <audio ref={audioRef} src={src} />
-        <div className="flex items-center gap-3">
-          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={togglePlay}>
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-            <span className="sr-only">{isPlaying ? "Pause" : "Play"}</span>
-          </Button>
+    <>
+      <audio ref={audioRef} src={src} />
+      <div className="flex items-center gap-3">
+        <Button size="icon" variant="ghost" className="h-8 w-8" onClick={togglePlay}>
+          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          <span className="sr-only">{isPlaying ? "Pause" : "Play"}</span>
+        </Button>
 
-          <div className="flex-1 space-y-1">
-            <Slider
-              value={[getCurrentProgress()]}
-              max={100}
-              step={1}
-              className="[&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
-              onValueChange={handleTimeChange}
-              aria-label={`Audio progress: ${formatTime(currentTime)} / ${formatTime(duration)}`}
-            />
-            <div className="flex justify-between text-xs text-muted-foreground px-1">
-              <span>{formatTime(currentTime)}</span>
-              <span>{formatTime(duration)}</span>
-            </div>
-          </div>
-
-          <div className="relative flex items-center gap-2" ref={volumeRef}>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="h-8 w-8"
-              onClick={toggleMute}
-              onMouseEnter={() => setIsVolumeOpen(true)}
-            >
-              {getVolumeIcon()}
-              <span className="sr-only">Volume</span>
-            </Button>
-            {isVolumeOpen && (
-              <div className="absolute bg-background border rounded-lg p-3 shadow-lg -top-32 right-0 z-50">
-                <Slider
-                  orientation="vertical"
-                  value={[volume]}
-                  max={100}
-                  step={1}
-                  className="h-24 [&_[role=slider]]:left-1/2 [&_[role=slider]]:-translate-x-1/2"
-                  onValueChange={handleVolumeChange}
-                  aria-label={`Volume: ${volume}%`}
-                />
-              </div>
-            )}
+        <div className="flex-1 space-y-1">
+          <Slider
+            value={[getCurrentProgress()]}
+            max={100}
+            step={1}
+            className="[&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+            onValueChange={handleTimeChange}
+            aria-label={`Audio progress: ${formatTime(currentTime)} / ${formatTime(duration)}`}
+          />
+          <div className="flex justify-between text-xs text-muted-foreground px-1">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        <div className="relative flex items-center gap-2" ref={volumeRef}>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-8 w-8"
+            onClick={toggleMute}
+            onMouseEnter={() => setIsVolumeOpen(true)}
+          >
+            {getVolumeIcon()}
+            <span className="sr-only">Volume</span>
+          </Button>
+          {isVolumeOpen && (
+            <div className="absolute bg-background border rounded-lg p-3 shadow-lg -top-32 right-0 z-50">
+              <Slider
+                orientation="vertical"
+                value={[volume]}
+                max={100}
+                step={1}
+                className="h-24 [&_[role=slider]]:left-1/2 [&_[role=slider]]:-translate-x-1/2"
+                onValueChange={handleVolumeChange}
+                aria-label={`Volume: ${volume}%`}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
