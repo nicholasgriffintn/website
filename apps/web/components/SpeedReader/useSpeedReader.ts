@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { MAX_FONT_SCALE, MAX_WPM, MIN_FONT_SCALE, MIN_WPM } from "./constants";
+import {
+  FIRST_WORD_DWELL_MULTIPLIER,
+  MAX_FONT_SCALE,
+  MAX_WPM,
+  MIN_FONT_SCALE,
+  MIN_WPM,
+} from "./constants";
 import { clamp } from "@/lib/utils";
 import type { SpeedReaderController } from "./types";
 import { buildSpeedReaderWords, getWordDelayMs } from "./words";
@@ -47,17 +53,18 @@ export function useSpeedReader({ text, isActive }: UseSpeedReaderOptions): Speed
       return;
     }
 
-    const timeoutId = window.setTimeout(
-      () => {
-        setCurrentIndex((index) => Math.min(index + 1, totalWords - 1));
-      },
-      getWordDelayMs(currentWord.raw, targetWpm),
-    );
+    let delay = getWordDelayMs(currentWord.raw, targetWpm);
+    if (currentIndex === 0) delay *= FIRST_WORD_DWELL_MULTIPLIER;
+
+    const timeoutId = window.setTimeout(() => {
+      setCurrentIndex((index) => Math.min(index + 1, totalWords - 1));
+    }, delay);
 
     return () => window.clearTimeout(timeoutId);
   }, [currentIndex, currentWord, isActive, isPaused, targetWpm, totalWords]);
 
   const progressPercent = totalWords > 1 ? (currentIndex / (totalWords - 1)) * 100 : 0;
+  const isFinished = totalWords > 0 && currentIndex >= totalWords - 1 && isPaused;
 
   const seekToPercent = (percent: number) => {
     if (!totalWords) return;
@@ -82,6 +89,7 @@ export function useSpeedReader({ text, isActive }: UseSpeedReaderOptions): Speed
     currentIndex,
     totalWords,
     isPaused,
+    isFinished,
     targetWpm,
     fontScale,
     progressPercent,

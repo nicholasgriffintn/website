@@ -10,6 +10,7 @@ export interface SpeedReaderController {
   currentIndex: number;
   totalWords: number;
   isPaused: boolean;
+  isFinished: boolean;
   targetWpm: number;
   fontScale: number;
   progressPercent: number;
