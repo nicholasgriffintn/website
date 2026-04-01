@@ -64,7 +64,13 @@ export function ArticleToolbar({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
+      {mode !== "focus" && hasHeadings && (
+        <div className="order-first md:order-last">
+          <TableOfContents headings={headings} />
+        </div>
+      )}
+
       <div className="flex w-full">
         {hasAudio && (
           <ModeButton
@@ -89,8 +95,6 @@ export function ArticleToolbar({
       )}
 
       {mode === "focus" && <FocusPanel controller={speedReaderController} />}
-
-      {mode !== "focus" && hasHeadings && <TableOfContents headings={headings} />}
     </div>
   );
 }
