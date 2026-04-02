@@ -3,6 +3,9 @@ name: Deploy to Production
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   Deploy-Production:
     runs-on: ubuntu-latest
