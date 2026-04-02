@@ -119,10 +119,7 @@ function cleanInlineMarkdown(
   const supportedTags = getSupportedMarkupTags(profile, supportsBreakTags);
 
   if (supportedTags.length === 0) {
-    return value
-      .replace(/<[^>]+>/g, "")
-      .replace(/[<>]/g, "")
-      .trim();
+    return value.replace(/[<>]/g, "").trim();
   }
 
   const tokens = new Map<string, string>();
