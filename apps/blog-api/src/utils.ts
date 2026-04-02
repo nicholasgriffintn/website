@@ -1,10 +1,17 @@
 import { JSON_HEADERS } from "./constants";
 import { BlogMetadata } from "./types";
 
-export const createResponse = (data: any, status = 200): Response => {
+export const createResponse = (
+  data: unknown,
+  status = 200,
+  headers: Record<string, string> = {},
+): Response => {
   return new Response(JSON.stringify(data), {
     status,
-    headers: JSON_HEADERS,
+    headers: {
+      ...JSON_HEADERS,
+      ...headers,
+    },
   });
 };
 

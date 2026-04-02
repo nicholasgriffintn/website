@@ -1,5 +1,5 @@
 import { createResponse, parseFrontmatter } from "./utils";
-import { CORS_HEADERS } from "./constants";
+import { CORS_HEADERS, BLOG_RESPONSE_CACHE_HEADERS } from "./constants";
 import { BlogService } from "./services/blog";
 import type { QueryParams, QueueMessage, Env } from "./types";
 import { BlogProcessor } from "./services/blog-processor";
@@ -32,7 +32,7 @@ const handler: ExportedHandler<Env, QueueMessage> = {
         };
 
         const posts = await blogService.getAllPosts(params);
-        return createResponse(posts);
+        return createResponse(posts, 200, BLOG_RESPONSE_CACHE_HEADERS);
       }
 
       if (paths.length === 2) {
@@ -40,7 +40,7 @@ const handler: ExportedHandler<Env, QueueMessage> = {
         if (!post) {
           return createResponse({ error: "Post not found" }, 404);
         }
-        return createResponse(post);
+        return createResponse(post, 200, BLOG_RESPONSE_CACHE_HEADERS);
       }
 
       return createResponse({ error: "Invalid path" }, 404);

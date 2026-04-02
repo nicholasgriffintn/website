@@ -9,4 +9,8 @@ export const JSON_HEADERS = {
   ...CORS_HEADERS,
 };
 
+export const BLOG_RESPONSE_CACHE_HEADERS = {
+  "Cache-Control": "public, max-age=60, s-maxage=1800, stale-while-revalidate=86400",
+} as const;
+
 export const ASSISTANT_API_URL = "https://polychat.app";
