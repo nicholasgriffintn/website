@@ -1,5 +1,6 @@
+import { Suspense } from "react";
 import type { MetaFunction } from "react-router";
-import { useLoaderData } from "react-router";
+import { Await, useLoaderData } from "react-router";
 import { ChevronUp } from "lucide-react";
 
 import { getRecentlyPlayed } from "@/lib/apple-music/getRecentlyPlayed";
@@ -21,17 +22,18 @@ export const meta: MetaFunction = () => [
 ];
 
 export async function loader() {
-  const [applemusic, projects, featuredRepos, blogPosts] = await Promise.allSettled([
-    getRecentlyPlayed(),
-    getProjects(),
-    getGitHubRepos({ limit: 8 }),
-    getPaginatedBlogPosts({ limit: 6 }),
-  ]);
+  const applemusic = getRecentlyPlayed().catch(() => null);
+  const featuredRepos = getGitHubRepos({ limit: 8 })
+    .then((repos) => repos ?? null)
+    .catch(() => null);
+  const blogPosts = getPaginatedBlogPosts({ limit: 6 }).catch(() => []);
+  const projects = await getProjects();
+
   return {
-    applemusic: applemusic.status === "fulfilled" ? applemusic.value : null,
-    projects: projects.status === "fulfilled" ? projects.value : [],
-    featuredRepos: featuredRepos.status === "fulfilled" ? featuredRepos.value : null,
-    blogPosts: blogPosts.status === "fulfilled" ? blogPosts.value : [],
+    applemusic,
+    projects,
+    featuredRepos,
+    blogPosts,
   };
 }
 
@@ -70,11 +72,19 @@ export default function Home() {
           </div>
           <div className="col-span-5 md:col-span-2 lg:col-span-1 pt-10 lg:pt-5">
             <div>
-              <AppleMusicWidget data={data?.applemusic} />
-              <div className="text-sm text-muted-foreground text-center inline-flex justify-center w-full mt-5">
-                <span>What I&apos;m listening to</span>
-                <ChevronUp />
-              </div>
+              <Suspense fallback={null}>
+                <Await resolve={data.applemusic}>
+                  {(applemusic) => (
+                    <>
+                      <AppleMusicWidget data={applemusic ?? undefined} />
+                      <div className="text-sm text-muted-foreground text-center inline-flex justify-center w-full mt-5">
+                        <span>What I&apos;m listening to</span>
+                        <ChevronUp />
+                      </div>
+                    </>
+                  )}
+                </Await>
+              </Suspense>
             </div>
           </div>
         </div>
@@ -93,13 +103,28 @@ export default function Home() {
               </p>
             </div>
             <section>
-              {data?.blogPosts && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {data.blogPosts.map((post) => (
-                    <BlogCard key={post.slug} post={post} />
-                  ))}
-                </div>
-              )}
+              <Suspense
+                fallback={
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div
+                        key={index}
+                        className="h-[260px] rounded-xl border border-border/50 bg-card/40 animate-pulse"
+                      />
+                    ))}
+                  </div>
+                }
+              >
+                <Await resolve={data.blogPosts}>
+                  {(blogPosts) => (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {blogPosts.map((post) => (
+                        <BlogCard key={post.slug} post={post} />
+                      ))}
+                    </div>
+                  )}
+                </Await>
+              </Suspense>
               <div className="w-full flex justify-left pt-5">
                 <Link
                   href="/blog"
@@ -119,11 +144,24 @@ export default function Home() {
                 recently updated GitHub repos:
               </p>
             </div>
-            <ProjectsList
-              firstFeaturedProjects={firstFeaturedProjects}
-              featuredRepos={data?.featuredRepos?.nodes}
-              lastFeaturedProjects={lastFeaturedProjects}
-            />
+            <Suspense
+              fallback={
+                <ProjectsList
+                  firstFeaturedProjects={firstFeaturedProjects}
+                  lastFeaturedProjects={lastFeaturedProjects}
+                />
+              }
+            >
+              <Await resolve={data.featuredRepos}>
+                {(featuredRepos) => (
+                  <ProjectsList
+                    firstFeaturedProjects={firstFeaturedProjects}
+                    featuredRepos={featuredRepos?.nodes}
+                    lastFeaturedProjects={lastFeaturedProjects}
+                  />
+                )}
+              </Await>
+            </Suspense>
           </div>
         </div>
       </InnerPage>
