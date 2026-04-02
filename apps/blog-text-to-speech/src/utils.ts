@@ -133,7 +133,7 @@ function cleanInlineMarkdown(
     return token;
   });
 
-  value = value.replace(/<[^>]+>/g, "");
+  value = value.replace(/[<>]/g, "");
 
   for (const [token, tag] of tokens.entries()) {
     value = value.replace(token, tag);
