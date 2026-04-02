@@ -76,7 +76,6 @@ export interface QueueMessage {
 export interface Env {
   DB: D1Database;
   BUCKET: R2Bucket;
-  GITHUB_DEPLOY_TOKEN: string;
-  GITHUB_REPO: string;
+  DEPLOY_HOOK_URL?: string;
   ASSISTANT_API_KEY: string;
 }

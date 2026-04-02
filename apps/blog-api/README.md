@@ -27,7 +27,7 @@ Each message is expected to include an R2 object key for a markdown file. The wo
 - maps metadata to the `document` schema
 - upserts the post into D1
 
-If at least one message in a batch succeeds and `GITHUB_DEPLOY_TOKEN` + `GITHUB_REPO` are configured, it triggers the `production.yaml` workflow in this repo.
+If at least one message in a batch succeeds and `DEPLOY_HOOK_URL` is configured, it triggers a deployment via Cloudflare Workers Builds Deploy Hook.
 
 ## Local development
 
@@ -41,8 +41,7 @@ pnpm db:migrate:local
 Optional local secrets in `apps/blog-api/.dev.vars`:
 
 ```dotenv
-GITHUB_DEPLOY_TOKEN=...
-GITHUB_REPO=owner/repo
+DEPLOY_HOOK_URL=https://api.cloudflare.com/client/v4/workers/builds/deploy_hooks/<DEPLOY_HOOK_ID>
 ASSISTANT_API_KEY=...
 ```
 

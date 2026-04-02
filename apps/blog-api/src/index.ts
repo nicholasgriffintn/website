@@ -100,30 +100,18 @@ const handler: ExportedHandler<Env, QueueMessage> = {
       }
     });
 
-    if (hasSuccessfulProcessing && env.GITHUB_DEPLOY_TOKEN && env.GITHUB_REPO) {
+    if (hasSuccessfulProcessing && env.DEPLOY_HOOK_URL) {
       try {
-        console.log("Triggering GitHub Actions deployment...");
-        const response = await fetch(
-          `https://api.github.com/repos/${env.GITHUB_REPO}/actions/workflows/production.yaml/dispatches`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${env.GITHUB_DEPLOY_TOKEN}`,
-              Accept: "application/vnd.github.v3+json",
-              "Content-Type": "application/json",
-              "User-Agent": "website-blog-api",
-            },
-            body: JSON.stringify({ ref: "main" }),
-          },
-        );
+        console.log("Triggering deployment via Cloudflare deploy hook...");
+        const response = await fetch(env.DEPLOY_HOOK_URL, { method: "POST" });
 
         if (!response.ok) {
-          throw new Error(`GitHub dispatch failed with status: ${response.status}`);
+          throw new Error(`Deploy hook trigger failed with status: ${response.status}`);
         }
 
-        console.log("GitHub Actions deployment triggered successfully");
+        console.log("Deploy hook triggered successfully");
       } catch (error) {
-        console.error("Failed to trigger GitHub Actions deployment:", error);
+        console.error("Failed to trigger deploy hook:", error);
       }
     }
 
