@@ -1,9 +1,11 @@
 import { CacheManager } from "./cache";
 import type { Heading } from "@/types/blog";
 import { slugify } from "./slugs";
+import { getEnvValue } from "./env";
 
 const DEFAULT_BLOG_API_BASE_URL = "https://content.s3rve.co.uk";
-const BASE_API_URL = (process.env.BLOG_API_BASE_URL ?? DEFAULT_BLOG_API_BASE_URL).replace(
+
+const BASE_API_URL = (getEnvValue("BLOG_API_BASE_URL") ?? DEFAULT_BLOG_API_BASE_URL).replace(
   /\/+$/,
   "",
 );
@@ -41,7 +43,7 @@ export async function getBlogPosts(showArchived = false) {
   const params: Record<string, string> = {};
   if (showArchived) params.archived = "true";
 
-  if (process.env.ENVIRONMENT === "development") {
+  if (getEnvValue("ENVIRONMENT") === "development") {
     params.drafts = "true";
   }
 

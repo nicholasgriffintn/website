@@ -1,8 +1,10 @@
 import { SignJWT, importPKCS8 } from "jose";
 
-const privateKey = process.env.APPLE_MUSIC_PRIVATE_KEY as string;
-const keyId = process.env.APPLE_MUSIC_KEY_ID as string;
-const teamId = process.env.APPLE_MUSIC_TEAM_ID as string;
+import { getEnvValue } from "@/lib/env";
+
+const privateKey = getEnvValue("APPLE_MUSIC_PRIVATE_KEY");
+const keyId = getEnvValue("APPLE_MUSIC_KEY_ID");
+const teamId = getEnvValue("APPLE_MUSIC_TEAM_ID");
 const tokenDuration = 15777000; // 6 months in seconds
 
 const origins = ["https://nicholasgriffin.dev", "http://localhost:3000"];

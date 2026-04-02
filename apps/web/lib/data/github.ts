@@ -1,4 +1,7 @@
 import type { GitHubRepositories, GitHubGists } from "@/types/github";
+import { getEnvValue } from "@/lib/env";
+
+const githubToken = getEnvValue("GITHUB_TOKEN");
 
 export async function getGitHubRepos({
   cursor,
@@ -7,7 +10,7 @@ export async function getGitHubRepos({
   cursor?: string;
   limit?: number;
 }): Promise<GitHubRepositories | undefined> {
-  if (!process.env.GITHUB_TOKEN) {
+  if (!githubToken) {
     console.error("GITHUB_TOKEN is required");
     return;
   }
@@ -59,7 +62,7 @@ export async function getGitHubRepos({
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+      Authorization: `Bearer ${githubToken}`,
       "User-Agent": "NGWeb",
     },
     body: JSON.stringify({
@@ -95,8 +98,8 @@ export async function getGitHubGists(): Promise<GitHubGists | undefined> {
     "User-Agent": "NGWeb",
   };
 
-  if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  if (githubToken) {
+    headers.Authorization = `Bearer ${githubToken}`;
   }
 
   const res = await fetch("https://api.github.com/users/nicholasgriffintn/gists", {

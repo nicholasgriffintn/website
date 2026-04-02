@@ -1,7 +1,8 @@
 import type { RecentTracks } from "@/types/spotify";
+import { getEnvValue } from "@/lib/env";
 
 export async function getRecentlyPlayed(): Promise<RecentTracks | undefined> {
-  const lastFmToken = process.env.LAST_FM_TOKEN;
+  const lastFmToken = getEnvValue("LAST_FM_TOKEN");
 
   if (!lastFmToken) {
     console.error("No LastFM token found");

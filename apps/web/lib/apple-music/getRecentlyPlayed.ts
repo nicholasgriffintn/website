@@ -1,5 +1,7 @@
-const userToken = process.env.APPLE_MUSIC_USER_TOKEN as string;
-const musicKitToken = process.env.APPLE_MUSIC_MUSICKIT_TOKEN as string;
+import { getEnvValue } from "@/lib/env";
+
+const userToken = getEnvValue("APPLE_MUSIC_USER_TOKEN");
+const musicKitToken = getEnvValue("APPLE_MUSIC_MUSICKIT_TOKEN");
 
 export async function getRecentlyPlayed(limit = 10) {
   if (!userToken) {

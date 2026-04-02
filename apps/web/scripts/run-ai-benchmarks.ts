@@ -2,6 +2,7 @@
 import fs from "node:fs";
 
 import { clock } from "./images";
+import { getEnvValue } from "@/lib/env";
 
 const benchmarks = [
   {
@@ -161,7 +162,18 @@ async function fetchModelResponse(model: string, benchmark: any) {
   };
 
   const baseUrl = "https://api.polychat.app";
-  const token = process.env.ASSISTANT_AUTH_TOKEN;
+  const token = getEnvValue("ASSISTANT_AUTH_TOKEN");
+
+  if (!token) {
+    console.error("ASSISTANT_AUTH_TOKEN is required");
+    return {
+      model,
+      request,
+      response: null,
+      status: "failed",
+      reason: "Missing ASSISTANT_AUTH_TOKEN",
+    };
+  }
 
   console.log(`Fetching data for ${request.chatId}`);
 

@@ -1,5 +1,7 @@
 import type { Config } from "@react-router/dev/config";
 
+import { getEnvValue } from "./lib/env";
+
 const DEFAULT_BLOG_API_BASE_URL = "https://content.s3rve.co.uk";
 
 type PrerenderBlogPost = {
@@ -8,7 +10,7 @@ type PrerenderBlogPost = {
 };
 
 async function getDynamicBlogAndTagPaths() {
-  const blogApiBaseUrl = (process.env.BLOG_API_BASE_URL ?? DEFAULT_BLOG_API_BASE_URL).replace(
+  const blogApiBaseUrl = (getEnvValue("BLOG_API_BASE_URL") ?? DEFAULT_BLOG_API_BASE_URL).replace(
     /\/+$/,
     "",
   );
