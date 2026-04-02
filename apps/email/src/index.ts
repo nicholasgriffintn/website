@@ -13,6 +13,16 @@ const defaultAllowedOrigins = [
   "http://127.0.0.1:5173",
 ];
 
+function trimTrailingSlashes(value: string): string {
+  let end = value.length;
+
+  while (end > 0 && value.charCodeAt(end - 1) === 47) {
+    end -= 1;
+  }
+
+  return value.slice(0, end);
+}
+
 function normaliseOrigin(origin: string): string | null {
   const trimmedOrigin = origin.trim();
   if (!trimmedOrigin) {
@@ -22,7 +32,7 @@ function normaliseOrigin(origin: string): string | null {
   try {
     return new URL(trimmedOrigin).origin;
   } catch {
-    return trimmedOrigin.replace(/\/+$/, "");
+    return trimTrailingSlashes(trimmedOrigin);
   }
 }
 
