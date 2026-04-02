@@ -2,9 +2,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
     "esModuleInterop": true,
     "strict": true,
+    "skipLibCheck": true,
     "lib": ["esnext"],
     "types": ["@cloudflare/workers-types"]
   }

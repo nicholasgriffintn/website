@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "wrangler dev --persist-to ../../.wrangler/state",
+    "build": "tsc --project tsconfig.json",
     "deploy": "wrangler deploy src/index.ts"
   },
   "dependencies": {},

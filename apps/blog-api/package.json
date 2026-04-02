@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "wrangler dev -c wrangler.json -c ../blog-text-to-speech/wrangler.json -c ../email/wrangler.json -c ../image-resizing/wrangler.json --persist-to ../../.wrangler/state",
+    "build": "tsc --project tsconfig.json",
     "deploy": "wrangler deploy src/index.ts"
   },
   "dependencies": {},
