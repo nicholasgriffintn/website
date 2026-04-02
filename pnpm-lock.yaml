@@ -243,7 +243,7 @@ importers:
         version: 10.4.27(postcss@8.5.8)
       baseline-browser-mapping:
         specifier: ^2.10.8
-        version: 2.10.8
+        version: 2.10.13
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -2725,11 +2725,6 @@ packages:
 
   baseline-browser-mapping@2.10.13:
     resolution: {integrity: sha512-BL2sTuHOdy0YT1lYieUxTw/QMtPBC3pmlJC6xk8BBYVv6vcw3SGdKemQ+Xsx9ik2F/lYDO9tqsFQH1r9PFuHKw==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
-
-  baseline-browser-mapping@2.10.8:
-    resolution: {integrity: sha512-PCLz/LXGBsNTErbtB6i5u4eLpHeMfi93aUv5duMmj6caNu6IphS4q6UevDnL36sZQv9lrP11dbPKGMaXPwMKfQ==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -6446,8 +6441,6 @@ snapshots:
 
   baseline-browser-mapping@2.10.13: {}
 
-  baseline-browser-mapping@2.10.8: {}
-
   better-sqlite3@12.8.0:
     dependencies:
       bindings: 1.5.0
@@ -6467,7 +6460,7 @@ snapshots:
 
   browserslist@4.28.1:
     dependencies:
-      baseline-browser-mapping: 2.10.8
+      baseline-browser-mapping: 2.10.13
       caniuse-lite: 1.0.30001780
       electron-to-chromium: 1.5.267
       node-releases: 2.0.27
