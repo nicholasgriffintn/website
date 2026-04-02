@@ -1,12 +1,6 @@
 name: Deploy to Production
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - apps/web/**
-      - .github/workflows/production.yaml
   workflow_dispatch:
 
 jobs:
@@ -38,6 +32,7 @@ jobs:
         run: pnpm --filter web build
         env:
           NODE_ENV: production
+
       - name: Deploy production Worker
         id: deploy
         run: |
