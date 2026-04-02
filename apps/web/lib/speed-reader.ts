@@ -78,8 +78,8 @@ function decodeHtmlEntitiesFully(value: string) {
 function stripHtmlTags(value: string) {
   return value
     .replace(/<!--[\s\S]*?-->/g, " ")
-    .replace(/<script[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<script\b[\s\S]*?<\/script\b[^>]*>/gi, " ")
+    .replace(/<style\b[\s\S]*?<\/style\b[^>]*>/gi, " ")
     .replace(/<br\s*\/?>/gi, " ")
     .replace(
       /<\/?(p|div|li|h[1-6]|section|article|ul|ol|blockquote|pre|table|tr|td|th)\b[^>]*>/gi,
