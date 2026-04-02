@@ -31,7 +31,7 @@ export function parseMarkdown(input: string, muted = false, classNames: { p?: st
   });
 
   // Escape HTML first to prevent XSS from externally-sourced content
-  let html = escapeHTML(input.replace(/\\\\/g, "\\").replace(/\\n/g, "\n"))
+  let html = escapeHTML(input)
     // Replace known XML-like tags after escaping (they are now escaped entities)
     .replace(/&lt;summary&gt;/g, "**Summary:** ")
     .replace(/&lt;\/summary&gt;/g, "")
