@@ -14,7 +14,7 @@ import { buildSpeedReaderText } from "@/lib/speed-reader";
 import { BlogPostArticle } from "@/components/BlogPostArticle";
 import type { ArticleMode } from "@/components/ArticleToolbar";
 import { truncateMarkdownPreview } from "@/lib/utils";
-import ReturnImageFormattingUrl from "@/lib/returnImageFormattingUrl";
+import imageLoader from "@/lib/imageLoader";
 import { DEFAULT_SITE_DESCRIPTION, SITE_AUTHOR, SITE_NAME, TWITTER_HANDLE } from "@/lib/seo";
 
 function buildPostSeoData(
@@ -27,7 +27,7 @@ function buildPostSeoData(
   const imageUrl = post.image_url?.trim();
   const hasPostImage = Boolean(imageUrl);
   const ogImage = hasPostImage
-    ? new URL(ReturnImageFormattingUrl(imageUrl), origin).toString()
+    ? imageLoader({ src: imageUrl, width: 1200 })
     : `${origin}/og?title=${encodeURIComponent(post.title)}`;
 
   return {
