@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import "./styles.css";
 
 import { Image } from "@/components/Image";
-import ReturnImageFormattingUrl from "@/lib/returnImageFormattingUrl";
+import imageLoader from "@/lib/imageLoader";
 import type { RecentTracks } from "@/types/spotify";
 
 export function SpotifyWidget({ data }: { data: RecentTracks | undefined }) {
@@ -33,7 +33,10 @@ export function SpotifyWidget({ data }: { data: RecentTracks | undefined }) {
                 >
                   <Image
                     alt={firstTrack.name}
-                    src={ReturnImageFormattingUrl(firstTrackImage)}
+                    src={imageLoader({
+                      src: firstTrackImage,
+                      width: 700,
+                    })}
                     fill
                     style={{
                       objectFit: "cover",
@@ -87,7 +90,10 @@ export function SpotifyWidget({ data }: { data: RecentTracks | undefined }) {
                             height="53"
                             loading="lazy"
                             alt={track.album["#text"]}
-                            src={ReturnImageFormattingUrl(trackImage)}
+                            src={imageLoader({
+                              src: trackImage,
+                              width: 53,
+                            })}
                             style={{
                               objectFit: "cover",
                             }}

@@ -6,7 +6,7 @@ import "./styles.css";
 
 import { Image } from "@/components/Image";
 import { createWidgetStyles } from "@/lib/apple-music/artwork";
-import ReturnImageFormattingUrl from "@/lib/returnImageFormattingUrl";
+import imageLoader from "@/lib/imageLoader";
 import type { RecentTracks } from "@/types/apple-music";
 import { PauseIcon } from "@/components/Icons/PauseIcon";
 import { PlayIcon } from "@/components/Icons/PlayIcon";
@@ -138,7 +138,10 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                 >
                   <Image
                     alt={firstTrack.attributes.name}
-                    src={ReturnImageFormattingUrl(firstTrackImage)}
+                    src={imageLoader({
+                      src: firstTrackImage,
+                      width: 700,
+                    })}
                     fill
                     style={{
                       objectFit: "cover",
@@ -193,7 +196,10 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                               height="53"
                               loading="lazy"
                               alt={track.attributes.albumName}
-                              src={ReturnImageFormattingUrl(trackImage)}
+                              src={imageLoader({
+                                src: trackImage,
+                                width: 53,
+                              })}
                               style={{
                                 objectFit: "cover",
                               }}
