@@ -7,36 +7,56 @@ import {
   isRouteErrorResponse,
   useRouteError,
 } from "react-router";
-import type { LinksFunction, MetaFunction } from "react-router";
+import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-router";
 
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { PageLayout } from "@/components/PageLayout";
+import {
+  DEFAULT_SITE_DESCRIPTION,
+  DEFAULT_SOCIAL_IMAGE_HEIGHT,
+  DEFAULT_SOCIAL_IMAGE_PATH,
+  DEFAULT_SOCIAL_IMAGE_WIDTH,
+  SITE_NAME,
+  TWITTER_HANDLE,
+} from "@/lib/seo";
 
-export const meta: MetaFunction = () => [
-  { title: "Nicholas Griffin" },
-  {
-    name: "description",
-    content: "Software Developer, Blogger and Technology Enthusiast",
-  },
-  { property: "og:title", content: "Nicholas Griffin" },
-  {
-    property: "og:description",
-    content: "Software Developer, Blogger and Technology Enthusiast",
-  },
-  { property: "og:url", content: "https://nicholasgriffin.dev" },
-  { property: "og:type", content: "website" },
-  { property: "og:locale", content: "en_US" },
-  { property: "og:site_name", content: "Nicholas Griffin" },
-  { property: "og:image", content: "/images/social.jpeg" },
-  { property: "og:image:width", content: "1200" },
-  { property: "og:image:height", content: "630" },
-  { name: "twitter:card", content: "summary_large_image" },
-  { name: "twitter:creator", content: "@ngriffin_uk" },
-  { name: "twitter:image", content: "/images/social.jpeg" },
-  { name: "robots", content: "index, follow" },
-  { name: "application-name", content: "Nicholas Griffin" },
-];
+export function loader({ request }: LoaderFunctionArgs) {
+  const origin = new URL(request.url).origin;
+  return { origin };
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
+  const origin = loaderData?.origin ?? "";
+  const canonicalUrl = origin || "/";
+  const socialImageUrl = origin
+    ? `${origin}${DEFAULT_SOCIAL_IMAGE_PATH}`
+    : DEFAULT_SOCIAL_IMAGE_PATH;
+
+  return [
+    { title: SITE_NAME },
+    { name: "description", content: DEFAULT_SITE_DESCRIPTION },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
+    { property: "og:title", content: SITE_NAME },
+    { property: "og:description", content: DEFAULT_SITE_DESCRIPTION },
+    { property: "og:url", content: canonicalUrl },
+    { property: "og:type", content: "website" },
+    { property: "og:locale", content: "en_GB" },
+    { property: "og:site_name", content: SITE_NAME },
+    { property: "og:image", content: socialImageUrl },
+    { property: "og:image:width", content: String(DEFAULT_SOCIAL_IMAGE_WIDTH) },
+    { property: "og:image:height", content: String(DEFAULT_SOCIAL_IMAGE_HEIGHT) },
+    { property: "og:image:alt", content: `${SITE_NAME} website preview` },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "twitter:title", content: SITE_NAME },
+    { name: "twitter:description", content: DEFAULT_SITE_DESCRIPTION },
+    { name: "twitter:creator", content: TWITTER_HANDLE },
+    { name: "twitter:site", content: TWITTER_HANDLE },
+    { name: "twitter:image", content: socialImageUrl },
+    { name: "robots", content: "index, follow, max-image-preview:large" },
+    { name: "application-name", content: SITE_NAME },
+  ];
+};
 
 export const links: LinksFunction = () => [{ rel: "manifest", href: "/manifest.json" }];
 

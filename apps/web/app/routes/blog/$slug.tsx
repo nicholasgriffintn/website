@@ -13,40 +13,89 @@ import { SpeedReaderStage, useSpeedReader } from "@/components/SpeedReader";
 import { buildSpeedReaderText } from "@/lib/speed-reader";
 import { BlogPostArticle } from "@/components/BlogPostArticle";
 import type { ArticleMode } from "@/components/ArticleToolbar";
+import { truncateMarkdownPreview } from "@/lib/utils";
+import ReturnImageFormattingUrl from "@/lib/returnImageFormattingUrl";
+import { DEFAULT_SITE_DESCRIPTION, SITE_AUTHOR, SITE_NAME, TWITTER_HANDLE } from "@/lib/seo";
 
-export async function loader({ params }: LoaderFunctionArgs) {
+function buildPostSeoData(
+  post: NonNullable<Awaited<ReturnType<typeof getBlogPostBySlug>>>,
+  speedReaderText: string,
+  origin: string,
+) {
+  const canonicalUrl = `${origin}/blog/${post.slug}`;
+  const description = truncateMarkdownPreview(post.description ?? speedReaderText, 160).trim();
+  const imageUrl = post.image_url?.trim();
+  const hasPostImage = Boolean(imageUrl);
+  const ogImage = hasPostImage
+    ? new URL(ReturnImageFormattingUrl(imageUrl), origin).toString()
+    : `${origin}/og?title=${encodeURIComponent(post.title)}`;
+
+  return {
+    canonicalUrl,
+    description: description || DEFAULT_SITE_DESCRIPTION,
+    ogImage,
+    isGeneratedOgImage: !hasPostImage,
+  };
+}
+
+export async function loader({ request, params }: LoaderFunctionArgs) {
   const post = await getBlogPostBySlug(params.slug!);
   if (!post) throw data("Not found", { status: 404 });
+  const origin = new URL(request.url).origin;
   const headings = extractHeadings(post.content);
   const mdxTree = await compileMdxToHast(post.content);
   const speedReaderText = buildSpeedReaderText(post.description, mdxTree);
-  return { post, headings, mdxTree, speedReaderText };
+  const seo = buildPostSeoData(post, speedReaderText, origin);
+  return { post, headings, mdxTree, speedReaderText, seo };
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
-  if (!loaderData?.post) return [{ title: "Post not found | Nicholas Griffin" }];
-  const { title, description, image_url, slug, created_at } = loaderData.post;
-  const ogImage = image_url
-    ? `https://images.s3rve.co.uk/?image=${image_url}`
-    : `https://nicholasgriffin.dev/og?title=${encodeURIComponent(title)}`;
-  return [
-    { title: `${title} | Nicholas Griffin` },
-    { name: "description", content: description ?? "" },
-    { property: "og:title", content: title },
-    { property: "og:description", content: description ?? "" },
+  if (!loaderData?.post) {
+    return [{ title: `Post not found | ${SITE_NAME}` }];
+  }
+
+  const { post, seo } = loaderData;
+  const metaTags = [
+    { title: `${post.title} | ${SITE_NAME}` },
+    { name: "description", content: seo.description },
+    { tagName: "link", rel: "canonical", href: seo.canonicalUrl },
+    { property: "og:title", content: post.title },
+    { property: "og:description", content: seo.description },
     { property: "og:type", content: "article" },
-    { property: "og:published_time", content: created_at },
-    { property: "og:url", content: `https://nicholasgriffin.dev/blog/${slug}` },
-    { property: "og:image", content: ogImage },
+    { property: "og:url", content: seo.canonicalUrl },
+    { property: "og:site_name", content: SITE_NAME },
+    { property: "og:image", content: seo.ogImage },
+    { property: "og:image:alt", content: `Preview image for ${post.title}` },
+    { property: "article:published_time", content: post.created_at },
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: title },
-    { name: "twitter:description", content: description ?? "" },
-    { name: "twitter:image", content: ogImage },
+    { name: "twitter:title", content: post.title },
+    { name: "twitter:description", content: seo.description },
+    { name: "twitter:image", content: seo.ogImage },
+    { name: "twitter:creator", content: TWITTER_HANDLE },
+    { name: "twitter:site", content: TWITTER_HANDLE },
+    { name: "robots", content: "index, follow, max-image-preview:large" },
   ];
+
+  if (post.updated_at) {
+    metaTags.push({ property: "article:modified_time", content: post.updated_at });
+  }
+
+  if (seo.isGeneratedOgImage) {
+    metaTags.push({ property: "og:image:width", content: "1200" });
+    metaTags.push({ property: "og:image:height", content: "630" });
+  }
+
+  if (Array.isArray(post.tags)) {
+    post.tags.slice(0, 8).forEach((tag) => {
+      metaTags.push({ property: "article:tag", content: tag });
+    });
+  }
+
+  return metaTags;
 };
 
 export default function BlogPost() {
-  const { post, headings, mdxTree, speedReaderText } = useLoaderData<typeof loader>();
+  const { post, headings, mdxTree, speedReaderText, seo } = useLoaderData<typeof loader>();
   const [mode, setMode] = useState<ArticleMode>("listen");
   const speedReaderController = useSpeedReader({
     text: speedReaderText,
@@ -69,12 +118,10 @@ export default function BlogPost() {
               headline: post.title,
               datePublished: post.created_at,
               dateModified: post.updated_at,
-              description: post.description,
-              image: post.image_url
-                ? `https://nicholasgriffin.dev/${post.image_url}`
-                : `/og?title=${encodeURIComponent(post.title)}`,
-              url: `https://nicholasgriffin.dev/blog/${post.slug}`,
-              author: { "@type": "Person", name: "Nicholas Griffin" },
+              description: seo.description,
+              image: seo.ogImage,
+              url: seo.canonicalUrl,
+              author: { "@type": "Person", name: SITE_AUTHOR },
             }),
           }}
         />

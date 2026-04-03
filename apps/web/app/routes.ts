@@ -31,6 +31,7 @@ export default [
   route("api/projects", "routes/api/projects.tsx"),
   route("api/gists", "routes/api/gists.tsx"),
   route("api/status", "routes/api/status.tsx"),
+  route("og", "routes/og.tsx"),
   route("rss", "routes/rss[.xml].tsx"),
   route("sitemap.xml", "routes/sitemap[.xml].tsx"),
   route("robots.txt", "routes/robots[.txt].tsx"),
