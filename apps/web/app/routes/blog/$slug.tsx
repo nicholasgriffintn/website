@@ -16,6 +16,7 @@ import type { ArticleMode } from "@/components/ArticleToolbar";
 import { truncateMarkdownPreview } from "@/lib/utils";
 import imageLoader from "@/lib/imageLoader";
 import { DEFAULT_SITE_DESCRIPTION, SITE_AUTHOR, SITE_NAME, TWITTER_HANDLE } from "@/lib/seo";
+import { resolveRequestOrigin } from "@/lib/request-origin";
 
 function buildPostSeoData(
   post: NonNullable<Awaited<ReturnType<typeof getBlogPostBySlug>>>,
@@ -41,7 +42,7 @@ function buildPostSeoData(
 export async function loader({ request, params }: LoaderFunctionArgs) {
   const post = await getBlogPostBySlug(params.slug!);
   if (!post) throw data("Not found", { status: 404 });
-  const origin = new URL(request.url).origin;
+  const origin = resolveRequestOrigin(request);
   const headings = extractHeadings(post.content);
   const mdxTree = await compileMdxToHast(post.content);
   const speedReaderText = buildSpeedReaderText(post.description, mdxTree);

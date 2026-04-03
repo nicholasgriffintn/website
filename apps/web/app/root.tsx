@@ -12,6 +12,7 @@ import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-rout
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { PageLayout } from "@/components/PageLayout";
+import { resolveRequestOrigin } from "@/lib/request-origin";
 import {
   DEFAULT_SITE_DESCRIPTION,
   DEFAULT_SOCIAL_IMAGE_HEIGHT,
@@ -22,7 +23,7 @@ import {
 } from "@/lib/seo";
 
 export function loader({ request }: LoaderFunctionArgs) {
-  const origin = new URL(request.url).origin;
+  const origin = resolveRequestOrigin(request);
   return { origin };
 }
 

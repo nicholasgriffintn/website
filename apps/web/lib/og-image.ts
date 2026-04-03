@@ -49,8 +49,8 @@ function buildTitleLines(title: string) {
 }
 
 export function createOgImageSvg(rawTitle: string) {
-  const normalizedTitle = rawTitle.replace(/\s+/g, " ").trim() || SITE_NAME;
-  const title = truncateMarkdownPreview(normalizedTitle, MAX_OG_TITLE_LENGTH);
+  const normalisedTitle = rawTitle.replace(/\s+/g, " ").trim() || SITE_NAME;
+  const title = truncateMarkdownPreview(normalisedTitle, MAX_OG_TITLE_LENGTH);
   const titleLines = buildTitleLines(title);
 
   const titleStartY = 224;
