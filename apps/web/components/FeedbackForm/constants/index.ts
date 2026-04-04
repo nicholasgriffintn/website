@@ -5,8 +5,6 @@ import type {
   RelationshipSectionVisibility,
 } from "@/components/FeedbackForm/types";
 
-export const CONTACT_API_URL =
-  import.meta.env.VITE_CONTACT_API_URL || "https://email.nicholasgriffin.dev";
 export const ANONYMOUS_FROM_EMAIL = "anonymous-feedback@nicholasgriffin.dev";
 
 export const RELATIONSHIP_OPTIONS: readonly RelationshipOption[] = [

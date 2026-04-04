@@ -1,10 +1,12 @@
 import { lazy, Suspense } from "react";
-import type { MetaFunction } from "react-router";
+import { data, type MetaFunction } from "react-router";
+import type { Route } from "./+types/contact";
 
 import { PageLayout } from "@/components/PageLayout";
 import { ContactLinks } from "@/components/ContactLinks";
 import { InnerPage } from "@/components/InnerPage";
 import { Link } from "@/components/Link";
+import { processContactFormSubmission } from "@/lib/forms/contact";
 
 const ContactForm = lazy(() =>
   import("@/components/ContactForm").then((m) => ({ default: m.ContactForm })),
@@ -14,6 +16,12 @@ export const meta: MetaFunction = () => [
   { title: "Contact | Nicholas Griffin" },
   { name: "description", content: "Send me a message." },
 ];
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const result = await processContactFormSubmission(formData);
+  return data(result.body, { status: result.status });
+}
 
 export default function Contact() {
   return (

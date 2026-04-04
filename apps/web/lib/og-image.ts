@@ -1,5 +1,5 @@
 import { SITE_NAME } from "@/lib/seo";
-import { truncateMarkdownPreview } from "@/lib/utils";
+import { truncateMarkdownPreview } from "@/lib/markdown";
 
 export const OG_IMAGE_WIDTH = 1200;
 export const OG_IMAGE_HEIGHT = 630;

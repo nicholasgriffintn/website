@@ -1,98 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef } from "react";
+import { useFetcher } from "react-router";
 import { Turnstile } from "react-turnstile";
 
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-
-const CONTACT_API_URL = import.meta.env.VITE_CONTACT_API_URL || "https://email.nicholasgriffin.dev";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { TURNSTILE_FIELD } from "@/lib/forms/constants";
+import type { ContactActionData } from "@/lib/forms/contact";
+import { useTurnstile } from "@/lib/forms/use-turnstile";
 
 export function ContactForm() {
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [turnstileWidgetKey, setTurnstileWidgetKey] = useState(0);
+  const fetcher = useFetcher<ContactActionData>();
+  const formRef = useRef<HTMLFormElement>(null);
+  const turnstile = useTurnstile();
 
-  const handleVerify = (token: string) => {
-    setTurnstileToken(token);
-    setLoading(false);
-  };
+  const isSubmitting = fetcher.state !== "idle";
+  const actionData = fetcher.data;
+  const errors = actionData?.errors;
+  const hasSuccess = actionData?.ok === true;
 
-  const handleTurnstileExpire = () => {
-    setTurnstileToken(null);
-    setLoading(true);
-  };
-
-  const handleTurnstileError = () => {
-    setTurnstileToken(null);
-    setLoading(true);
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!turnstileToken) {
-      setError(true);
+  useEffect(() => {
+    if (fetcher.state !== "idle" || !fetcher.data) {
       return;
     }
 
-    setSuccess(false);
-    setError(false);
-    setSubmitting(true);
-
-    const formData = new FormData(event.currentTarget);
-    formData.set("cf-turnstile-response", turnstileToken);
-
-    try {
-      const response = await fetch(CONTACT_API_URL, {
-        method: "POST",
-        body: formData,
-      });
-
-      const { ok } = await response.json();
-
-      setSubmitting(false);
-
-      if (ok) {
-        setSuccess(true);
-        event.currentTarget.reset();
-      } else {
-        setError(true);
-      }
-
-      setTurnstileToken(null);
-      setLoading(true);
-      setTurnstileWidgetKey((current) => current + 1);
-    } catch (error) {
-      console.error("Error sending message:", error);
-      setSubmitting(false);
-      setError(true);
-      setTurnstileToken(null);
-      setLoading(true);
-      setTurnstileWidgetKey((current) => current + 1);
+    if (fetcher.data.ok || fetcher.data.formError) {
+      turnstile.reset();
     }
-  };
 
-  if (success) {
+    if (fetcher.data.ok) {
+      formRef.current?.reset();
+    }
+  }, [fetcher.data, fetcher.state, turnstile.reset]);
+
+  if (hasSuccess) {
     return <div>Message sent successfully!</div>;
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
+    <fetcher.Form ref={formRef} method="post" className="max-w-lg space-y-4">
+      <input type="hidden" name={TURNSTILE_FIELD} value={turnstile.token ?? ""} />
+
       <div>
-        <Label htmlFor="name">Your Email</Label>
+        <Label htmlFor="from">Your email</Label>
         <Input
-          type="text"
+          type="email"
           id="from"
           name="from"
+          autoComplete="email"
           required
+          disabled={isSubmitting}
+          aria-invalid={Boolean(errors?.from)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
+        {errors?.from ? <p className="mt-1 text-sm text-red-500">{errors.from}</p> : null}
       </div>
 
       <div>
@@ -102,8 +66,11 @@ export function ContactForm() {
           id="subject"
           name="subject"
           required
+          disabled={isSubmitting}
+          aria-invalid={Boolean(errors?.subject)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
+        {errors?.subject ? <p className="mt-1 text-sm text-red-500">{errors.subject}</p> : null}
       </div>
 
       <div>
@@ -113,26 +80,32 @@ export function ContactForm() {
           name="body"
           required
           rows={4}
+          disabled={isSubmitting}
+          aria-invalid={Boolean(errors?.body)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
+        {errors?.body ? <p className="mt-1 text-sm text-red-500">{errors.body}</p> : null}
       </div>
 
       <Turnstile
-        key={turnstileWidgetKey}
+        key={turnstile.widgetKey}
         sitekey={import.meta.env.VITE_EMAIL_TURNSTILE_SITE_KEY || ""}
-        onVerify={handleVerify}
-        onExpire={handleTurnstileExpire}
-        onError={handleTurnstileError}
+        onVerify={turnstile.handleVerify}
+        onExpire={turnstile.handleExpire}
+        onError={turnstile.handleError}
         refreshExpired="auto"
       />
 
-      {error && <div>Failed to send message. Please try again.</div>}
+      {turnstile.hasError ? (
+        <div>Turnstile failed to load. Please refresh and try again.</div>
+      ) : null}
+      {errors?.turnstile ? <div>{errors.turnstile}</div> : null}
+      {actionData?.formError ? <div>{actionData.formError}</div> : null}
+      {isSubmitting ? <div>Submitting...</div> : null}
 
-      {submitting && <div>Submitting...</div>}
-
-      <Button type="submit" disabled={loading || submitting}>
+      <Button type="submit" disabled={!turnstile.token || isSubmitting}>
         Send Message
       </Button>
-    </form>
+    </fetcher.Form>
   );
 }

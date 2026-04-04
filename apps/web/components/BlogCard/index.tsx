@@ -10,7 +10,7 @@ import { parseMarkdown } from "@/lib/markdown";
 import { Image } from "@/components/Image";
 import { getYoutubeVideoId } from "@/lib/youtube";
 import { VideoCardPlayer } from "@/components/VideoCardPlayer";
-import { truncateMarkdownPreview } from "@/lib/utils";
+import { truncateMarkdownPreview } from "@/lib/markdown";
 import type { BlogPost } from "@/types/blog";
 
 export function BlogCard({ post }: { post: BlogPost }) {

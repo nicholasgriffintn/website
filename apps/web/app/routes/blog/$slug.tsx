@@ -13,7 +13,7 @@ import { SpeedReaderStage, useSpeedReader } from "@/components/SpeedReader";
 import { buildSpeedReaderText } from "@/lib/speed-reader";
 import { BlogPostArticle } from "@/components/BlogPostArticle";
 import type { ArticleMode } from "@/components/ArticleToolbar";
-import { truncateMarkdownPreview } from "@/lib/utils";
+import { truncateMarkdownPreview } from "@/lib/markdown";
 import imageLoader from "@/lib/imageLoader";
 import { DEFAULT_SITE_DESCRIPTION, SITE_AUTHOR, SITE_NAME, TWITTER_HANDLE } from "@/lib/seo";
 import { resolveRequestOrigin } from "@/lib/request-origin";

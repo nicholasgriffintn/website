@@ -1,11 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useFetcher } from "react-router";
 import { Turnstile } from "react-turnstile";
 
 import {
-  ANONYMOUS_FROM_EMAIL,
-  CONTACT_API_URL,
   CORE_QUESTIONS,
   MENTORING_QUESTIONS,
   RELATIONSHIP_OPTIONS,
@@ -19,15 +18,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { formatFeedbackBody } from "@/lib/feedback/formatFeedbackBody";
+import { TURNSTILE_FIELD } from "@/lib/forms/constants";
+import type { FeedbackActionData } from "@/lib/forms/feedback";
+import { useTurnstile } from "@/lib/forms/use-turnstile";
 
 export function FeedbackForm() {
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const [turnstileWidgetKey, setTurnstileWidgetKey] = useState(0);
+  const fetcher = useFetcher<FeedbackActionData>();
+  const formRef = useRef<HTMLFormElement>(null);
+  const turnstile = useTurnstile();
   const [relationship, setRelationship] = useState<Relationship | "">("");
   const [isAnonymous, setIsAnonymous] = useState(false);
 
@@ -43,97 +41,34 @@ export function FeedbackForm() {
   const sectionVisibility = relationship ? RELATIONSHIP_SECTION_VISIBILITY[relationship] : null;
   const showOpenFeedback = sectionVisibility?.showOpenFeedback ?? false;
 
-  const resetTurnstile = () => {
-    setTurnstileToken(null);
-    setLoading(true);
-    setTurnstileWidgetKey((current) => current + 1);
-  };
+  const isSubmitting = fetcher.state !== "idle";
+  const actionData = fetcher.data;
+  const errors = actionData?.errors;
+  const hasSuccess = actionData?.ok === true;
 
-  const handleVerify = (token: string) => {
-    setTurnstileToken(token);
-    setLoading(false);
-  };
-
-  const handleTurnstileExpire = () => {
-    resetTurnstile();
-  };
-
-  const handleTurnstileError = () => {
-    resetTurnstile();
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!turnstileToken || !relationship) {
-      setError(true);
+  useEffect(() => {
+    if (fetcher.state !== "idle" || !fetcher.data) {
       return;
     }
 
-    setSuccess(false);
-    setError(false);
-    setSubmitting(true);
-
-    const formData = new FormData(event.currentTarget);
-    formData.set("cf-turnstile-response", turnstileToken);
-
-    if (isAnonymous) {
-      formData.set("from", ANONYMOUS_FROM_EMAIL);
+    if (fetcher.data.ok || fetcher.data.formError) {
+      turnstile.reset();
     }
 
-    formData.set(
-      "subject",
-      relationshipLabel
-        ? `Website feedback submission (${relationshipLabel})`
-        : "Website feedback submission",
-    );
-
-    formData.set(
-      "body",
-      formatFeedbackBody(formData, {
-        isAnonymous,
-        relationshipLabel: relationshipLabel ?? "Not provided",
-        questions,
-        questionSetLabel,
-        includeOpenFeedback: showOpenFeedback,
-      }),
-    );
-
-    try {
-      const response = await fetch(CONTACT_API_URL, {
-        method: "POST",
-        body: formData,
-      });
-
-      const { ok } = await response.json();
-
-      setSubmitting(false);
-      resetTurnstile();
-
-      if (ok) {
-        setSuccess(true);
-        event.currentTarget.reset();
-        setRelationship("");
-        setIsAnonymous(false);
-      } else {
-        setError(true);
-      }
-    } catch (submitError) {
-      console.error("Error sending feedback:", submitError);
-      setSubmitting(false);
-      setError(true);
-      resetTurnstile();
+    if (fetcher.data.ok) {
+      formRef.current?.reset();
+      setRelationship("");
+      setIsAnonymous(false);
     }
-  };
+  }, [fetcher.data, fetcher.state, turnstile.reset]);
 
-  if (success) {
+  if (hasSuccess) {
     return <div>Feedback submitted successfully. Thank you.</div>;
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl space-y-8">
-      <input type="hidden" name="subject" value="Website feedback submission" />
-      <input type="hidden" name="body" value="" />
+    <fetcher.Form ref={formRef} method="post" className="max-w-3xl space-y-8">
+      <input type="hidden" name={TURNSTILE_FIELD} value={turnstile.token ?? ""} />
 
       <FormSection title="Context">
         <label
@@ -143,8 +78,10 @@ export function FeedbackForm() {
           <input
             id="anonymous-feedback"
             type="checkbox"
+            name="is_anonymous"
             checked={isAnonymous}
             onChange={(event) => setIsAnonymous(event.currentTarget.checked)}
+            disabled={isSubmitting}
             className="h-4 w-4 accent-foreground"
           />
           Submit anonymously
@@ -159,8 +96,11 @@ export function FeedbackForm() {
               name="from"
               autoComplete="email"
               required
+              disabled={isSubmitting}
+              aria-invalid={Boolean(errors?.from)}
               placeholder="name@company.com"
             />
+            {errors?.from ? <p className="text-sm text-red-500">{errors.from}</p> : null}
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">
@@ -185,12 +125,16 @@ export function FeedbackForm() {
                   required
                   checked={relationship === option.value}
                   onChange={() => setRelationship(option.value)}
+                  disabled={isSubmitting}
                   className="h-4 w-4 accent-foreground"
                 />
                 <span className="text-sm">{option.label}</span>
               </label>
             ))}
           </div>
+          {errors?.relationship ? (
+            <p className="text-sm text-red-500">{errors.relationship}</p>
+          ) : null}
         </fieldset>
       </FormSection>
 
@@ -208,20 +152,27 @@ export function FeedbackForm() {
                   name={`question_${question.id}`}
                   label={question.label}
                   required
+                  disabled={isSubmitting}
                 />
               ))}
             </div>
+            {errors?.questions ? <p className="text-sm text-red-500">{errors.questions}</p> : null}
           </FormSection>
 
           {showOpenFeedback && (
             <FormSection title="Open questions">
               <div className="space-y-2">
                 <Label htmlFor="continue-doing">What should I continue doing? (optional)</Label>
-                <Textarea id="continue-doing" name="continue_doing" rows={3} />
+                <Textarea
+                  id="continue-doing"
+                  name="continue_doing"
+                  rows={3}
+                  disabled={isSubmitting}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="improve">What should I improve? (optional)</Label>
-                <Textarea id="improve" name="improve" rows={3} />
+                <Textarea id="improve" name="improve" rows={3} disabled={isSubmitting} />
               </div>
             </FormSection>
           )}
@@ -229,20 +180,24 @@ export function FeedbackForm() {
       )}
 
       <Turnstile
-        key={turnstileWidgetKey}
+        key={turnstile.widgetKey}
         sitekey={import.meta.env.VITE_EMAIL_TURNSTILE_SITE_KEY || ""}
-        onVerify={handleVerify}
-        onExpire={handleTurnstileExpire}
-        onError={handleTurnstileError}
+        onVerify={turnstile.handleVerify}
+        onExpire={turnstile.handleExpire}
+        onError={turnstile.handleError}
         refreshExpired="auto"
       />
 
-      {error && <div>Failed to submit feedback. Please try again.</div>}
-      {submitting && <div>Submitting...</div>}
+      {turnstile.hasError ? (
+        <div>Turnstile failed to load. Please refresh and try again.</div>
+      ) : null}
+      {errors?.turnstile ? <div>{errors.turnstile}</div> : null}
+      {actionData?.formError ? <div>{actionData.formError}</div> : null}
+      {isSubmitting ? <div>Submitting...</div> : null}
 
-      <Button type="submit" disabled={!hasSelectedRelationship || loading || submitting}>
+      <Button type="submit" disabled={!hasSelectedRelationship || !turnstile.token || isSubmitting}>
         Submit feedback
       </Button>
-    </form>
+    </fetcher.Form>
   );
 }

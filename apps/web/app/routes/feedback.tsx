@@ -1,8 +1,10 @@
 import { lazy, Suspense } from "react";
-import type { MetaFunction } from "react-router";
+import { data, type MetaFunction } from "react-router";
+import type { Route } from "./+types/feedback";
 
 import { InnerPage } from "@/components/InnerPage";
 import { PageLayout } from "@/components/PageLayout";
+import { processFeedbackFormSubmission } from "@/lib/forms/feedback";
 
 const FeedbackForm = lazy(() =>
   import("@/components/FeedbackForm").then((module) => ({ default: module.FeedbackForm })),
@@ -15,6 +17,12 @@ export const meta: MetaFunction = () => [
     content: "Share structured feedback for collaboration, engineering, and mentoring.",
   },
 ];
+
+export async function action({ request }: Route.ActionArgs) {
+  const formData = await request.formData();
+  const result = await processFeedbackFormSubmission(formData);
+  return data(result.body, { status: result.status });
+}
 
 export default function Feedback() {
   return (
