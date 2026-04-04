@@ -1,17 +1,24 @@
 import type { GitHubRepositories, GitHubGists } from "@/types/github";
 import { getEnvValue } from "@/lib/env";
 import { CacheManager } from "@/lib/cache";
+import type { CacheRequestContext } from "@/lib/cache";
 import { parsePositiveIntegerInRange } from "@/lib/numbers";
 
 const githubToken = getEnvValue("GITHUB_TOKEN");
-const githubCache = new CacheManager<unknown>({ duration: 5 * 60 * 1000, maxEntries: 256 });
+const githubCache = new CacheManager<unknown>({
+  duration: 5 * 60 * 1000,
+  maxEntries: 256,
+  namespace: "github-api",
+});
 
 export async function getGitHubRepos({
   cursor,
   limit = 8,
+  cacheContext,
 }: {
   cursor?: string;
   limit?: number;
+  cacheContext?: CacheRequestContext;
 }): Promise<GitHubRepositories | undefined> {
   if (!githubToken) {
     console.error("GITHUB_TOKEN is required");
@@ -68,44 +75,50 @@ export async function getGitHubRepos({
     }
   `;
 
-  return githubCache.upsert(cacheKey, async () => {
-    const res = await fetch("https://api.github.com/graphql", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${githubToken}`,
-        "User-Agent": "NGWeb",
-      },
-      body: JSON.stringify({
-        query,
-        variables: { cursor, limit: safeLimit },
-      }),
-    });
+  return githubCache.upsert(
+    cacheKey,
+    async () => {
+      const res = await fetch("https://api.github.com/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${githubToken}`,
+          "User-Agent": "NGWeb",
+        },
+        body: JSON.stringify({
+          query,
+          variables: { cursor, limit: safeLimit },
+        }),
+      });
 
-    if (!res.ok) {
-      console.error("Error fetching data from GitHub", res.statusText);
-      return undefined;
-    }
+      if (!res.ok) {
+        console.error("Error fetching data from GitHub", res.statusText);
+        return undefined;
+      }
 
-    const data = (await res.json()) as {
-      data?: {
-        user?: {
-          repositories?: GitHubRepositories;
+      const data = (await res.json()) as {
+        data?: {
+          user?: {
+            repositories?: GitHubRepositories;
+          };
         };
+        errors?: unknown[];
       };
-      errors?: unknown[];
-    };
 
-    if (!data?.data?.user?.repositories || data.errors?.length) {
-      console.error("Error fetching data from GitHub", data.errors ?? data);
-      return undefined;
-    }
+      if (!data?.data?.user?.repositories || data.errors?.length) {
+        console.error("Error fetching data from GitHub", data.errors ?? data);
+        return undefined;
+      }
 
-    return data.data.user.repositories;
-  });
+      return data.data.user.repositories;
+    },
+    cacheContext,
+  );
 }
 
-export async function getGitHubGists(): Promise<GitHubGists | undefined> {
+export async function getGitHubGists(
+  cacheContext?: CacheRequestContext,
+): Promise<GitHubGists | undefined> {
   const cacheKey = "gists_latest";
 
   const headers: Record<string, string> = {
@@ -117,17 +130,21 @@ export async function getGitHubGists(): Promise<GitHubGists | undefined> {
     headers.Authorization = `Bearer ${githubToken}`;
   }
 
-  return githubCache.upsert(cacheKey, async () => {
-    const res = await fetch("https://api.github.com/users/nicholasgriffintn/gists", {
-      headers,
-    });
+  return githubCache.upsert(
+    cacheKey,
+    async () => {
+      const res = await fetch("https://api.github.com/users/nicholasgriffintn/gists", {
+        headers,
+      });
 
-    if (!res.ok) {
-      console.error("Error fetching data from GitHub", res.statusText);
-      return undefined;
-    }
+      if (!res.ok) {
+        console.error("Error fetching data from GitHub", res.statusText);
+        return undefined;
+      }
 
-    const data = await res.json();
-    return data as GitHubGists;
-  });
+      const data = await res.json();
+      return data as GitHubGists;
+    },
+    cacheContext,
+  );
 }

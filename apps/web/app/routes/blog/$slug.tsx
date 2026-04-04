@@ -22,6 +22,7 @@ import { CacheManager } from "@/lib/cache";
 const mdxTreeCache = new CacheManager<Awaited<ReturnType<typeof compileMdxToHast>>>({
   duration: 60 * 60 * 1000,
   maxEntries: 200,
+  namespace: "blog-mdx-tree",
 });
 
 function buildPostSeoData(
@@ -45,8 +46,11 @@ function buildPostSeoData(
   };
 }
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
-  const post = await getBlogPostBySlug(params.slug!);
+export async function loader({ request, params, context }: LoaderFunctionArgs) {
+  const post = await getBlogPostBySlug(params.slug!, {
+    request,
+    executionContext: context?.cloudflare?.ctx,
+  });
   if (!post) throw data("Not found", { status: 404 });
   const origin = resolveRequestOrigin(request);
   const headings = extractHeadings(post.content);

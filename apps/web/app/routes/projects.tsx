@@ -1,4 +1,4 @@
-import type { MetaFunction } from "react-router";
+import type { MetaFunction, LoaderFunctionArgs } from "react-router";
 import { useLoaderData } from "react-router";
 import { ChevronUp } from "lucide-react";
 
@@ -17,8 +17,16 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-export async function loader() {
-  const [projects, allRepos] = await Promise.all([getProjects(), getGitHubRepos({ limit: 16 })]);
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const cacheContext = {
+    request,
+    executionContext: context?.cloudflare?.ctx,
+  };
+
+  const [projects, allRepos] = await Promise.all([
+    getProjects(),
+    getGitHubRepos({ limit: 16, cacheContext }),
+  ]);
   const featuredRepos = allRepos?.nodes?.slice(0, 8);
   const repos = allRepos?.nodes?.slice(8);
   return { projects, featuredRepos, repos };

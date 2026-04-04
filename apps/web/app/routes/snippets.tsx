@@ -1,4 +1,4 @@
-import type { MetaFunction } from "react-router";
+import type { MetaFunction, LoaderFunctionArgs } from "react-router";
 import { useLoaderData } from "react-router";
 
 import { PageLayout } from "@/components/PageLayout";
@@ -14,8 +14,11 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-export async function loader() {
-  const snippets = await getGitHubGists();
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const snippets = await getGitHubGists({
+    request,
+    executionContext: context?.cloudflare?.ctx,
+  });
   return { snippets };
 }
 

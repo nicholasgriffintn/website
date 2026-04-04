@@ -1,3 +1,5 @@
+import type { LoaderFunctionArgs } from "react-router";
+
 import { getBlogPosts } from "@/lib/blog";
 import { CDN_CACHE_HEADERS } from "@/lib/constants";
 
@@ -12,8 +14,11 @@ function escapeXml(unsafe: string): string {
     .replace(/'/g, "&apos;");
 }
 
-export async function loader() {
-  const allBlogs = await getBlogPosts();
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const allBlogs = await getBlogPosts(undefined, {
+    request,
+    executionContext: context?.cloudflare?.ctx,
+  });
 
   const itemsXml = allBlogs
     .sort((a, b) => (new Date(a.created_at) > new Date(b.created_at) ? -1 : 1))

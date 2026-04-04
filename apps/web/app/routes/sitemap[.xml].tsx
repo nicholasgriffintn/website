@@ -1,9 +1,11 @@
+import type { LoaderFunctionArgs } from "react-router";
+
 import { getBlogPosts } from "@/lib/blog";
 import { CDN_CACHE_HEADERS } from "@/lib/constants";
 
 const BASE_URL = "https://nicholasgriffin.dev";
 
-export async function loader() {
+export async function loader({ request, context }: LoaderFunctionArgs) {
   const routes = ["", "/blog"].map((route) => ({
     url: `${BASE_URL}${route}`,
     lastModified: new Date().toISOString().split("T")[0],
@@ -11,7 +13,10 @@ export async function loader() {
     priority: 1.0,
   }));
 
-  const posts = await getBlogPosts();
+  const posts = await getBlogPosts(undefined, {
+    request,
+    executionContext: context?.cloudflare?.ctx,
+  });
 
   const blogs = (posts ?? []).map((post) => {
     const date = post.updated_at || post.created_at;

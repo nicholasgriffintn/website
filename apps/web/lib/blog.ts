@@ -1,4 +1,5 @@
 import { CacheManager } from "./cache";
+import type { CacheRequestContext } from "./cache";
 import type { Heading } from "@/types/blog";
 import type { BlogPost } from "@/types/blog";
 import { slugify } from "./slugs";
@@ -11,7 +12,7 @@ const BASE_API_URL = (getEnvValue("BLOG_API_BASE_URL") ?? DEFAULT_BLOG_API_BASE_
   /\/+$/,
   "",
 );
-const cacheManager = new CacheManager<unknown>();
+const cacheManager = new CacheManager<unknown>({ namespace: "blog-api" });
 
 type BlogPostsOptions = {
   showArchived?: boolean;
@@ -28,21 +29,29 @@ function normalizeVoidElements(content?: string | null) {
   return content.replace(/<br(?!\s*\/)\s*>/gi, "<br />").replace(/<hr(?!\s*\/)\s*>/gi, "<hr />");
 }
 
-async function getApiData<T>(path: string, params: Record<string, string> = {}): Promise<T> {
+async function getApiData<T>(
+  path: string,
+  params: Record<string, string> = {},
+  cacheContext?: CacheRequestContext,
+): Promise<T> {
   const queryString = new URLSearchParams(params).toString();
   const fullPath = queryString ? `${path}?${queryString}` : path;
   const cacheKey = `api_${fullPath}`;
 
-  return cacheManager.upsert(cacheKey, async () => {
-    const url = `${BASE_API_URL}/${fullPath}`;
-    const response = await fetch(url);
+  return cacheManager.upsert(
+    cacheKey,
+    async () => {
+      const url = `${BASE_API_URL}/${fullPath}`;
+      const response = await fetch(url);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-    return (await response.json()) as T;
-  });
+      return (await response.json()) as T;
+    },
+    cacheContext,
+  );
 }
 
 function resolveBlogPostsOptions(options?: BlogPostsOptions | boolean): BlogPostsOptions {
@@ -70,7 +79,10 @@ function buildTagCounts(posts: BlogPost[]): Record<string, number> {
   );
 }
 
-export async function getBlogPosts(options?: BlogPostsOptions | boolean): Promise<BlogPost[]> {
+export async function getBlogPosts(
+  options?: BlogPostsOptions | boolean,
+  cacheContext?: CacheRequestContext,
+): Promise<BlogPost[]> {
   const resolvedOptions = resolveBlogPostsOptions(options);
   const params: Record<string, string> = {};
   if (resolvedOptions.showArchived) params.archived = "true";
@@ -87,7 +99,7 @@ export async function getBlogPosts(options?: BlogPostsOptions | boolean): Promis
   }
 
   try {
-    const posts = await getApiData<BlogPost[]>("content", params);
+    const posts = await getApiData<BlogPost[]>("content", params, cacheContext);
     return posts;
   } catch (error) {
     console.error("Failed to get blog posts:", error);
@@ -95,9 +107,9 @@ export async function getBlogPosts(options?: BlogPostsOptions | boolean): Promis
   }
 }
 
-export async function getBlogPostBySlug(slug: string) {
+export async function getBlogPostBySlug(slug: string, cacheContext?: CacheRequestContext) {
   try {
-    const post = await getApiData<BlogPost>(`content/${slug}`);
+    const post = await getApiData<BlogPost>(`content/${slug}`, {}, cacheContext);
     if (post?.content) {
       post.content = normalizeVoidElements(post.content);
     }
@@ -108,27 +120,30 @@ export async function getBlogPostBySlug(slug: string) {
   }
 }
 
-export async function getPaginatedBlogPosts({ showArchived = false, page = 1, limit = 10 }) {
-  return getBlogPosts({ showArchived, page, limit });
+export async function getPaginatedBlogPosts(
+  { showArchived = false, page = 1, limit = 10 },
+  cacheContext?: CacheRequestContext,
+) {
+  return getBlogPosts({ showArchived, page, limit }, cacheContext);
 }
 
-export async function getAllTags() {
+export async function getAllTags(cacheContext?: CacheRequestContext) {
   const params: Record<string, string> = {};
   if (getEnvValue("ENVIRONMENT") === "development") {
     params.drafts = "true";
   }
 
   try {
-    return await getApiData<Record<string, number>>("content/tags", params);
+    return await getApiData<Record<string, number>>("content/tags", params, cacheContext);
   } catch (error) {
     console.warn("Failed to get tags from tag endpoint, falling back to post scan:", error);
-    const posts = await getBlogPosts();
+    const posts = await getBlogPosts(undefined, cacheContext);
     return buildTagCounts(posts);
   }
 }
 
-export async function getBlogPostsByTag(tag: string) {
-  return getBlogPosts({ tag });
+export async function getBlogPostsByTag(tag: string, cacheContext?: CacheRequestContext) {
+  return getBlogPosts({ tag }, cacheContext);
 }
 
 export function formatDate(date: string, includeRelative = false) {

@@ -1,4 +1,4 @@
-import type { MetaFunction } from "react-router";
+import type { MetaFunction, LoaderFunctionArgs } from "react-router";
 import { useLoaderData } from "react-router";
 
 import { PageLayout } from "@/components/PageLayout";
@@ -15,8 +15,11 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-export async function loader() {
-  const posts = await getBlogPosts(true);
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const posts = await getBlogPosts(true, {
+    request,
+    executionContext: context?.cloudflare?.ctx,
+  });
   return { posts };
 }
 

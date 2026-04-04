@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import type { MetaFunction } from "react-router";
+import type { MetaFunction, LoaderFunctionArgs } from "react-router";
 import { Await, useLoaderData } from "react-router";
 import { ChevronUp } from "lucide-react";
 
@@ -22,12 +22,17 @@ export const meta: MetaFunction = () => [
   { name: "description", content: "The personal website of Nicholas Griffin" },
 ];
 
-export async function loader() {
-  const applemusic = getRecentlyPlayed().catch(() => null);
-  const featuredRepos = getGitHubRepos({ limit: 8 })
+export async function loader({ request, context }: LoaderFunctionArgs) {
+  const cacheContext = {
+    request,
+    executionContext: context?.cloudflare?.ctx,
+  };
+
+  const applemusic = getRecentlyPlayed(10, cacheContext).catch(() => null);
+  const featuredRepos = getGitHubRepos({ limit: 8, cacheContext })
     .then((repos) => repos ?? null)
     .catch(() => null);
-  const blogPosts = getPaginatedBlogPosts({ limit: 6 }).catch(() => []);
+  const blogPosts = getPaginatedBlogPosts({ limit: 6 }, cacheContext).catch(() => []);
   const projects = await getProjects();
 
   return {
