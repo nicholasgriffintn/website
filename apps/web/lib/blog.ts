@@ -1,7 +1,9 @@
 import { CacheManager } from "./cache";
 import type { Heading } from "@/types/blog";
+import type { BlogPost } from "@/types/blog";
 import { slugify } from "./slugs";
 import { getEnvValue } from "./env";
+import { parsePositiveInteger } from "./numbers";
 
 const DEFAULT_BLOG_API_BASE_URL = "https://content.s3rve.co.uk";
 
@@ -11,6 +13,13 @@ const BASE_API_URL = (getEnvValue("BLOG_API_BASE_URL") ?? DEFAULT_BLOG_API_BASE_
 );
 const cacheManager = new CacheManager<unknown>();
 
+type BlogPostsOptions = {
+  showArchived?: boolean;
+  tag?: string;
+  page?: number;
+  limit?: number;
+};
+
 function normalizeVoidElements(content?: string | null) {
   if (typeof content !== "string") {
     return content ?? "";
@@ -19,36 +28,66 @@ function normalizeVoidElements(content?: string | null) {
   return content.replace(/<br(?!\s*\/)\s*>/gi, "<br />").replace(/<hr(?!\s*\/)\s*>/gi, "<hr />");
 }
 
-async function getApiData(path: string, params: Record<string, string> = {}) {
+async function getApiData<T>(path: string, params: Record<string, string> = {}): Promise<T> {
   const queryString = new URLSearchParams(params).toString();
   const fullPath = queryString ? `${path}?${queryString}` : path;
   const cacheKey = `api_${fullPath}`;
 
-  const cached = cacheManager.get(cacheKey);
-  if (cached) return cached;
+  return cacheManager.upsert(cacheKey, async () => {
+    const url = `${BASE_API_URL}/${fullPath}`;
+    const response = await fetch(url);
 
-  const url = `${BASE_API_URL}/${fullPath}`;
-  const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = await response.json();
-  cacheManager.set(cacheKey, data);
-  return data;
+    return (await response.json()) as T;
+  });
 }
 
-export async function getBlogPosts(showArchived = false) {
+function resolveBlogPostsOptions(options?: BlogPostsOptions | boolean): BlogPostsOptions {
+  if (typeof options === "boolean") {
+    return {
+      showArchived: options,
+    };
+  }
+
+  return options ?? {};
+}
+
+function buildTagCounts(posts: BlogPost[]): Record<string, number> {
+  return posts.reduce(
+    (acc, post) => {
+      if (Array.isArray(post.tags)) {
+        post.tags.forEach((tag) => {
+          if (!tag) return;
+          acc[tag] = (acc[tag] || 0) + 1;
+        });
+      }
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+}
+
+export async function getBlogPosts(options?: BlogPostsOptions | boolean): Promise<BlogPost[]> {
+  const resolvedOptions = resolveBlogPostsOptions(options);
   const params: Record<string, string> = {};
-  if (showArchived) params.archived = "true";
+  if (resolvedOptions.showArchived) params.archived = "true";
+  if (resolvedOptions.tag) params.tag = resolvedOptions.tag;
+
+  const page = parsePositiveInteger(resolvedOptions.page);
+  const limit = parsePositiveInteger(resolvedOptions.limit);
+
+  if (page) params.page = String(page);
+  if (limit) params.limit = String(limit);
 
   if (getEnvValue("ENVIRONMENT") === "development") {
     params.drafts = "true";
   }
 
   try {
-    const posts = await getApiData("content", params);
+    const posts = await getApiData<BlogPost[]>("content", params);
     return posts;
   } catch (error) {
     console.error("Failed to get blog posts:", error);
@@ -58,7 +97,7 @@ export async function getBlogPosts(showArchived = false) {
 
 export async function getBlogPostBySlug(slug: string) {
   try {
-    const post = await getApiData(`content/${slug}`);
+    const post = await getApiData<BlogPost>(`content/${slug}`);
     if (post?.content) {
       post.content = normalizeVoidElements(post.content);
     }
@@ -70,32 +109,26 @@ export async function getBlogPostBySlug(slug: string) {
 }
 
 export async function getPaginatedBlogPosts({ showArchived = false, page = 1, limit = 10 }) {
-  const posts = await getBlogPosts(showArchived);
-  const startIndex = (page - 1) * limit;
-  const endIndex = startIndex + limit;
-  return posts.slice(startIndex, endIndex);
+  return getBlogPosts({ showArchived, page, limit });
 }
 
 export async function getAllTags() {
-  const posts = await getBlogPosts();
-  const tagCounts = posts.reduce(
-    (acc, post) => {
-      if (Array.isArray(post.tags)) {
-        post.tags.forEach((tag) => {
-          acc[tag] = (acc[tag] || 0) + 1;
-        });
-      }
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
+  const params: Record<string, string> = {};
+  if (getEnvValue("ENVIRONMENT") === "development") {
+    params.drafts = "true";
+  }
 
-  return tagCounts;
+  try {
+    return await getApiData<Record<string, number>>("content/tags", params);
+  } catch (error) {
+    console.warn("Failed to get tags from tag endpoint, falling back to post scan:", error);
+    const posts = await getBlogPosts();
+    return buildTagCounts(posts);
+  }
 }
 
 export async function getBlogPostsByTag(tag: string) {
-  const posts = await getBlogPosts();
-  return posts.filter((post) => post.tags?.includes(tag));
+  return getBlogPosts({ tag });
 }
 
 export function formatDate(date: string, includeRelative = false) {

@@ -1,4 +1,4 @@
-import { createResponse, parseFrontmatter } from "./utils";
+import { createResponse, parseFrontmatter, parsePositiveIntegerQueryParam } from "./utils";
 import { CORS_HEADERS, BLOG_RESPONSE_CACHE_HEADERS } from "./constants";
 import { BlogService } from "./services/blog";
 import type { QueryParams, QueueMessage, Env } from "./types";
@@ -29,6 +29,9 @@ const handler: ExportedHandler<Env, QueueMessage> = {
         const params: QueryParams = {
           drafts: url.searchParams.get("drafts") === "true",
           archived: url.searchParams.get("archived") === "true",
+          tag: url.searchParams.get("tag")?.trim() || undefined,
+          page: parsePositiveIntegerQueryParam(url.searchParams.get("page")),
+          limit: parsePositiveIntegerQueryParam(url.searchParams.get("limit")),
         };
 
         const posts = await blogService.getAllPosts(params);
@@ -36,6 +39,15 @@ const handler: ExportedHandler<Env, QueueMessage> = {
       }
 
       if (paths.length === 2) {
+        if (paths[1] === "tags") {
+          const params: QueryParams = {
+            drafts: url.searchParams.get("drafts") === "true",
+            archived: url.searchParams.get("archived") === "true",
+          };
+          const tags = await blogService.getTagCounts(params);
+          return createResponse(tags, 200, BLOG_RESPONSE_CACHE_HEADERS);
+        }
+
         const post = await blogService.getPostBySlug(paths[1]);
         if (!post) {
           return createResponse({ error: "Post not found" }, 404);

@@ -36,6 +36,9 @@ export interface BlogPost extends BlogMetadata {
 export interface QueryParams {
   drafts?: boolean;
   archived?: boolean;
+  tag?: string;
+  page?: number;
+  limit?: number;
 }
 
 export interface ProcessedBlogData {

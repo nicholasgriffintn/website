@@ -1,4 +1,5 @@
 import { getBlogPosts } from "@/lib/blog";
+import { CDN_CACHE_HEADERS } from "@/lib/constants";
 
 const BASE_URL = "https://nicholasgriffin.dev";
 
@@ -43,5 +44,10 @@ export async function loader() {
   </channel>
 </rss>`;
 
-  return new Response(rssFeed, { headers: { "Content-Type": "text/xml" } });
+  return new Response(rssFeed, {
+    headers: {
+      "Content-Type": "text/xml",
+      ...CDN_CACHE_HEADERS,
+    },
+  });
 }

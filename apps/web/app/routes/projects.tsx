@@ -18,16 +18,9 @@ export const meta: MetaFunction = () => [
 ];
 
 export async function loader() {
-  const [projects, featuredRepos] = await Promise.all([
-    getProjects(),
-    getGitHubRepos({ limit: 8 }),
-  ]);
-  const repos = featuredRepos?.pageInfo?.hasNextPage
-    ? await getGitHubRepos({
-        limit: 8,
-        cursor: featuredRepos?.pageInfo?.endCursor,
-      })
-    : undefined;
+  const [projects, allRepos] = await Promise.all([getProjects(), getGitHubRepos({ limit: 16 })]);
+  const featuredRepos = allRepos?.nodes?.slice(0, 8);
+  const repos = allRepos?.nodes?.slice(8);
   return { projects, featuredRepos, repos };
 }
 
@@ -81,10 +74,10 @@ export default function Projects() {
         <div className="pt-5 md:pt-20">
           <ProjectsList
             firstFeaturedProjects={firstFeaturedProjects}
-            featuredRepos={featuredRepos?.nodes}
+            featuredRepos={featuredRepos}
             lastFeaturedProjects={lastFeaturedProjects}
             showAll={true}
-            repos={repos?.nodes}
+            repos={repos}
           />
         </div>
       </InnerPage>

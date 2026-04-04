@@ -11,7 +11,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PageLayout } from "@/components/PageLayout";
 import { InnerPage } from "@/components/InnerPage";
-import benchmarkData from "@/lib/data/ai-benchmarks.json";
+import { getBenchmarkData } from "@/lib/data/benchmarks";
 
 export const meta: MetaFunction = () => [
   { title: "AI Benchmarks | Nicholas Griffin" },
@@ -22,6 +22,7 @@ export const meta: MetaFunction = () => [
 ];
 
 export async function loader() {
+  const benchmarkData = await getBenchmarkData();
   return { data: benchmarkData };
 }
 

@@ -1,7 +1,10 @@
 import type { GitHubRepositories, GitHubGists } from "@/types/github";
 import { getEnvValue } from "@/lib/env";
+import { CacheManager } from "@/lib/cache";
+import { parsePositiveIntegerInRange } from "@/lib/numbers";
 
 const githubToken = getEnvValue("GITHUB_TOKEN");
+const githubCache = new CacheManager<unknown>({ duration: 5 * 60 * 1000, maxEntries: 256 });
 
 export async function getGitHubRepos({
   cursor,
@@ -14,11 +17,18 @@ export async function getGitHubRepos({
     console.error("GITHUB_TOKEN is required");
     return;
   }
+  const safeLimit = parsePositiveIntegerInRange(limit, {
+    min: 1,
+    max: 20,
+    fallback: 8,
+  });
+  const cacheKey = `repos_${safeLimit}_${cursor ?? "first"}`;
+
   const query = `
-    query ($cursor: String) {
+    query ($cursor: String, $limit: Int!) {
       user(login: "nicholasgriffintn") {
         repositories(
-          first: ${limit},
+          first: $limit,
           after: $cursor,
           ownerAffiliations: OWNER,
           orderBy: {
@@ -58,41 +68,46 @@ export async function getGitHubRepos({
     }
   `;
 
-  const res = await fetch("https://api.github.com/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${githubToken}`,
-      "User-Agent": "NGWeb",
-    },
-    body: JSON.stringify({
-      query,
-      variables: { cursor },
-    }),
-  });
+  return githubCache.upsert(cacheKey, async () => {
+    const res = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${githubToken}`,
+        "User-Agent": "NGWeb",
+      },
+      body: JSON.stringify({
+        query,
+        variables: { cursor, limit: safeLimit },
+      }),
+    });
 
-  if (!res.ok) {
-    console.error("Error fetching data from GitHub", res.statusText);
-    return;
-  }
+    if (!res.ok) {
+      console.error("Error fetching data from GitHub", res.statusText);
+      return undefined;
+    }
 
-  const data = (await res.json()) as {
-    data: {
-      user: {
-        repositories: GitHubRepositories;
+    const data = (await res.json()) as {
+      data?: {
+        user?: {
+          repositories?: GitHubRepositories;
+        };
       };
+      errors?: unknown[];
     };
-  };
 
-  if (!data?.data?.user?.repositories) {
-    console.error("Error fetching data from GitHub", data);
-    return;
-  }
+    if (!data?.data?.user?.repositories || data.errors?.length) {
+      console.error("Error fetching data from GitHub", data.errors ?? data);
+      return undefined;
+    }
 
-  return data.data.user.repositories;
+    return data.data.user.repositories;
+  });
 }
 
 export async function getGitHubGists(): Promise<GitHubGists | undefined> {
+  const cacheKey = "gists_latest";
+
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "User-Agent": "NGWeb",
@@ -102,16 +117,17 @@ export async function getGitHubGists(): Promise<GitHubGists | undefined> {
     headers.Authorization = `Bearer ${githubToken}`;
   }
 
-  const res = await fetch("https://api.github.com/users/nicholasgriffintn/gists", {
-    headers,
+  return githubCache.upsert(cacheKey, async () => {
+    const res = await fetch("https://api.github.com/users/nicholasgriffintn/gists", {
+      headers,
+    });
+
+    if (!res.ok) {
+      console.error("Error fetching data from GitHub", res.statusText);
+      return undefined;
+    }
+
+    const data = await res.json();
+    return data as GitHubGists;
   });
-
-  if (!res.ok) {
-    console.error("Error fetching data from GitHub", res.statusText);
-    return;
-  }
-
-  const data = await res.json();
-
-  return data as GitHubGists;
 }

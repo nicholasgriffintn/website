@@ -1,4 +1,5 @@
 import { getBlogPosts } from "@/lib/blog";
+import { CDN_CACHE_HEADERS } from "@/lib/constants";
 
 const BASE_URL = "https://nicholasgriffin.dev";
 
@@ -38,5 +39,10 @@ export async function loader() {
     .join("\n  ")}
 </urlset>`;
 
-  return new Response(xml, { headers: { "Content-Type": "application/xml" } });
+  return new Response(xml, {
+    headers: {
+      "Content-Type": "application/xml",
+      ...CDN_CACHE_HEADERS,
+    },
+  });
 }

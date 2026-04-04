@@ -15,6 +15,12 @@ export const createResponse = (
   });
 };
 
+export function parsePositiveIntegerQueryParam(value: string | null): number | undefined {
+  if (!value) return undefined;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
+}
+
 export function parseFrontmatter(fileContent: string): { metadata: BlogMetadata; content: string } {
   const frontmatterRegex = /---\s*([\s\S]*?)\s*---/;
   const match = frontmatterRegex.exec(fileContent);

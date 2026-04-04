@@ -17,6 +17,12 @@ import { truncateMarkdownPreview } from "@/lib/markdown";
 import imageLoader from "@/lib/imageLoader";
 import { DEFAULT_SITE_DESCRIPTION, SITE_AUTHOR, SITE_NAME, TWITTER_HANDLE } from "@/lib/seo";
 import { resolveRequestOrigin } from "@/lib/request-origin";
+import { CacheManager } from "@/lib/cache";
+
+const mdxTreeCache = new CacheManager<Awaited<ReturnType<typeof compileMdxToHast>>>({
+  duration: 60 * 60 * 1000,
+  maxEntries: 200,
+});
 
 function buildPostSeoData(
   post: NonNullable<Awaited<ReturnType<typeof getBlogPostBySlug>>>,
@@ -28,7 +34,7 @@ function buildPostSeoData(
   const imageUrl = post.image_url?.trim();
   const hasPostImage = Boolean(imageUrl);
   const ogImage = hasPostImage
-    ? imageLoader({ src: imageUrl, width: 1200 })
+    ? imageLoader({ src: imageUrl ?? "", width: 1200 })
     : `${origin}/og?title=${encodeURIComponent(post.title)}`;
 
   return {
@@ -44,7 +50,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   if (!post) throw data("Not found", { status: 404 });
   const origin = resolveRequestOrigin(request);
   const headings = extractHeadings(post.content);
-  const mdxTree = await compileMdxToHast(post.content);
+  const mdxCacheKey = `${post.slug}:${post.updated_at ?? post.created_at}`;
+  const mdxTree = await mdxTreeCache.upsert(mdxCacheKey, () => compileMdxToHast(post.content));
   const speedReaderText = buildSpeedReaderText(post.description, mdxTree);
   const seo = buildPostSeoData(post, speedReaderText, origin);
   return { post, headings, mdxTree, speedReaderText, seo };
@@ -103,9 +110,11 @@ export default function BlogPost() {
     isActive: mode === "focus",
   });
 
-  const isBookmark = post.metadata.isBookmark;
+  const isBookmark = Boolean(post.metadata.isBookmark);
   const youtubeVideoId = isBookmark ? getYoutubeVideoId(post.metadata.link) : null;
-  const dates = { created: post.created_at, updated: post.updated_at };
+  const dates = post.updated_at
+    ? { created: post.created_at, updated: post.updated_at }
+    : { created: post.created_at };
 
   return (
     <PageLayout>
