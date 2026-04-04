@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { data, type MetaFunction } from "react-router";
+import { data, type MetaFunction, useLoaderData } from "react-router";
 import type { Route } from "./+types/contact";
 
 import { PageLayout } from "@/components/PageLayout";
@@ -8,6 +8,7 @@ import { InnerPage } from "@/components/InnerPage";
 import { Link } from "@/components/Link";
 import { LoadingState } from "@/components/LoadingState";
 import { processContactFormSubmission } from "@/lib/forms/contact";
+import { getTurnstileSiteKey } from "@/lib/forms/turnstile";
 
 const ContactForm = lazy(() =>
   import("@/components/ContactForm").then((m) => ({ default: m.ContactForm })),
@@ -18,6 +19,12 @@ export const meta: MetaFunction = () => [
   { name: "description", content: "Send me a message." },
 ];
 
+export function loader({ context }: Route.LoaderArgs) {
+  return {
+    turnstileSiteKey: getTurnstileSiteKey(context),
+  };
+}
+
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const result = await processContactFormSubmission(formData);
@@ -25,6 +32,8 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Contact() {
+  const { turnstileSiteKey } = useLoaderData<typeof loader>();
+
   return (
     <PageLayout>
       <InnerPage>
@@ -55,7 +64,7 @@ export default function Contact() {
         </small>
         <hr className="my-4" />
         <Suspense fallback={<LoadingState label="Loading contact form..." className="py-4" />}>
-          <ContactForm />
+          <ContactForm turnstileSiteKey={turnstileSiteKey} />
         </Suspense>
       </InnerPage>
     </PageLayout>

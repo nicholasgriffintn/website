@@ -17,6 +17,9 @@
       "custom_domain": true,
     },
   ],
+  "vars": {
+    "VITE_EMAIL_TURNSTILE_SITE_KEY": "0x4AAAAAAA5HWEGUfXH4909p",
+  },
   "env": {
     "development": {},
     "preview": {

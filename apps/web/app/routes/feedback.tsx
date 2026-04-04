@@ -1,11 +1,12 @@
 import { lazy, Suspense } from "react";
-import { data, type MetaFunction } from "react-router";
+import { data, type MetaFunction, useLoaderData } from "react-router";
 import type { Route } from "./+types/feedback";
 
 import { InnerPage } from "@/components/InnerPage";
 import { LoadingState } from "@/components/LoadingState";
 import { PageLayout } from "@/components/PageLayout";
 import { processFeedbackFormSubmission } from "@/lib/forms/feedback";
+import { getTurnstileSiteKey } from "@/lib/forms/turnstile";
 
 const FeedbackForm = lazy(() =>
   import("@/components/FeedbackForm").then((module) => ({ default: module.FeedbackForm })),
@@ -19,6 +20,12 @@ export const meta: MetaFunction = () => [
   },
 ];
 
+export function loader({ context }: Route.LoaderArgs) {
+  return {
+    turnstileSiteKey: getTurnstileSiteKey(context),
+  };
+}
+
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const result = await processFeedbackFormSubmission(formData);
@@ -26,6 +33,8 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Feedback() {
+  const { turnstileSiteKey } = useLoaderData<typeof loader>();
+
   return (
     <PageLayout>
       <InnerPage>
@@ -42,7 +51,7 @@ export default function Feedback() {
         </div>
         <hr className="my-4" />
         <Suspense fallback={<LoadingState label="Loading feedback form..." className="py-4" />}>
-          <FeedbackForm />
+          <FeedbackForm turnstileSiteKey={turnstileSiteKey} />
         </Suspense>
       </InnerPage>
     </PageLayout>

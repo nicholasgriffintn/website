@@ -14,7 +14,11 @@ import { TURNSTILE_FIELD } from "@/lib/forms/constants";
 import type { ContactActionData } from "@/lib/forms/contact";
 import { useTurnstile } from "@/lib/forms/use-turnstile";
 
-export function ContactForm() {
+type ContactFormProps = {
+  turnstileSiteKey: string;
+};
+
+export function ContactForm({ turnstileSiteKey }: ContactFormProps) {
   const fetcher = useFetcher<ContactActionData>();
   const formRef = useRef<HTMLFormElement>(null);
   const turnstile = useTurnstile();
@@ -23,6 +27,7 @@ export function ContactForm() {
   const actionData = fetcher.data;
   const errors = actionData?.errors;
   const hasSuccess = actionData?.ok === true;
+  const hasTurnstileSiteKey = turnstileSiteKey.trim().length > 0;
 
   useEffect(() => {
     if (fetcher.state !== "idle" || !fetcher.data) {
@@ -94,14 +99,16 @@ export function ContactForm() {
         {errors?.body ? <p className="mt-1 text-sm text-red-500">{errors.body}</p> : null}
       </div>
 
-      <Turnstile
-        key={turnstile.widgetKey}
-        sitekey={import.meta.env.VITE_EMAIL_TURNSTILE_SITE_KEY || ""}
-        onVerify={turnstile.handleVerify}
-        onExpire={turnstile.handleExpire}
-        onError={turnstile.handleError}
-        refreshExpired="auto"
-      />
+      {hasTurnstileSiteKey ? (
+        <Turnstile
+          key={turnstile.widgetKey}
+          sitekey={turnstileSiteKey}
+          onVerify={turnstile.handleVerify}
+          onExpire={turnstile.handleExpire}
+          onError={turnstile.handleError}
+          refreshExpired="auto"
+        />
+      ) : null}
 
       {turnstile.hasError ? (
         <div>Turnstile failed to load. Please refresh and try again.</div>
@@ -110,7 +117,7 @@ export function ContactForm() {
       {actionData?.formError ? <div>{actionData.formError}</div> : null}
       {isSubmitting ? <LoadingState label="Submitting message..." /> : null}
 
-      <Button type="submit" disabled={!turnstile.token || isSubmitting}>
+      <Button type="submit" disabled={!hasTurnstileSiteKey || !turnstile.token || isSubmitting}>
         {isSubmitting ? (
           <>
             <Spinner className="h-4 w-4" />
