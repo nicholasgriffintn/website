@@ -3,6 +3,7 @@ import { data, type MetaFunction } from "react-router";
 import type { Route } from "./+types/feedback";
 
 import { InnerPage } from "@/components/InnerPage";
+import { LoadingState } from "@/components/LoadingState";
 import { PageLayout } from "@/components/PageLayout";
 import { processFeedbackFormSubmission } from "@/lib/forms/feedback";
 
@@ -40,7 +41,7 @@ export default function Feedback() {
           </p>
         </div>
         <hr className="my-4" />
-        <Suspense fallback={null}>
+        <Suspense fallback={<LoadingState label="Loading feedback form..." className="py-4" />}>
           <FeedbackForm />
         </Suspense>
       </InnerPage>

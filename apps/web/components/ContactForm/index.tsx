@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { LoadingState } from "@/components/LoadingState";
+import { Spinner } from "@/components/Spinner";
 import { TURNSTILE_FIELD } from "@/lib/forms/constants";
 import type { ContactActionData } from "@/lib/forms/contact";
 import { useTurnstile } from "@/lib/forms/use-turnstile";
@@ -41,7 +43,12 @@ export function ContactForm() {
   }
 
   return (
-    <fetcher.Form ref={formRef} method="post" className="max-w-lg space-y-4">
+    <fetcher.Form
+      ref={formRef}
+      method="post"
+      className="max-w-lg space-y-4"
+      aria-busy={isSubmitting}
+    >
       <input type="hidden" name={TURNSTILE_FIELD} value={turnstile.token ?? ""} />
 
       <div>
@@ -101,10 +108,17 @@ export function ContactForm() {
       ) : null}
       {errors?.turnstile ? <div>{errors.turnstile}</div> : null}
       {actionData?.formError ? <div>{actionData.formError}</div> : null}
-      {isSubmitting ? <div>Submitting...</div> : null}
+      {isSubmitting ? <LoadingState label="Submitting message..." /> : null}
 
       <Button type="submit" disabled={!turnstile.token || isSubmitting}>
-        Send Message
+        {isSubmitting ? (
+          <>
+            <Spinner className="h-4 w-4" />
+            Sending...
+          </>
+        ) : (
+          "Send message"
+        )}
       </Button>
     </fetcher.Form>
   );

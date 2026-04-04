@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { NavLink } from "react-router";
 
 import { Link } from "@/components/Link";
 import { cn } from "@/lib/utils";
@@ -27,21 +28,37 @@ export function MobileNav({ items, onCloseMenu }: MobileNavProps) {
     >
       <div className="relative z-20 grid gap-6 rounded-md bg-popover p-4 text-popover-foreground shadow-md border border-border">
         <nav className="grid grid-flow-row auto-rows-max text-sm">
-          {items.map((item, index) => (
-            <Link
-              key={index}
-              href={item.disabled ? "#" : item.href}
-              className={cn(
-                "flex w-full items-center gap-2 rounded-md p-2 text-sm font-medium hover:underline",
-                item.disabled && "cursor-not-allowed opacity-60",
-              )}
-              underline={false}
-              onClick={onCloseMenu}
-            >
-              {item.icon}
-              {item.title}
-            </Link>
-          ))}
+          {items.map((item, index) =>
+            item.disabled ? (
+              <span
+                key={index}
+                className="flex w-full items-center gap-2 rounded-md p-2 text-sm font-medium cursor-not-allowed opacity-60"
+              >
+                {item.icon}
+                {item.title}
+              </span>
+            ) : (
+              <NavLink
+                key={index}
+                to={item.href}
+                prefetch="intent"
+                className={({ isPending }) =>
+                  cn(
+                    "flex w-full items-center gap-2 rounded-md p-2 text-sm font-medium hover:underline",
+                    isPending && "text-muted-foreground/90",
+                  )
+                }
+                onClick={onCloseMenu}
+              >
+                {() => (
+                  <>
+                    {item.icon}
+                    {item.title}
+                  </>
+                )}
+              </NavLink>
+            ),
+          )}
 
           <div className="border-t my-4" />
 

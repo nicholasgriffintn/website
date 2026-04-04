@@ -11,6 +11,7 @@ import { AppleMusicWidget } from "@/components/AppleMusicWidget";
 import { ContactLinks } from "@/components/ContactLinks";
 import { InnerPage } from "@/components/InnerPage";
 import { ProjectsList } from "@/components/ProjectsList";
+import { LoadingState } from "@/components/LoadingState";
 import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/components/Link";
 import { getPaginatedBlogPosts } from "@/lib/blog";
@@ -72,7 +73,9 @@ export default function Home() {
           </div>
           <div className="col-span-5 md:col-span-2 lg:col-span-1 pt-10 lg:pt-5">
             <div>
-              <Suspense fallback={null}>
+              <Suspense
+                fallback={<LoadingState label="Loading recent tracks..." className="w-full py-6" />}
+              >
                 <Await resolve={data.applemusic}>
                   {(applemusic) => (
                     <>

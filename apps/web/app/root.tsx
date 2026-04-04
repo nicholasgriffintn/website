@@ -12,6 +12,7 @@ import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "react-rout
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { PageLayout } from "@/components/PageLayout";
+import { RouteLoadingBar } from "@/components/RouteLoadingBar";
 import { resolveRequestOrigin } from "@/lib/request-origin";
 import {
   DEFAULT_SITE_DESCRIPTION,
@@ -71,6 +72,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased")}>
+        <RouteLoadingBar />
         {children}
         <ScrollRestoration />
         <Scripts />

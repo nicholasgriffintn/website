@@ -6,6 +6,7 @@ import { PageLayout } from "@/components/PageLayout";
 import { ContactLinks } from "@/components/ContactLinks";
 import { InnerPage } from "@/components/InnerPage";
 import { Link } from "@/components/Link";
+import { LoadingState } from "@/components/LoadingState";
 import { processContactFormSubmission } from "@/lib/forms/contact";
 
 const ContactForm = lazy(() =>
@@ -53,7 +54,7 @@ export default function Contact() {
           <Link href="mailto:me@nicholasgriffin.dev">me@nicholasgriffin.dev</Link>.
         </small>
         <hr className="my-4" />
-        <Suspense fallback={null}>
+        <Suspense fallback={<LoadingState label="Loading contact form..." className="py-4" />}>
           <ContactForm />
         </Suspense>
       </InnerPage>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFetcher } from "react-router";
 import { Turnstile } from "react-turnstile";
 
@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { LoadingState } from "@/components/LoadingState";
+import { Spinner } from "@/components/Spinner";
 import { TURNSTILE_FIELD } from "@/lib/forms/constants";
 import type { FeedbackActionData } from "@/lib/forms/feedback";
 import { useTurnstile } from "@/lib/forms/use-turnstile";
@@ -30,10 +32,6 @@ export function FeedbackForm() {
   const [isAnonymous, setIsAnonymous] = useState(false);
 
   const hasSelectedRelationship = Boolean(relationship);
-  const relationshipLabel = useMemo(
-    () => RELATIONSHIP_OPTIONS.find((option) => option.value === relationship)?.label,
-    [relationship],
-  );
 
   const questionSet = relationship ? RELATIONSHIP_QUESTION_SET[relationship] : "core";
   const questions = questionSet === "mentoring" ? MENTORING_QUESTIONS : CORE_QUESTIONS;
@@ -67,7 +65,12 @@ export function FeedbackForm() {
   }
 
   return (
-    <fetcher.Form ref={formRef} method="post" className="max-w-3xl space-y-8">
+    <fetcher.Form
+      ref={formRef}
+      method="post"
+      className="max-w-3xl space-y-8"
+      aria-busy={isSubmitting}
+    >
       <input type="hidden" name={TURNSTILE_FIELD} value={turnstile.token ?? ""} />
 
       <FormSection title="Context">
@@ -193,10 +196,17 @@ export function FeedbackForm() {
       ) : null}
       {errors?.turnstile ? <div>{errors.turnstile}</div> : null}
       {actionData?.formError ? <div>{actionData.formError}</div> : null}
-      {isSubmitting ? <div>Submitting...</div> : null}
+      {isSubmitting ? <LoadingState label="Submitting feedback..." /> : null}
 
       <Button type="submit" disabled={!hasSelectedRelationship || !turnstile.token || isSubmitting}>
-        Submit feedback
+        {isSubmitting ? (
+          <>
+            <Spinner className="h-4 w-4" />
+            Submitting...
+          </>
+        ) : (
+          "Submit feedback"
+        )}
       </Button>
     </fetcher.Form>
   );
