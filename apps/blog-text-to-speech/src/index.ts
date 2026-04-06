@@ -1,7 +1,10 @@
-import { QueueMessage } from "./types";
+import { withSentry } from "@sentry/cloudflare";
+
+import type { QueueMessage, WorkerEnv } from "./types";
 import { StorageService } from "./services/storage";
 import { parseFrontmatter, formatContentForSpeech } from "./utils";
 import { SpeechService } from "./services/speech";
+import { SENTRY_DSN, SENTRY_TRACES_SAMPLE_RATE } from "./constants";
 
 type SpeechProvider = "cartesia" | "elevenlabs";
 
@@ -24,32 +27,8 @@ function metadataFieldToString(metadata: Record<string, string | string[]>, key:
   return value || "";
 }
 
-const handler: ExportedHandler<
-  {
-    DB: D1Database;
-    BUCKET: R2Bucket;
-    CARTESIA_API_KEY?: string;
-    CARTESIA_VOICE_ID?: string;
-    CARTESIA_MODEL_ID?: string;
-    ELEVENLABS_API_KEY?: string;
-    ELEVENLABS_VOICE_ID?: string;
-    ELEVENLABS_MODEL_ID?: string;
-  },
-  QueueMessage
-> = {
-  async queue(
-    batch: MessageBatch<QueueMessage>,
-    env: {
-      BUCKET: R2Bucket;
-      DB: D1Database;
-      CARTESIA_API_KEY?: string;
-      CARTESIA_VOICE_ID?: string;
-      CARTESIA_MODEL_ID?: string;
-      ELEVENLABS_API_KEY?: string;
-      ELEVENLABS_VOICE_ID?: string;
-      ELEVENLABS_MODEL_ID?: string;
-    },
-  ): Promise<void> {
+const handler: ExportedHandler<WorkerEnv, QueueMessage> = {
+  async queue(batch: MessageBatch<QueueMessage>, env: WorkerEnv): Promise<void> {
     if (batch.messages.length === 0) {
       return;
     }
@@ -142,4 +121,11 @@ const handler: ExportedHandler<
   },
 };
 
-export default handler;
+export default withSentry<WorkerEnv, QueueMessage>(
+  () => ({
+    dsn: SENTRY_DSN,
+    tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+    sendDefaultPii: false,
+  }),
+  handler,
+);

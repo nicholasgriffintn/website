@@ -26,6 +26,10 @@ importers:
         version: 0.1.15(@opentelemetry/api@1.9.1)(@types/node@25.5.1)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.16.9)(tsx@4.21.0)(typescript@6.0.2)(vite@8.0.0(@emnapi/core@1.9.0)(@emnapi/runtime@1.9.2)(@types/node@25.5.1)(esbuild@0.27.4)(jiti@2.6.1)(terser@5.16.9)(tsx@4.21.0)(yaml@2.8.2))(yaml@2.8.2)
 
   apps/blog-api:
+    dependencies:
+      '@sentry/cloudflare':
+        specifier: ^10.47.0
+        version: 10.47.0(@cloudflare/workers-types@4.20260402.1)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20260317.1
@@ -42,6 +46,9 @@ importers:
       '@elevenlabs/elevenlabs-js':
         specifier: ^2.40.0
         version: 2.41.1
+      '@sentry/cloudflare':
+        specifier: ^10.47.0
+        version: 10.47.0(@cloudflare/workers-types@4.20260402.1)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20260329.1
@@ -74,6 +81,9 @@ importers:
 
   apps/email:
     dependencies:
+      '@sentry/cloudflare':
+        specifier: ^10.47.0
+        version: 10.47.0(@cloudflare/workers-types@4.20260402.1)
       mimetext:
         specifier: ^3.0.28
         version: 3.0.28
@@ -89,6 +99,10 @@ importers:
         version: 4.80.0(@cloudflare/workers-types@4.20260402.1)
 
   apps/image-resizing:
+    dependencies:
+      '@sentry/cloudflare':
+        specifier: ^10.47.0
+        version: 10.47.0(@cloudflare/workers-types@4.20260402.1)
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20260317.1

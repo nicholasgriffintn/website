@@ -1,12 +1,14 @@
 {
-  "name": "website-eemail",
+  "name": "website-email",
   "version": "0.0.1",
   "scripts": {
     "dev": "wrangler dev --persist-to ../../.wrangler/state",
+    "typecheck": "tsc --noEmit",
     "build": "tsc --project tsconfig.json",
     "deploy": "wrangler deploy src/index.ts"
   },
   "dependencies": {
+    "@sentry/cloudflare": "^10.47.0",
     "mimetext": "^3.0.28",
     "postal-mime": "^2.7.4"
   },

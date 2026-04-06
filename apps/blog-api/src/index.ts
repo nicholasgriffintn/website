@@ -1,5 +1,12 @@
+import { withSentry } from "@sentry/cloudflare";
+
 import { createResponse, parseFrontmatter, parsePositiveIntegerQueryParam } from "./utils";
-import { CORS_HEADERS, BLOG_RESPONSE_CACHE_HEADERS } from "./constants";
+import {
+  CORS_HEADERS,
+  BLOG_RESPONSE_CACHE_HEADERS,
+  SENTRY_DSN,
+  SENTRY_TRACES_SAMPLE_RATE,
+} from "./constants";
 import { BlogService } from "./services/blog";
 import type { QueryParams, QueueMessage, Env } from "./types";
 import { BlogProcessor } from "./services/blog-processor";
@@ -131,4 +138,11 @@ const handler: ExportedHandler<Env, QueueMessage> = {
   },
 };
 
-export default handler;
+export default withSentry<Env, QueueMessage>(
+  () => ({
+    dsn: SENTRY_DSN,
+    tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+    sendDefaultPii: false,
+  }),
+  handler,
+);

@@ -14,3 +14,6 @@ export const BLOG_RESPONSE_CACHE_HEADERS = {
 } as const;
 
 export const ASSISTANT_API_URL = "https://polychat.app";
+
+export const SENTRY_DSN = "https://f54c4c0cfa9a4f85b8118ff7364725f3@ingest.bitwobbly.com/22";
+export const SENTRY_TRACES_SAMPLE_RATE = 1.0;

@@ -1,9 +1,10 @@
+import { withSentry } from "@sentry/cloudflare";
 import { EmailMessage } from "cloudflare:email";
 import { createMimeMessage } from "mimetext";
-import type { ExecutionContext } from "@cloudflare/workers-types";
 import PostalMime from "postal-mime";
 
 import type { Env, SiteVerify } from "./types";
+import { SENTRY_DSN, SENTRY_TRACES_SAMPLE_RATE } from "./constants";
 
 const blockList: string[] = [];
 const defaultAllowedOrigins = [
@@ -60,7 +61,7 @@ function getCorsHeaders(origin: string | null) {
   return headers;
 }
 
-export default {
+const handler: ExportedHandler<Env> = {
   async fetch(request: Request, env: Env) {
     const allowedOrigins = getAllowedOrigins(env);
     const requestOrigin = request.headers.get("Origin");
@@ -201,16 +202,14 @@ ${body}
 
     return Response.json({ ok: true }, { status: 200, headers: corsHeaders });
   },
-  async email(message: EmailMessage, env: Env, ctx: ExecutionContext) {
+  async email(message: ForwardableEmailMessage, env: Env) {
     if (blockList.includes(message.from)) {
-      // @ts-ignore - types seem to be wrong
       message.setReject("Address is blocked");
       return;
     }
 
     const parser = new PostalMime();
 
-    // @ts-ignore - types seem to be wrong
     const rawEmail = new Response(message.raw);
     const email = await parser.parse(await rawEmail.arrayBuffer());
 
@@ -236,7 +235,15 @@ ${body}
       await env.R2_BUCKET.put(`${emailId}/email.json`, JSON.stringify(email));
     }
 
-    // @ts-ignore - types seem to be wrong
     await message.forward(env.FORWARD_TO);
   },
 };
+
+export default withSentry<Env>(
+  () => ({
+    dsn: SENTRY_DSN,
+    tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+    sendDefaultPii: false,
+  }),
+  handler,
+);

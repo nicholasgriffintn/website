@@ -1,3 +1,7 @@
+import { withSentry } from "@sentry/cloudflare";
+
+import { SENTRY_DSN, SENTRY_TRACES_SAMPLE_RATE } from "./constants";
+
 interface ImageOptions {
   cf: {
     image: {
@@ -64,7 +68,7 @@ function validateImageURL(imageURL: string): Response | null {
   }
 }
 
-export default {
+const handler = {
   async fetch(request: Request): Promise<Response> {
     try {
       if (request.method === "OPTIONS") {
@@ -106,3 +110,12 @@ export default {
     }
   },
 };
+
+export default withSentry(
+  () => ({
+    dsn: SENTRY_DSN,
+    tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+    sendDefaultPii: false,
+  }),
+  handler,
+);
