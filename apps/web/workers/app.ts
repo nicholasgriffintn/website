@@ -1,5 +1,7 @@
+import { withSentry } from "@sentry/cloudflare";
 import { createRequestHandler } from "react-router";
 import { stripTrailingSlash } from "@/lib/url";
+import { SENTRY_DSN, SENTRY_TRACES_SAMPLE_RATE } from "@/lib/monitoring/sentry-shared";
 
 declare module "react-router" {
   export interface AppLoadContext {
@@ -15,7 +17,7 @@ const requestHandler = createRequestHandler(
   import.meta.env.MODE,
 );
 
-export default {
+const handler = {
   async fetch(request, env: CloudflareEnv, ctx: ExecutionContext) {
     if (request.method === "GET" || request.method === "HEAD") {
       const redirectUrl = new URL(request.url);
@@ -32,3 +34,13 @@ export default {
     });
   },
 } satisfies ExportedHandler<CloudflareEnv>;
+
+export default withSentry(
+  () => ({
+    dsn: SENTRY_DSN,
+    tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+    sendDefaultPii: false,
+    environment: import.meta.env.MODE,
+  }),
+  handler,
+);

@@ -1,6 +1,9 @@
 import { renderToReadableStream } from "react-dom/server";
 import { ServerRouter } from "react-router";
-import type { EntryContext } from "react-router";
+import type { EntryContext, HandleErrorFunction } from "react-router";
+
+import { reportApplicationError } from "@/lib/error-reporting";
+import { captureServerError } from "@/lib/monitoring/sentry-server";
 
 export default async function handleRequest(
   request: Request,
@@ -13,7 +16,18 @@ export default async function handleRequest(
     {
       signal: request.signal,
       onError(error: unknown) {
-        console.error(error);
+        if (request.signal.aborted) {
+          return;
+        }
+
+        const context = {
+          source: "react-dom-server",
+          method: request.method,
+          url: request.url,
+        } as const;
+
+        captureServerError(error, context);
+        reportApplicationError(error, context);
         responseStatusCode = 500;
       },
     },
@@ -25,3 +39,19 @@ export default async function handleRequest(
     status: responseStatusCode,
   });
 }
+
+export const handleError: HandleErrorFunction = (error, { request, params }) => {
+  if (request.signal.aborted) {
+    return;
+  }
+
+  const context = {
+    source: "react-router-server",
+    method: request.method,
+    url: request.url,
+    params,
+  } as const;
+
+  captureServerError(error, context);
+  reportApplicationError(error, context);
+};
