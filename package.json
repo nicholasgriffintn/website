@@ -5,9 +5,9 @@
     "build": "pnpm -r build",
     "dev": "pnpm --filter web dev",
     "db:migrate:local": "pnpm --filter website-database db:migrate:local",
-    "typecheck": "pnpm -r typecheck",
-    "lint": "vp check",
-    "lint:fix": "vp check --fix",
+    "typecheck": "pnpm --filter web typegen && pnpm -r typecheck",
+    "lint": "pnpm --filter web typegen && vp check",
+    "lint:fix": "pnpm --filter web typegen && vp check --fix",
     "prepare": "vp config"
   },
   "devDependencies": {

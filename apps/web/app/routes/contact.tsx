@@ -1,6 +1,11 @@
 import { lazy, Suspense } from "react";
-import { data, type MetaFunction, useLoaderData } from "react-router";
-import type { Route } from "./+types/contact";
+import {
+  data,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  useLoaderData,
+} from "react-router";
 
 import { PageLayout } from "@/components/PageLayout";
 import { ContactLinks } from "@/components/ContactLinks";
@@ -19,13 +24,13 @@ export const meta: MetaFunction = () => [
   { name: "description", content: "Send me a message." },
 ];
 
-export function loader({ context }: Route.LoaderArgs) {
+export function loader({ context }: LoaderFunctionArgs) {
   return {
     turnstileSiteKey: getTurnstileSiteKey(context),
   };
 }
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const result = await processContactFormSubmission(formData);
   return data(result.body, { status: result.status });

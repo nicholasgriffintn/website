@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "typegen": "react-router typegen",
     "dev": "react-router dev",
     "dev:all": "cross-env BLOG_API_BASE_URL=http://127.0.0.1:8787 VITE_CONTACT_API_URL=http://127.0.0.1:8784 VITE_IMAGE_SERVICE_URL=http://127.0.0.1:8783 react-router dev",
     "build": "react-router build",

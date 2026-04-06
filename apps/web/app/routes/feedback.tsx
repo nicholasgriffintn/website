@@ -1,6 +1,11 @@
 import { lazy, Suspense } from "react";
-import { data, type MetaFunction, useLoaderData } from "react-router";
-import type { Route } from "./+types/feedback";
+import {
+  data,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  useLoaderData,
+} from "react-router";
 
 import { InnerPage } from "@/components/InnerPage";
 import { LoadingState } from "@/components/LoadingState";
@@ -20,13 +25,13 @@ export const meta: MetaFunction = () => [
   },
 ];
 
-export function loader({ context }: Route.LoaderArgs) {
+export function loader({ context }: LoaderFunctionArgs) {
   return {
     turnstileSiteKey: getTurnstileSiteKey(context),
   };
 }
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const result = await processFeedbackFormSubmission(formData);
   return data(result.body, { status: result.status });

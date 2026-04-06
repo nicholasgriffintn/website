@@ -82,7 +82,7 @@ export class BlogService {
       .bind(...boundParams)
       .all();
 
-    return results.map(this.parseDocument);
+    return results.map((document) => this.parseDocument(document));
   }
 
   async getTagCounts(params: QueryParams): Promise<Record<string, number>> {
