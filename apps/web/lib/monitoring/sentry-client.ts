@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import {
   createRoutesFromChildren,
+  isRouteErrorResponse,
   matchRoutes,
   useLocation,
   useNavigationType,
@@ -42,6 +43,10 @@ export function initClientSentry() {
 
 export function captureClientError(error: unknown, context: ErrorReportContext) {
   if (!SENTRY_DSN) {
+    return;
+  }
+
+  if (isRouteErrorResponse(error) && error.status === 404) {
     return;
   }
 
