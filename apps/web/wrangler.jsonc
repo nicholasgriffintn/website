@@ -20,6 +20,12 @@
   "vars": {
     "VITE_EMAIL_TURNSTILE_SITE_KEY": "0x4AAAAAAA5HWEGUfXH4909p",
   },
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": false,
+    },
+  },
   "env": {
     "development": {},
     "preview": {
