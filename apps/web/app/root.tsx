@@ -106,12 +106,16 @@ export function ErrorBoundary() {
         <Meta />
         <Links />
       </head>
-      <body className="min-h-screen bg-background font-sans antialiased flex items-center justify-center">
+      <body className="min-h-screen bg-background font-sans antialiased">
         <PageLayout>
-          <section className="w-full min-h-screen flex flex-col items-center justify-center bg-contain bg-center">
-            <div className="container px-4 md:px-6 text-center space-y-6 flex flex-col items-center justify-center">
-              <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">{heading}</h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-[700px]">{message}</p>
+          <section className="w-full">
+            <div className="container pt-[88px] pb-16 md:pb-24">
+              <div className="min-h-[55vh] flex flex-col items-center justify-center text-center space-y-6">
+                <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
+                  {heading}
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-[700px]">{message}</p>
+              </div>
             </div>
           </section>
         </PageLayout>
