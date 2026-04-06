@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { PageLayout } from "@/components/PageLayout";
 import { RouteLoadingBar } from "@/components/RouteLoadingBar";
 import { resolveRequestOrigin } from "@/lib/request-origin";
+import { buildCanonicalUrl } from "@/lib/url";
 import {
   DEFAULT_SITE_DESCRIPTION,
   DEFAULT_SOCIAL_IMAGE_HEIGHT,
@@ -25,12 +26,13 @@ import {
 
 export function loader({ request }: LoaderFunctionArgs) {
   const origin = resolveRequestOrigin(request);
-  return { origin };
+  const canonicalUrl = buildCanonicalUrl(origin, new URL(request.url).pathname);
+  return { origin, canonicalUrl };
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
   const origin = loaderData?.origin ?? "";
-  const canonicalUrl = origin || "/";
+  const canonicalUrl = loaderData?.canonicalUrl ?? "/";
   const socialImageUrl = origin
     ? `${origin}${DEFAULT_SOCIAL_IMAGE_PATH}`
     : DEFAULT_SOCIAL_IMAGE_PATH;

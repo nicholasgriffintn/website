@@ -1,5 +1,7 @@
 const BASE_URL = "https://nicholasgriffin.dev";
 
+const disallowedPaths = ["/og", "/offline", "/technutty", "/shite"];
+
 const disallowedBots = [
   "Amazonbot",
   "magpie-crawler",
@@ -37,6 +39,7 @@ export function loader({ request }: { request: Request }) {
 
   const rules = [
     "User-agent: *\nAllow: /",
+    ...disallowedPaths.map((path) => `User-agent: *\nDisallow: ${path}`),
     ...disallowedBots.map((bot) => `User-agent: ${bot}\nDisallow: /`),
   ].join("\n\n");
 

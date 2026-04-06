@@ -18,6 +18,7 @@ import imageLoader from "@/lib/imageLoader";
 import { DEFAULT_SITE_DESCRIPTION, SITE_AUTHOR, SITE_NAME, TWITTER_HANDLE } from "@/lib/seo";
 import { resolveRequestOrigin } from "@/lib/request-origin";
 import { CacheManager } from "@/lib/cache";
+import { buildCanonicalUrl } from "@/lib/url";
 
 const mdxTreeCache = new CacheManager<Awaited<ReturnType<typeof compileMdxToHast>>>({
   duration: 60 * 60 * 1000,
@@ -30,7 +31,7 @@ function buildPostSeoData(
   speedReaderText: string,
   origin: string,
 ) {
-  const canonicalUrl = `${origin}/blog/${post.slug}`;
+  const canonicalUrl = buildCanonicalUrl(origin, `/blog/${post.slug}`);
   const description = truncateMarkdownPreview(post.description ?? speedReaderText, 160).trim();
   const imageUrl = post.image_url?.trim();
   const hasPostImage = Boolean(imageUrl);
@@ -70,11 +71,9 @@ export const meta: MetaFunction<typeof loader> = ({ data: loaderData }) => {
   const metaTags = [
     { title: `${post.title} | ${SITE_NAME}` },
     { name: "description", content: seo.description },
-    { tagName: "link", rel: "canonical", href: seo.canonicalUrl },
     { property: "og:title", content: post.title },
     { property: "og:description", content: seo.description },
     { property: "og:type", content: "article" },
-    { property: "og:url", content: seo.canonicalUrl },
     { property: "og:site_name", content: SITE_NAME },
     { property: "og:image", content: seo.ogImage },
     { property: "og:image:alt", content: `Preview image for ${post.title}` },

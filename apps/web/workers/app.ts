@@ -1,4 +1,5 @@
 import { createRequestHandler } from "react-router";
+import { stripTrailingSlash } from "@/lib/url";
 
 declare module "react-router" {
   export interface AppLoadContext {
@@ -16,6 +17,16 @@ const requestHandler = createRequestHandler(
 
 export default {
   async fetch(request, env: CloudflareEnv, ctx: ExecutionContext) {
+    if (request.method === "GET" || request.method === "HEAD") {
+      const redirectUrl = new URL(request.url);
+      const canonicalPathname = stripTrailingSlash(redirectUrl.pathname);
+
+      if (canonicalPathname !== redirectUrl.pathname) {
+        redirectUrl.pathname = canonicalPathname;
+        return Response.redirect(redirectUrl.toString(), 301);
+      }
+    }
+
     return requestHandler(request, {
       cloudflare: { env, ctx },
     });
