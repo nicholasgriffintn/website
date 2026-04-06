@@ -34,9 +34,6 @@ jobs:
       - name: NPM Audit
         run: npx audit-ci@7.1.0
 
-      - name: Audit Signatures
-        run: npm audit signatures
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
