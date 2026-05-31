@@ -1,20 +1,10 @@
 import { useEffect } from "react";
 
 const BEACON_ENDPOINT = "https://beacon.nicholasgriffin.dev";
-
-type Variant = {
-  id: string;
-  name?: string;
-  activate: (config: Record<string, string>) => void;
-};
-
-export type Experiment = {
-  id: string;
-  name?: string;
-  description?: string;
-  autoActivate?: boolean;
-  variants: Variant[];
-};
+const BEACON_CDN_ENDPOINT = "https://beacon-cdn.nicholasgriffin.dev";
+const SHOULD_TRACK_CLICKS = true;
+const SHOULD_TRACK_USER_TIMINGS = true;
+const RESPECT_DO_NOT_TRACK = false;
 
 declare global {
   interface Window {
@@ -23,6 +13,7 @@ declare global {
       config: Record<string, string>;
       init: (config: {
         endpoint: string;
+        cdnEndpoint?: string;
         siteId: string;
         debug: boolean;
         trackClicks: boolean;
@@ -48,29 +39,45 @@ declare global {
       }) => void;
       setConsent: (consent: boolean) => void;
       hasConsent: () => boolean;
-      destroy?: () => void;
+      getUserId: () => string;
     };
     _beaconInitialized?: boolean;
-    _expBeaconInitialized?: boolean;
-    BeaconExperiments?: {
-      init: (config: { endpoint: string; debug: boolean }) => void;
-      defineExperimentBehaviors: (experiments: Experiment[]) => void;
-      activate: (experimentId: string) => void;
-      getVariant: (experimentId: string) => {
-        variant_id: string;
-        config: Record<string, string>;
-      };
-      forceVariant: (experimentId: string, variantId: string) => void;
-      destroy?: () => void;
+    _openFeatureInitialized?: boolean;
+    BeaconOpenFeature?: {
+      init: (config: {
+        endpoint: string;
+        cdnEndpoint?: string;
+        siteId?: string;
+        debug: boolean;
+      }) => Promise<unknown>;
+      getObjectDetails: (
+        flagKey: string,
+        defaultValue: Record<string, string>,
+        context?: Record<string, unknown>,
+      ) => Promise<{
+        flagKey: string;
+        value: Record<string, string>;
+        variant?: string;
+        reason?: string;
+        errorCode?: string;
+        errorMessage?: string;
+        flagMetadata: Record<string, string | number | boolean>;
+      }>;
+      track: (
+        trackingEventName: string,
+        context?: Record<string, unknown>,
+        details?: Record<string, unknown>,
+      ) => void;
     };
+    OpenFeature?: Window["BeaconOpenFeature"];
   }
 }
 
 export function Analytics({
-  isEnabled = false,
-  isExperimentsEnabled = false,
+  isEnabled = true,
   beaconEndpoint = BEACON_ENDPOINT,
-  beaconSiteId = "",
+  beaconCdnEndpoint = BEACON_CDN_ENDPOINT,
+  beaconSiteId = "test-beacon",
   beaconDebug = false,
   directEvents = false,
   directPageViews = true,
@@ -78,8 +85,8 @@ export function Analytics({
   batchTimeout = 5000,
 }: {
   isEnabled?: boolean;
-  isExperimentsEnabled?: boolean;
   beaconEndpoint?: string;
+  beaconCdnEndpoint?: string;
   beaconSiteId?: string;
   beaconDebug?: boolean;
   directEvents?: boolean;
@@ -87,57 +94,35 @@ export function Analytics({
   batchSize?: number;
   batchTimeout?: number;
 }) {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Only react to enabled state
   useEffect(() => {
-    if (!isEnabled || !beaconSiteId.trim()) {
+    if (!isEnabled) {
       return;
     }
 
-    let beaconScript: HTMLScriptElement | null = null;
-    let beaconPreload: HTMLLinkElement | null = null;
-    const beaconSrc = `${BEACON_ENDPOINT}/beacon.min.js`;
-
-    if (window._beaconInitialized) {
-      const existingBeaconScript = document.querySelector(`script[src="${beaconSrc}"]`);
-      if (!existingBeaconScript) {
-        delete window._beaconInitialized;
-      } else {
-        beaconScript = existingBeaconScript as HTMLScriptElement;
-      }
-    }
-
-    const cleanup = () => {
-      beaconPreload?.remove();
-      beaconScript?.remove();
-      window.Beacon?.destroy?.();
-      delete window._beaconInitialized;
-      delete window.Beacon;
-    };
-
-    if (beaconScript) {
-      return cleanup;
+    if (
+      window._beaconInitialized ||
+      document.querySelector(`script[src="${beaconEndpoint}/beacon.min.js"]`)
+    ) {
+      return;
     }
 
     window._beaconInitialized = true;
 
-    beaconPreload = document.createElement("link");
-    beaconPreload.rel = "preload";
-    beaconPreload.as = "script";
-    beaconPreload.href = beaconSrc;
-    document.head.appendChild(beaconPreload);
+    const script = document.createElement("script");
+    script.src = `${beaconEndpoint}/beacon.min.js`;
+    script.async = true;
 
-    beaconScript = document.createElement("script");
-    beaconScript.src = beaconSrc;
-    beaconScript.async = true;
-
-    beaconScript.onload = () => {
+    script.onload = () => {
       if (window.Beacon) {
         window.Beacon.init({
-          endpoint: BEACON_ENDPOINT,
+          endpoint: beaconEndpoint,
+          cdnEndpoint: beaconCdnEndpoint,
           siteId: beaconSiteId,
           debug: beaconDebug,
-          trackClicks: true,
-          trackUserTimings: true,
-          respectDoNotTrack: true,
+          trackClicks: SHOULD_TRACK_CLICKS,
+          trackUserTimings: SHOULD_TRACK_USER_TIMINGS,
+          respectDoNotTrack: RESPECT_DO_NOT_TRACK,
           directEvents,
           directPageViews,
           batchSize,
@@ -146,80 +131,45 @@ export function Analytics({
       }
     };
 
-    beaconScript.onerror = cleanup;
+    document.head.appendChild(script);
 
-    document.head.appendChild(beaconScript);
+    return () => {};
+  }, [isEnabled]);
 
-    return cleanup;
-  }, [
-    batchSize,
-    batchTimeout,
-    beaconDebug,
-    beaconEndpoint,
-    beaconSiteId,
-    directEvents,
-    directPageViews,
-    isEnabled,
-  ]);
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Only react to enabled state
   useEffect(() => {
-    if (!isExperimentsEnabled) {
+    if (!isEnabled) {
       return;
     }
 
-    let expBeaconScript: HTMLScriptElement | null = null;
-    let expBeaconPreload: HTMLLinkElement | null = null;
-
-    const expBeaconSrc = `${BEACON_ENDPOINT}/exp-beacon.min.js`;
-
-    if (window._expBeaconInitialized) {
-      const existingExpScript = document.querySelector(`script[src="${expBeaconSrc}"]`);
-      if (!existingExpScript) {
-        delete window._expBeaconInitialized;
-      } else {
-        expBeaconScript = existingExpScript as HTMLScriptElement;
-      }
+    if (
+      window._openFeatureInitialized ||
+      document.querySelector(`script[src="${beaconEndpoint}/exp-beacon.min.js"]`)
+    ) {
+      return;
     }
 
-    const cleanup = () => {
-      expBeaconPreload?.remove();
-      expBeaconScript?.remove();
-      window.BeaconExperiments?.destroy?.();
-      delete window._expBeaconInitialized;
-      delete window.BeaconExperiments;
-    };
+    window._openFeatureInitialized = true;
 
-    if (expBeaconScript) {
-      return cleanup;
-    }
+    const script = document.createElement("script");
+    script.src = `${beaconEndpoint}/exp-beacon.min.js`;
+    script.async = true;
 
-    window._expBeaconInitialized = true;
-
-    expBeaconPreload = document.createElement("link");
-    expBeaconPreload.rel = "preload";
-    expBeaconPreload.as = "script";
-    expBeaconPreload.href = expBeaconSrc;
-    document.head.appendChild(expBeaconPreload);
-
-    expBeaconScript = document.createElement("script");
-    expBeaconScript.src = expBeaconSrc;
-    expBeaconScript.async = true;
-
-    expBeaconScript.onload = () => {
-      if (window.BeaconExperiments) {
-        window.BeaconExperiments.init({
+    script.onload = () => {
+      if (window.BeaconOpenFeature) {
+        window.BeaconOpenFeature.init({
           debug: beaconDebug,
-          endpoint: BEACON_ENDPOINT,
+          endpoint: beaconEndpoint,
+          cdnEndpoint: beaconCdnEndpoint,
+          siteId: beaconSiteId,
         });
       }
     };
 
-    expBeaconScript.onerror = cleanup;
+    document.head.appendChild(script);
 
-    document.head.appendChild(expBeaconScript);
-
-    return cleanup;
-  }, [beaconDebug, beaconEndpoint, isExperimentsEnabled]);
+    return () => {};
+  }, [isEnabled]);
 
   return null;
 }
