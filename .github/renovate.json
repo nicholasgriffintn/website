@@ -1,4 +1,24 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"]
+  "extends": ["config:recommended"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "description": "Automerge devDependencies",
+      "matchDepTypes": ["devDependencies"],
+      "abandonmentThreshold": "1 year",
+      "minimumReleaseAge": "7 days",
+      "automerge": true
+    },
+    {
+      "description": "Automerge non-major updates",
+      "matchUpdateTypes": ["minor", "patch"],
+      "abandonmentThreshold": "1 year",
+      "minimumReleaseAge": "7 days",
+      "automerge": true
+    }
+  ]
 }
