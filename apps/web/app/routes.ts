@@ -35,4 +35,5 @@ export default [
   route("rss", "routes/rss[.xml].tsx"),
   route("sitemap.xml", "routes/sitemap[.xml].tsx"),
   route("robots.txt", "routes/robots[.txt].tsx"),
+  route("apple-music/auth", "routes/apple-music/auth.tsx"),
 ] satisfies RouteConfig;

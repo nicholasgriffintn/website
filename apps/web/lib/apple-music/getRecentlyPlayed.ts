@@ -1,9 +1,9 @@
 import { getEnvValue } from "@/lib/env";
 import { CacheManager } from "@/lib/cache";
 import type { CacheRequestContext } from "@/lib/cache";
+import { getMusicKitToken } from "@/lib/apple-music/getMusicKitToken";
 
 const userToken = getEnvValue("APPLE_MUSIC_USER_TOKEN");
-const musicKitToken = getEnvValue("APPLE_MUSIC_MUSICKIT_TOKEN");
 const recentlyPlayedCache = new CacheManager<unknown>({
   duration: 5 * 60 * 1000,
   maxEntries: 20,
@@ -11,13 +11,15 @@ const recentlyPlayedCache = new CacheManager<unknown>({
 });
 
 export async function getRecentlyPlayed(limit = 10, cacheContext?: CacheRequestContext) {
-  if (!userToken) {
-    console.error("Missing Apple Music user token in environment variables");
-    return null;
-  }
+  const musicKitToken = await getMusicKitToken();
 
   if (!musicKitToken) {
     console.error("Missing Apple Music MusicKit token in environment variables");
+    return null;
+  }
+
+  if (!userToken) {
+    console.error("Missing Apple Music user token in environment variables");
     return null;
   }
 

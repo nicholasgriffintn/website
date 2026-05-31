@@ -213,8 +213,6 @@ ${body}
     const rawEmail = new Response(message.raw);
     const email = await parser.parse(await rawEmail.arrayBuffer());
 
-    console.log(email);
-
     if (env.R2_BUCKET) {
       const date = new Date().toISOString();
       if (!email.from || !email.from.address) {
