@@ -98,7 +98,7 @@ export function Analytics({
 
     script.onload = () => {
       if (window.BeaconOpenFeature) {
-        window.BeaconOpenFeature.init({
+        void window.BeaconOpenFeature.init({
           debug: beaconDebug,
           endpoint: beaconEndpoint,
           cdnEndpoint: beaconCdnEndpoint,
