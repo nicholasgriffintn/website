@@ -85,10 +85,12 @@ export default function Home() {
                   {(applemusic) => (
                     <>
                       <AppleMusicWidget data={applemusic ?? undefined} />
-                      <div className="text-sm text-muted-foreground text-center inline-flex justify-center w-full mt-5">
-                        <span>What I&apos;m listening to</span>
-                        <ChevronUp />
-                      </div>
+                      {applemusic && (
+                        <div className="text-sm text-muted-foreground text-center inline-flex justify-center w-full mt-5">
+                          <span>What I&apos;m listening to</span>
+                          <ChevronUp />
+                        </div>
+                      )}
                     </>
                   )}
                 </Await>
