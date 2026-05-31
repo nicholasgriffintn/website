@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react";
 import {
   Links,
   Meta,
@@ -23,6 +24,20 @@ import {
   SITE_NAME,
   TWITTER_HANDLE,
 } from "@/lib/seo";
+
+const AnalyticsLazy = lazy(() =>
+  import("@/components/Analytics").then((d) => ({
+    default: d.Analytics,
+  })),
+);
+
+const BEACON_CONFIG = {
+  enabled: import.meta.env.VITE_ENABLE_BEACON === "true" || true,
+  experimentsEnabled: import.meta.env.VITE_ENABLE_BEACON_EXPERIMENTS === "true" || false,
+  endpoint: import.meta.env.VITE_BEACON_ENDPOINT || "https://beacon.nicholasgriffin.dev",
+  siteId: import.meta.env.VITE_BEACON_SITE_ID || "nicholasgriffin-dev",
+  debug: import.meta.env.VITE_BEACON_DEBUG === "true" || false,
+};
 
 export function loader({ request }: LoaderFunctionArgs) {
   const origin = resolveRequestOrigin(request);
@@ -75,6 +90,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased")}>
         <RouteLoadingBar />
+        <Suspense fallback={null}>
+          <AnalyticsLazy
+            isEnabled={BEACON_CONFIG.enabled}
+            isExperimentsEnabled={BEACON_CONFIG.experimentsEnabled}
+            beaconEndpoint={BEACON_CONFIG.endpoint}
+            beaconSiteId={BEACON_CONFIG.siteId}
+            beaconDebug={BEACON_CONFIG.debug}
+          />
+        </Suspense>
         {children}
         <ScrollRestoration />
         <Scripts />
