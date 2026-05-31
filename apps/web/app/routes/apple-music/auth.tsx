@@ -253,7 +253,7 @@ export async function loader() {
         const tokenPanelElement = document.getElementById("token-panel");
         const userTokenDisplayElement = document.getElementById("user-token-display");
 
-        let musicKit;
+        let music;
         let userToken = "";
 
         function setStatus(message) {
@@ -272,63 +272,74 @@ export async function loader() {
 
         async function configureMusicKit() {
           clearError();
-          musicKit = await MusicKit.configure({ 
-            developerToken
-          });
-
           buttonElement.removeAttribute("disabled");
           buttonElement.textContent = "Connect with Apple Music";
           setStatus("Ready to request a Music-User-Token.");
-        }
 
-        buttonElement.addEventListener("click", async function () {
-          clearError();
-
-          buttonElement.setAttribute("disabled", "true");
-          buttonElement.textContent = "Opening Apple Music...";
-          setStatus("Waiting for Apple Music authorization.");
-
-          try {
-            const userToken = await musicKit.authorize();
-
-            userTokenDisplayElement.textContent = userToken;
-            tokenPanelElement.classList.remove("hidden");
-            setStatus("Token generated. Copy it into APPLE_MUSIC_USER_TOKEN.");
-          } catch (error) {
-            console.error(error);
-            setStatus("Authorization failed.");
-            showError("Unable to authorize access to Apple Music.");
-          } finally {
-            buttonElement.removeAttribute("disabled");
-            buttonElement.textContent = "Connect with Apple Music";
-          }
-        });
-
-        copyButtonElement.addEventListener("click", async function () {
-          if (!userToken) {
+          if (!developerToken) {
+            showError("Developer token is missing. Check server logs for details.");
+            setStatus("Unable to configure MusicKit.");
             return;
           }
 
-          try {
-            await navigator.clipboard.writeText(userToken);
-            copyButtonElement.textContent = "Copied";
-            window.setTimeout(function () {
-              copyButtonElement.textContent = "Copy token";
-            }, 1600);
-          } catch (error) {
-            console.error(error);
-            showError("Copy failed. Select the token manually.");
-          }
-        });
+           buttonElement.addEventListener("click", async function () {
+            clearError();
 
-        if (window.MusicKit) {
-          configureMusicKit();
-        } else {
-          document.addEventListener("musickitloaded", configureMusicKit, { once: true });
+            try  {
+              music = await MusicKit.configure({ 
+                developerToken
+              });
+            } catch (error) {
+              console.error(error);
+              showError("MusicKit configuration failed. Check console for details.");
+              setStatus("Unable to configure MusicKit.");
+              return;
+            }
+
+            buttonElement.setAttribute("disabled", "true");
+            buttonElement.textContent = "Opening Apple Music...";
+            setStatus("Waiting for Apple Music authorization.");
+
+            try {
+              const userToken = await music.authorize();
+
+              userTokenDisplayElement.textContent = userToken;
+              tokenPanelElement.classList.remove("hidden");
+              setStatus("Token generated. Copy it into APPLE_MUSIC_USER_TOKEN.");
+            } catch (error) {
+              console.error(error);
+              setStatus("Authorization failed.");
+              showError("Unable to authorize access to Apple Music.");
+            } finally {
+              buttonElement.removeAttribute("disabled");
+              buttonElement.textContent = "Connect with Apple Music";
+            }
+          });
+
+          copyButtonElement.addEventListener("click", async function () {
+            if (!userToken) {
+              return;
+            }
+
+            try {
+              await navigator.clipboard.writeText(userToken);
+              copyButtonElement.textContent = "Copied";
+              window.setTimeout(function () {
+                copyButtonElement.textContent = "Copy token";
+              }, 1600);
+            } catch (error) {
+              console.error(error);
+              showError("Copy failed. Select the token manually.");
+            }
+          });
         }
 
+        document.addEventListener("musickitloaded", function () {
+          configureMusicKit();
+        });
+
         window.setTimeout(function () {
-          if (!musicKit) {
+          if (!music) {
             showError("MusicKit is taking longer than expected to load.");
             setStatus("Still waiting for Apple Music.");
           }
