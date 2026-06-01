@@ -12,6 +12,8 @@ This:
   - `fit`
   - `quality`
 - Chooses output format from the request `Accept` header (`avif` first, then `webp`), or `format=json` when explicitly requested.
+- Returns the original GIF/WebP when preserving animation would exceed Cloudflare's animation frame area limit.
+- Falls back to the original image when Cloudflare returns an image resize failure.
 - Returns long-lived cache headers (`Cache-Control: public, max-age=31536000`).
 
 ## Validation rules

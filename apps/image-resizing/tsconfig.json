@@ -8,5 +8,6 @@
     "strict": true,
     "lib": ["esnext"],
     "types": ["@cloudflare/workers-types"]
-  }
+  },
+  "exclude": ["src/**/*.test.ts"]
 }
