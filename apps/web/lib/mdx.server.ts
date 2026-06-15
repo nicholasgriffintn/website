@@ -6,6 +6,8 @@ import rehypeRaw from "rehype-raw";
 import { unified } from "unified";
 import { SKIP, visit } from "unist-util-visit";
 
+import { hashMermaidSource, MERMAID_DIAGRAM_PUBLIC_PREFIX } from "@/lib/mermaid";
+
 type MdxNode = {
   type: string;
   name?: string;
@@ -17,6 +19,12 @@ type MdxNode = {
   children?: MdxNode[];
   position?: unknown;
   [key: string]: unknown;
+};
+
+type MarkdownCodeNode = {
+  type: "code";
+  lang?: string | null;
+  value: string;
 };
 
 export type MdxHastRoot = {
@@ -117,6 +125,29 @@ function mdxJsxToHastElements() {
   };
 }
 
+function remarkMermaidToImage() {
+  return (tree: unknown) => {
+    visit(
+      tree as never,
+      "code",
+      (node: MarkdownCodeNode, index: number | undefined, parent: { children?: unknown[] }) => {
+        if (node.lang !== "mermaid" || typeof index === "undefined" || !parent?.children) {
+          return;
+        }
+
+        const hash = hashMermaidSource(node.value);
+        parent.children[index] = {
+          type: "html",
+          value:
+            `<figure class="mermaid-diagram not-prose">` +
+            `<img src="${MERMAID_DIAGRAM_PUBLIC_PREFIX}/${hash}.svg" alt="Mermaid diagram" loading="lazy" decoding="async" />` +
+            `</figure>`,
+        };
+      },
+    );
+  };
+}
+
 function stripPositions(tree: MdxNode) {
   visit(tree as never, (node: any) => {
     delete node.position;
@@ -129,6 +160,7 @@ export async function compileMdxToHast(source: string): Promise<MdxHastRoot> {
     .use(remarkMdx)
     .use(remarkGfm)
     .use(removeUnsupportedMdxSyntax as any)
+    .use(remarkMermaidToImage as any)
     .use(remarkRehype, {
       allowDangerousHtml: true,
       passThrough: ["mdxJsxFlowElement", "mdxJsxTextElement"],

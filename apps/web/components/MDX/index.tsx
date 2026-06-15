@@ -1,35 +1,17 @@
-import { lazy, Suspense, createElement } from "react";
-import React from "react";
+import { createElement } from "react";
 import { toJsxRuntime } from "hast-util-to-jsx-runtime";
 import { highlight } from "sugar-high";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 
 import { Link } from "@/components/Link";
 import { Image } from "@/components/Image";
+import { MERMAID_DIAGRAM_PUBLIC_PREFIX } from "@/lib/mermaid";
+import { getTextFromReactNode } from "@/lib/react";
 import { slugify } from "@/lib/slugs";
 
 type MdxHastRoot = {
   type: "root";
   children: unknown[];
-};
-
-const Mermaid = lazy(() => import("./Mermaid"));
-
-const getTextFromNode = (node: React.ReactNode): string => {
-  if (typeof node === "string" || typeof node === "number") {
-    return String(node);
-  }
-
-  if (Array.isArray(node)) {
-    return node.map((child) => getTextFromNode(child)).join("");
-  }
-
-  if (React.isValidElement(node)) {
-    const props = node.props as { children?: React.ReactNode };
-    return getTextFromNode(props.children);
-  }
-
-  return "";
 };
 
 function Table({ children, ...props }) {
@@ -61,9 +43,17 @@ function CustomLink(props) {
 }
 
 function RoundedImage(props) {
+  const imageProps = { ...props };
+  delete imageProps.node;
+  const src = typeof imageProps.src === "string" ? imageProps.src : "";
+
+  if (src.startsWith(`${MERMAID_DIAGRAM_PUBLIC_PREFIX}/`)) {
+    return <img {...imageProps} />;
+  }
+
   return (
     <div className="relative w-full">
-      <Image alt={props.alt} className="rounded-lg" {...props} />
+      <Image alt={imageProps.alt} className="rounded-lg" {...imageProps} />
     </div>
   );
 }
@@ -72,11 +62,11 @@ function Code({ children, className, ...props }) {
   const isCodeBlock = /language-(\w+)/.exec(className || "");
 
   if (isCodeBlock && isCodeBlock[1] === "mermaid") {
-    const chart = getTextFromNode(children);
+    const chart = getTextFromReactNode(children);
     return (
-      <Suspense fallback={null}>
-        <Mermaid chart={chart} />
-      </Suspense>
+      <pre className="overflow-x-auto rounded-lg border bg-muted my-2">
+        <code className="language-mermaid">{chart}</code>
+      </pre>
     );
   }
 
@@ -92,7 +82,7 @@ function Code({ children, className, ...props }) {
   }
 
   const language = isCodeBlock[1];
-  const code = getTextFromNode(children);
+  const code = getTextFromReactNode(children);
   const codeHTML = highlight(code);
 
   return (
@@ -111,7 +101,7 @@ function Code({ children, className, ...props }) {
 
 function createHeading(level) {
   const Heading = ({ children }) => {
-    const text = getTextFromNode(children);
+    const text = getTextFromReactNode(children);
 
     const slug = slugify(text);
 

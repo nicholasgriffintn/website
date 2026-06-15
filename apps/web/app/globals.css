@@ -199,6 +199,19 @@ h6:hover .anchor {
   min-width: 100%;
 }
 
+.mermaid-diagram {
+  position: relative;
+  margin: 2rem auto;
+  max-width: 100%;
+  text-align: center;
+}
+
+.mermaid-diagram img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+}
+
 :not(pre) > code {
   background-color: hsl(var(--muted));
   border-radius: 0.3em;
