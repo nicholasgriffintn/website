@@ -15,7 +15,7 @@ const data: Projects = [
         url: "https://github.com/bbc",
       },
     ],
-    image: "/uploads/images/projects/bbc_open_source.png",
+    image: "/uploads/site/images/projects/bbc_open_source.png",
     imageAlt: "A screenshot of the BBC's Open Source site",
   },
   {
@@ -32,7 +32,7 @@ const data: Projects = [
         url: "https://accropress.com",
       },
     ],
-    image: "/uploads/images/projects/accropress.png",
+    image: "/uploads/site/images/projects/accropress.png",
     imageAlt: "A screenshot of the AccroPress CMS",
   },
   {
@@ -53,7 +53,7 @@ const data: Projects = [
         url: "https://jobs.longleat.co.uk/",
       },
     ],
-    image: "/uploads/images/projects/bouygues.png",
+    image: "/uploads/site/images/projects/bouygues.png",
     imageAlt: "A screenshot of the Bouygues Construction UK career site",
   },
   {
