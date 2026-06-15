@@ -33,7 +33,15 @@ export function initClientSentry() {
         matchRoutes,
       }),
     ],
-    tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+    sampleRate: 1,
+    enableLogs: false,
+    tracesSampleRate: 0,
+    beforeSend(event) {
+      return event.exception?.values?.length ? event : null;
+    },
+    beforeSendTransaction() {
+      return null;
+    },
     sendDefaultPii: false,
     environment: import.meta.env.MODE,
   });
