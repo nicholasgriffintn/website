@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Train subscriptions admin</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./config.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="top-rule"></div>
+      <div class="nav-bar">
+        <a class="brand" href="./" aria-label="Train admin home">
+          <img class="brand-mark" src="./assets/avatar.png" alt="" aria-hidden="true" />
+          <span>Train admin</span>
+        </a>
+        <nav aria-label="Admin actions">
+          <button id="sign-out" class="link-button" type="button" hidden>Sign out</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="intro">
+        <div>
+          <h1>Trains!</h1>
+          <p>A personal service for tracking train journeys and sending updates to webhooks.</p>
+        </div>
+      </section>
+
+      <section id="signed-out-panel" class="panel">
+        <button id="hero-sign-in" class="primary-button" type="button">Sign in with Cognito</button>
+      </section>
+
+      <section id="admin-panel" class="admin-grid" hidden>
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Listeners</h2>
+              <p>Webhook destinations that receive train updates.</p>
+            </div>
+            <button id="refresh-listeners" class="secondary-button" type="button">Refresh</button>
+          </div>
+
+          <form id="listener-form" class="form-grid">
+            <label>
+              Name
+              <input name="name" autocomplete="off" required placeholder="Operations webhook" />
+            </label>
+            <label>
+              Webhook URL
+              <input
+                name="webhookUrl"
+                type="url"
+                required
+                placeholder="https://example.com/train-webhook"
+              />
+            </label>
+            <label>
+              Bearer token
+              <input
+                name="webhookToken"
+                type="password"
+                required
+                placeholder="Webhook bearer token"
+              />
+            </label>
+            <button class="primary-button" type="submit">Create listener</button>
+          </form>
+
+          <div id="listeners-empty" class="empty-state">No listeners yet.</div>
+          <div id="listeners-list" class="stack-list" aria-label="Listeners"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>New subscription</h2>
+              <p>Track one journey until arrival, cancellation or expiry.</p>
+            </div>
+          </div>
+
+          <form id="subscription-form" class="form-grid">
+            <label>
+              Listener
+              <select name="listenerId" required></select>
+            </label>
+            <div class="field-row">
+              <label>
+                Origin TIPLOC
+                <input name="originTpl" required placeholder="FALCNWD" />
+              </label>
+              <label>
+                Destination TIPLOC
+                <input name="destinationTpl" required placeholder="DARTFDJ" />
+              </label>
+            </div>
+            <div class="field-row">
+              <label>
+                Service date
+                <input name="serviceDate" type="date" required />
+              </label>
+              <label>
+                Planned departure
+                <input name="plannedDepartureTime" type="time" required />
+              </label>
+            </div>
+            <div class="field-row">
+              <label>
+                Window minutes
+                <input name="timeWindowMinutes" type="number" min="0" max="60" value="5" required />
+              </label>
+              <label>
+                Expiry
+                <input name="expiresAt" type="datetime-local" />
+              </label>
+            </div>
+            <button class="primary-button" type="submit">Create subscription</button>
+          </form>
+        </div>
+
+        <div class="panel subscriptions-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Subscriptions</h2>
+              <p>Current and recent train subscriptions for this account.</p>
+            </div>
+            <button id="refresh-subscriptions" class="secondary-button" type="button">
+              Refresh
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Route</th>
+                  <th>Departure</th>
+                  <th>Status</th>
+                  <th>Latest</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="subscriptions-body"></tbody>
+            </table>
+          </div>
+          <div id="subscriptions-empty" class="empty-state">No subscriptions yet.</div>
+        </div>
+      </section>
+
+      <div id="message" class="toast" role="status" aria-live="polite" hidden></div>
+    </main>
+  </body>
+</html>

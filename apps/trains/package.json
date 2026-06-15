@@ -1,0 +1,37 @@
+{
+  "name": "@your-scope/train-kafka-capture-cdk",
+  "version": "0.1.0",
+  "private": true,
+  "bin": {
+    "train-kafka-capture-cdk": "dist/bin/app.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "cdk": "cdk",
+    "presynth": "pnpm build",
+    "synth": "cdk synth",
+    "predeploy": "pnpm build",
+    "deploy": "cdk deploy",
+    "postdeploy": "node scripts/sync-kafka-secret.mjs",
+    "secrets:sync": "node scripts/sync-kafka-secret.mjs",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1069.0",
+    "@aws-sdk/client-lambda": "^3.1069.0",
+    "@aws-sdk/client-s3": "^3.1069.0",
+    "@aws-sdk/client-secrets-manager": "^3.1069.0",
+    "@aws-sdk/lib-dynamodb": "^3.1069.0",
+    "aws-cdk-lib": "^2.259.0",
+    "constructs": "^10.6.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.162",
+    "@types/node": "^25.9.3",
+    "aws-cdk": "^2.1127.0",
+    "esbuild": "^0.28.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "app": "node dist/bin/app.js",
+  "context": {
+    "appName": "train-kafka-capture",
+    "adminSiteUrl": "https://trains.nicholasgriffin.dev",
+    "notificationsWebhookUrl": "https://notifications.nicholasgriffin.dev",
+    "notificationsWebhookTokenSecretName": "train-kafka-capture/notifications-webhook-token",
+    "kafkaBootstrapServer": "pkc-z3p1v0.europe-west2.gcp.confluent.cloud:9092",
+    "kafkaTopic": "prod-1010-Darwin-Train-Information-Push-Port-IIII2_0-JSON",
+    "kafkaConsumerGroupId": "train-kafka-capture-dev"
+  }
+}
