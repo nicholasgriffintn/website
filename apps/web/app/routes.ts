@@ -26,7 +26,7 @@ export default [
   route("anyone-can-draw", "routes/redirect/anyone-can-draw.tsx"),
   // Resource routes
   route("api/spotify", "routes/api/spotify.tsx"),
-  route("api/apple-music", "routes/api/apple-music.tsx"),
+  route("api/music", "routes/api/music.tsx"),
   route("api/github", "routes/api/github.tsx"),
   route("api/projects", "routes/api/projects.tsx"),
   route("api/gists", "routes/api/gists.tsx"),

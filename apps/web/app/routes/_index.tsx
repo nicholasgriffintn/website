@@ -3,7 +3,7 @@ import type { MetaFunction, LoaderFunctionArgs } from "react-router";
 import { Await, useLoaderData } from "react-router";
 import { ChevronUp } from "lucide-react";
 
-import { getRecentlyPlayed } from "@/lib/apple-music/getRecentlyPlayed";
+import { getRecentlyPlayedMusic } from "@/lib/music/getRecentlyPlayed";
 import { getProjects } from "@/lib/data/projects";
 import { getGitHubRepos } from "@/lib/data/github";
 import { PageLayout } from "@/components/PageLayout";
@@ -28,7 +28,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
     executionContext: context?.cloudflare?.ctx,
   };
 
-  const applemusic = getRecentlyPlayed(10, cacheContext).catch(() => null);
+  const music = getRecentlyPlayedMusic(10, cacheContext).catch(() => null);
   const featuredRepos = getGitHubRepos({ limit: 8, cacheContext })
     .then((repos) => repos ?? null)
     .catch(() => null);
@@ -36,7 +36,7 @@ export async function loader({ request, context }: LoaderFunctionArgs) {
   const projects = await getProjects();
 
   return {
-    applemusic,
+    music,
     projects,
     featuredRepos,
     blogPosts,
@@ -81,11 +81,11 @@ export default function Home() {
               <Suspense
                 fallback={<LoadingState label="Loading recent tracks..." className="w-full py-6" />}
               >
-                <Await resolve={data.applemusic}>
-                  {(applemusic) => (
+                <Await resolve={data.music}>
+                  {(music) => (
                     <>
-                      <AppleMusicWidget data={applemusic ?? undefined} />
-                      {applemusic && (
+                      <AppleMusicWidget data={music ?? undefined} />
+                      {music && (
                         <div className="text-sm text-muted-foreground text-center inline-flex justify-center w-full mt-5">
                           <span>What I&apos;m listening to</span>
                           <ChevronUp />

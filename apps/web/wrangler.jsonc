@@ -19,6 +19,7 @@
   ],
   "vars": {
     "VITE_EMAIL_TURNSTILE_SITE_KEY": "0x4AAAAAAA5HWEGUfXH4909p",
+    "MUSIC_WIDGET_PROVIDER": "lastfm",
   },
   "observability": {
     "logs": {

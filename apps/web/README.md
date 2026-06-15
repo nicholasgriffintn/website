@@ -37,6 +37,7 @@ Set these in `apps/web/.env` for local development:
 
 - `GITHUB_TOKEN`
 - `LAST_FM_TOKEN`
+- `MUSIC_WIDGET_PROVIDER` (`apple-music` or `lastfm`; defaults to `apple-music`)
 - `APPLE_MUSIC_USER_TOKEN`
 - `VITE_EMAIL_TURNSTILE_SITE_KEY`
 

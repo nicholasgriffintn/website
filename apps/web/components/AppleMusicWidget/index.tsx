@@ -5,25 +5,55 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import "./styles.css";
 
 import { Image } from "@/components/Image";
-import { createWidgetStyles } from "@/lib/apple-music/artwork";
 import imageLoader from "@/lib/imageLoader";
-import type { RecentTracks } from "@/types/apple-music";
+import type { MusicWidgetData, MusicWidgetTrack } from "@/types/music";
 import { PauseIcon } from "@/components/Icons/PauseIcon";
 import { PlayIcon } from "@/components/Icons/PlayIcon";
 
-export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
-  if (!data) {
+function TrackAction({
+  track,
+  isPlaying,
+  className,
+  onToggle,
+}: {
+  track: MusicWidgetTrack;
+  isPlaying: boolean;
+  className: string;
+  onToggle: (track: MusicWidgetTrack) => void;
+}) {
+  if (track.previewUrl) {
+    return (
+      <button
+        type="button"
+        aria-label={`${isPlaying ? "Pause" : "Play preview of"} ${track.name}`}
+        className={className}
+        onClick={() => onToggle(track)}
+        data-playing={isPlaying ? "true" : "false"}
+      >
+        {isPlaying ? <PauseIcon /> : <PlayIcon />}
+      </button>
+    );
+  }
+
+  if (!track.url) {
     return null;
   }
 
-  const tracksList = data;
+  return (
+    <a
+      aria-label={`Open ${track.name}`}
+      className={className}
+      rel="noopener noreferrer nofollow"
+      target="_blank"
+      href={track.url}
+      data-playing="false"
+    >
+      <PlayIcon />
+    </a>
+  );
+}
 
-  const firstTrack = tracksList?.length > 0 ? tracksList[0] : null;
-  const firstTrackImage = firstTrack?.attributes.artwork.url
-    ? firstTrack.attributes.artwork.url.replace("{w}", "700").replace("{h}", "245")
-    : null;
-  const widgetStyle = createWidgetStyles(firstTrack?.attributes.artwork);
-
+export function AppleMusicWidget({ data }: { data: MusicWidgetData | undefined }) {
   const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -72,13 +102,18 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
     };
   }, []);
 
+  const tracksList = data?.tracks ?? [];
+  const firstTrack = tracksList.length > 0 ? tracksList[0] : null;
+  const firstTrackImage = firstTrack?.artworkUrl ?? null;
+  const widgetStyle = data?.style;
+
   const handleToggleTrack = useCallback(
-    async (track: RecentTracks[number]) => {
-      const previewUrl = track?.attributes?.previews?.[0]?.url;
+    async (track: MusicWidgetTrack) => {
+      const previewUrl = track.previewUrl;
 
       if (!previewUrl) {
-        if (track?.attributes?.url) {
-          window.open(track.attributes.url, "_blank", "noopener,noreferrer");
+        if (track.url) {
+          window.open(track.url, "_blank", "noopener,noreferrer");
         }
         return;
       }
@@ -123,6 +158,10 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
     [currentTrackId, isPlaying],
   );
 
+  if (!data || !firstTrack) {
+    return null;
+  }
+
   return (
     <div id="applemusic-widget" style={widgetStyle}>
       <Suspense fallback={<div>Loading...</div>}>
@@ -137,7 +176,7 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
                   }}
                 >
                   <Image
-                    alt={firstTrack.attributes.name}
+                    alt={firstTrack.name}
                     src={imageLoader({
                       src: firstTrackImage,
                       width: 700,
@@ -156,84 +195,70 @@ export function AppleMusicWidget({ data }: { data: RecentTracks | undefined }) {
               <div className="applemusic-widget-latest-overlay">
                 <div className="applemusic-widget-latest-actions">
                   <div className="applemusic-widget-latest-meta">
-                    <h3>{firstTrack.attributes.name}</h3>
-                    <span>{firstTrack.attributes.artistName}</span>
-                    <span>{firstTrack.attributes.albumName}</span>
+                    <h3>{firstTrack.name}</h3>
+                    <span>{firstTrack.artistName}</span>
+                    <span>{firstTrack.albumName}</span>
                   </div>
-                  <button
-                    type="button"
-                    aria-label={`${
-                      isTrackPlaying(firstTrack.id) ? "Pause" : "Play preview of"
-                    } ${firstTrack.attributes.name}`}
+                  <TrackAction
+                    track={firstTrack}
                     className="trackLinkPlay"
-                    onClick={() => handleToggleTrack(firstTrack)}
-                    data-playing={isTrackPlaying(firstTrack.id) ? "true" : "false"}
-                  >
-                    {isTrackPlaying(firstTrack.id) ? <PauseIcon /> : <PlayIcon />}
-                  </button>
+                    isPlaying={isTrackPlaying(firstTrack.id)}
+                    onToggle={handleToggleTrack}
+                  />
                 </div>
               </div>
+              {firstTrack.isNowPlaying ? (
+                <div className="absolute left-0 bottom-0 z-10 bg-[#010517] text-primary-foreground px-1 py-1 text-sm">
+                  <span>Now Playing</span>
+                </div>
+              ) : null}
             </div>
             <div className="applemusic-widget-tracks">
-              {tracksList?.map((track, index) => {
-                if (index !== 0) {
-                  const trackImage = track.attributes.artwork.url
-                    ? track.attributes.artwork.url.replace("{w}", "700").replace("{h}", "245")
-                    : null;
+              {tracksList.slice(1).map((track) => {
+                const isPlayingTrack = isTrackPlaying(track.id);
 
-                  const isPlayingTrack = isTrackPlaying(track.id);
-
-                  return (
-                    <div
-                      className="applemusic-widget-track-item"
-                      key={`${track.id}_${track.attributes.issrc}`}
-                    >
-                      <div className="applemusic-widget-track-item-image">
-                        <div className="applemusic-widget-track-item-image-inner">
-                          {trackImage ? (
-                            <Image
-                              width="53"
-                              height="53"
-                              loading="lazy"
-                              alt={track.attributes.albumName}
-                              src={imageLoader({
-                                src: trackImage,
-                                width: 53,
-                              })}
-                              style={{
-                                objectFit: "cover",
-                              }}
-                              unoptimized
-                            />
-                          ) : (
-                            <div
-                              className="applemusic-widget-track-item-image-placeholder"
-                              aria-hidden="true"
-                            />
-                          )}
-                          <button
-                            type="button"
-                            className="applemusic-widget-track-item-play"
-                            onClick={() => handleToggleTrack(track)}
-                            aria-label={`${
-                              isPlayingTrack ? "Pause" : "Play preview of"
-                            } ${track.attributes.name}`}
-                            data-playing={isPlayingTrack ? "true" : "false"}
-                          >
-                            {isPlayingTrack ? <PauseIcon /> : <PlayIcon />}
-                          </button>
-                        </div>
-                      </div>
-                      <div className="applemusic-widget-track-item-content">
-                        <div className="applemusic-widget-track-item-text">
-                          <h3>{track.attributes.name}</h3>
-                          <span>{track.attributes.artistName}</span>
-                          <span>{track.attributes.albumName}</span>
-                        </div>
+                return (
+                  <div className="applemusic-widget-track-item" key={track.id}>
+                    <div className="applemusic-widget-track-item-image">
+                      <div className="applemusic-widget-track-item-image-inner">
+                        {track.artworkUrl ? (
+                          <Image
+                            width="53"
+                            height="53"
+                            loading="lazy"
+                            alt={track.albumName}
+                            src={imageLoader({
+                              src: track.artworkUrl,
+                              width: 53,
+                            })}
+                            style={{
+                              objectFit: "cover",
+                            }}
+                            unoptimized
+                          />
+                        ) : (
+                          <div
+                            className="applemusic-widget-track-item-image-placeholder"
+                            aria-hidden="true"
+                          />
+                        )}
+                        <TrackAction
+                          track={track}
+                          className="applemusic-widget-track-item-play"
+                          isPlaying={isPlayingTrack}
+                          onToggle={handleToggleTrack}
+                        />
                       </div>
                     </div>
-                  );
-                }
+                    <div className="applemusic-widget-track-item-content">
+                      <div className="applemusic-widget-track-item-text">
+                        <h3>{track.name}</h3>
+                        <span>{track.artistName}</span>
+                        <span>{track.albumName}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
               })}
             </div>
           </>

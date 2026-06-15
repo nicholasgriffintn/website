@@ -1,11 +1,12 @@
-import { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
 import { ensureAccessibleTextColor, sanitizeHexColor, toRgbaString } from "../colors";
-import type { RecentTracks } from "../../types/apple-music";
+import type { MusicWidgetStyleArtwork } from "@/types/music";
 
-type Artwork = RecentTracks[number]["attributes"]["artwork"];
-
-export function getArtworkColor(artwork: Artwork | null | undefined, ...keys): string | null {
+export function getArtworkColor(
+  artwork: MusicWidgetStyleArtwork | null | undefined,
+  ...keys: (keyof MusicWidgetStyleArtwork)[]
+): string | null {
   if (!artwork) {
     return null;
   }
@@ -22,7 +23,9 @@ export function getArtworkColor(artwork: Artwork | null | undefined, ...keys): s
   return null;
 }
 
-export function createWidgetStyles(artwork?: Artwork | null): CSSProperties | undefined {
+export function createWidgetStyles(
+  artwork?: MusicWidgetStyleArtwork | null,
+): CSSProperties | undefined {
   if (!artwork) {
     return undefined;
   }

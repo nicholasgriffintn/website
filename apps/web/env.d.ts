@@ -2,7 +2,12 @@
 // by running `wrangler types --env-interface CloudflareEnv env.d.ts`
 
 interface CloudflareEnv {
-  LAST_FM_TOKEN: string;
+  LAST_FM_TOKEN?: string;
+  MUSIC_WIDGET_PROVIDER?: "apple-music" | "lastfm";
+  APPLE_MUSIC_USER_TOKEN?: string;
+  APPLE_MUSIC_PRIVATE_KEY?: string;
+  APPLE_MUSIC_KEY_ID?: string;
+  APPLE_MUSIC_TEAM_ID?: string;
 }
 
 interface ExecutionContext {
