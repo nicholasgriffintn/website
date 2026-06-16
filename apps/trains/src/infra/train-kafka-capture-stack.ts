@@ -163,12 +163,14 @@ export class TrainKafkaCaptureStack extends Stack {
       service: "lambda",
       resource: "function",
       resourceName: reconcilerFunctionName,
+      arnFormat: cdk.ArnFormat.COLON_RESOURCE_NAME,
     });
     const processorFunctionName = `${appName}-subscription-processor`;
     const processorFunctionArn = this.formatArn({
       service: "lambda",
       resource: "function",
       resourceName: processorFunctionName,
+      arnFormat: cdk.ArnFormat.COLON_RESOURCE_NAME,
     });
 
     const apiFn = new lambdaNode.NodejsFunction(this, "ApiFunction", {
@@ -183,7 +185,7 @@ export class TrainKafkaCaptureStack extends Stack {
 
     const kafkaConsumerFn = new lambdaNode.NodejsFunction(this, "KafkaConsumerFunction", {
       entry: join(appRoot, "src/handlers/kafka-capture.ts"),
-      handler: "captureKafkaBatch",
+      handler: "handler",
       runtime: lambda.Runtime.NODEJS_LATEST,
       timeout: Duration.seconds(60),
       memorySize: 512,
@@ -197,7 +199,7 @@ export class TrainKafkaCaptureStack extends Stack {
 
     const processorFn = new lambdaNode.NodejsFunction(this, "SubscriptionProcessorFunction", {
       entry: join(appRoot, "src/handlers/subscription-processing.ts"),
-      handler: "processCapturedSubscriptionBatch",
+      handler: "handler",
       functionName: processorFunctionName,
       runtime: lambda.Runtime.NODEJS_LATEST,
       timeout: Duration.seconds(60),
@@ -212,7 +214,7 @@ export class TrainKafkaCaptureStack extends Stack {
 
     const reconcilerFn = new lambdaNode.NodejsFunction(this, "SubscriptionReconcilerFunction", {
       entry: join(appRoot, "src/handlers/subscription-reconciliation.ts"),
-      handler: "reconcileKafkaMapping",
+      handler: "handler",
       functionName: reconcilerFunctionName,
       runtime: lambda.Runtime.NODEJS_LATEST,
       timeout: Duration.seconds(15),
@@ -223,7 +225,7 @@ export class TrainKafkaCaptureStack extends Stack {
 
     const expirySweeperFn = new lambdaNode.NodejsFunction(this, "ExpirySweeperFunction", {
       entry: join(appRoot, "src/handlers/subscription-expiry.ts"),
-      handler: "expireDueSubscriptions",
+      handler: "handler",
       runtime: lambda.Runtime.NODEJS_LATEST,
       timeout: Duration.seconds(30),
       memorySize: 256,
