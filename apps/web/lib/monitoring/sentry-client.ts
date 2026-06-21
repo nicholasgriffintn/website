@@ -9,11 +9,7 @@ import {
 import * as Sentry from "@sentry/react";
 
 import type { ErrorReportContext } from "@/lib/error-reporting";
-import {
-  buildSentryCaptureContext,
-  SENTRY_DSN,
-  SENTRY_TRACES_SAMPLE_RATE,
-} from "@/lib/monitoring/sentry-shared";
+import { buildSentryCaptureContext, SENTRY_DSN } from "@/lib/monitoring/sentry-shared";
 
 let isSentryClientInitialised = false;
 
